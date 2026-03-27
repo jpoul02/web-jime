@@ -1,0 +1,50 @@
+<h2>¿Cómo organizamos el nuevo proyecto?</h2>
+<p class="subtitle">Hay 3 formas de estructurar <strong>web-jime</strong> + el nuevo formulario de tributos + el backend</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Monorepo — todo en una carpeta</h3>
+      <p>Una carpeta nueva <code>jime-project/</code> con subcarpetas:
+        <code>web-jime/</code> (web existente),
+        <code>tributos-app/</code> (nuevo formulario),
+        <code>api/</code> (backend Node.js + PostgreSQL)
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul><li>Un solo repo, todo junto</li><li>Fácil compartir tipos y utils</li><li>Un solo deploy en Railway</li></ul></div>
+        <div class="cons"><h4>En contra</h4><ul><li>Hay que configurar workspaces</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dos repos separados</h3>
+      <p>
+        Repo 1: <code>web-jime</code> (queda igual, solo añadimos un link al form)<br>
+        Repo 2: <code>jime-tributos/</code> con <code>frontend/</code> + <code>api/</code> juntos
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul><li>web-jime no cambia</li><li>Deploy independiente</li><li>Más simple de manejar</li></ul></div>
+        <div class="cons"><h4>En contra</h4><ul><li>Dos repos que mantener</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Todo dentro de web-jime</h3>
+      <p>
+        El formulario de tributos vive en <code>/tributo</code> dentro del mismo Next.js.<br>
+        La API es un backend separado (<code>jime-api/</code>) que se conecta a PostgreSQL en Railway.
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul><li>Una sola web, un solo deploy frontend</li><li>Navegación integrada entre secciones</li></ul></div>
+        <div class="cons"><h4>En contra</h4><ul><li>web-jime crece bastante</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

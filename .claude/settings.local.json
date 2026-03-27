@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cp \"C:/Users/Datasys2/Desktop/pencil/images/generated-1773846715783.png\" \"C:/Users/Datasys2/Documents/web-jime/public/skype-avatar-jime.png\")",
+      "Bash(cp \"C:/Users/Datasys2/Desktop/pencil/images/generated-1773847656106.png\" \"C:/Users/Datasys2/Documents/web-jime/public/skype-video-main.png\")",
+      "Bash(cp \"C:/Users/Datasys2/Desktop/pencil/images/generated-1773847749115.png\" \"C:/Users/Datasys2/Documents/web-jime/public/skype-pip.png\")",
+      "Bash(cp \"C:/Users/Datasys2/Desktop/pencil/images/generated-1773846753432.png\" \"C:/Users/Datasys2/Documents/web-jime/public/skype-c1.png\")",
+      "Bash(cp \"C:/Users/Datasys2/Desktop/pencil/images/generated-1773846775026.png\" \"C:/Users/Datasys2/Documents/web-jime/public/skype-c2.png\")"
+    ]
+  }
+}

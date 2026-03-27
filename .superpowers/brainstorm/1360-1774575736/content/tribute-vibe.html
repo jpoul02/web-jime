@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jime Tributos — Vibe mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Courier+Prime:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0d0d0d;
+    color: #f0e6d3;
+    font-family: 'Courier Prime', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── Fondo con textura grunge ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 6px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* ─── Header ─── */
+  .site-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .site-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #ff69b4;
+    text-shadow: 2px 2px 0 #8b0057, 0 0 20px rgba(255,105,180,0.5);
+    letter-spacing: 2px;
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+
+  .site-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: #aef0c8;
+    text-shadow: 0 0 10px rgba(174,240,200,0.4);
+  }
+
+  /* ─── Decoración pixel ─── */
+  .pixel-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0;
+  }
+  .pixel-divider::before,
+  .pixel-divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, #ff69b4 0, #ff69b4 4px, transparent 4px, transparent 8px);
+  }
+  .pixel-divider span {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #ff69b4;
+    white-space: nowrap;
+  }
+
+  /* ─── Card del formulario ─── */
+  .form-card {
+    background: rgba(20, 12, 30, 0.85);
+    border: 2px solid #3d2060;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #ff69b4, 8px 8px 0 rgba(255,105,180,0.2);
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .form-card::before {
+    content: '♡';
+    position: absolute;
+    top: -12px;
+    right: 16px;
+    background: #0d0d0d;
+    color: #ff69b4;
+    font-size: 18px;
+    padding: 0 6px;
+  }
+
+  .card-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #ff69b4;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #3d2060;
+  }
+
+  /* ─── Upload de foto ─── */
+  .upload-zone {
+    border: 2px dashed #ff69b4;
+    border-radius: 0;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(255,105,180,0.04);
+    transition: background 0.2s;
+    margin-bottom: 16px;
+  }
+
+  .upload-zone:hover { background: rgba(255,105,180,0.1); }
+
+  .upload-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b0057, #3d2060);
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 3px solid #ff69b4;
+    box-shadow: 0 0 12px rgba(255,105,180,0.5);
+  }
+
+  .upload-hint {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: #aaa;
+  }
+
+  /* ─── Inputs ─── */
+  .form-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid #3d2060;
+    border-bottom: 2px solid #ff69b4;
+    color: #f0e6d3;
+    font-family: 'Courier Prime', monospace;
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    margin-bottom: 14px;
+    border-radius: 0;
+  }
+
+  .form-input:focus {
+    border-color: #ff69b4;
+    box-shadow: 0 0 8px rgba(255,105,180,0.3);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  /* ─── Pregunta estilo ask.fm ─── */
+  .question-bubble {
+    background: rgba(174,240,200,0.08);
+    border-left: 3px solid #aef0c8;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: #aef0c8;
+  }
+
+  /* ─── Galería de fotos ─── */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .photo-slot {
+    aspect-ratio: 1;
+    border: 2px dashed #3d2060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    background: rgba(255,105,180,0.03);
+    transition: border-color 0.2s;
+  }
+
+  .photo-slot:hover { border-color: #ff69b4; }
+  .photo-slot.filled { border-style: solid; border-color: #ff69b4; }
+
+  /* ─── Video ─── */
+  .video-zone {
+    border: 2px dashed #7b68ee;
+    padding: 20px;
+    text-align: center;
+    background: rgba(123,104,238,0.05);
+    margin-bottom: 14px;
+  }
+
+  .video-icon { font-size: 32px; margin-bottom: 8px; }
+  .video-hint { font-family: 'VT323', monospace; font-size: 18px; color: #7b68ee; }
+
+  /* ─── Submit ─── */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #8b0057, #ff69b4);
+    border: none;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 4px 4px 0 #3d2060;
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-transform: uppercase;
+  }
+
+  .submit-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #3d2060;
+  }
+
+  /* ─── Stickers flotantes ─── */
+  .sticker {
+    position: fixed;
+    font-size: 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+  }
+  .sticker:nth-child(1) { top: 8%; left: 4%; animation-delay: 0s; }
+  .sticker:nth-child(2) { top: 20%; right: 5%; animation-delay: 1.5s; }
+  .sticker:nth-child(3) { bottom: 30%; left: 3%; animation-delay: 3s; }
+  .sticker:nth-child(4) { bottom: 15%; right: 6%; animation-delay: 4.5s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(5deg); }
+  }
+
+  /* ─── Nota al pie ─── */
+  .footer-note {
+    text-align: center;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: #555;
+    margin-top: 32px;
+  }
+
+  /* ─── Selección ─── */
+  .options-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .style-opt {
+    flex: 1;
+    min-width: 140px;
+    border: 2px solid #3d2060;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: rgba(20,12,30,0.6);
+  }
+  .style-opt:hover, .style-opt.selected {
+    border-color: #ff69b4;
+    box-shadow: 3px 3px 0 #ff69b4;
+  }
+  .style-opt .opt-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #ff69b4;
+    margin-bottom: 6px;
+  }
+  .style-opt .opt-desc {
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    color: #aaa;
+    line-height: 1.3;
+  }
+</style>
+</head>
+<body>
+
+<!-- Stickers flotantes -->
+<div class="sticker">🌸</div>
+<div class="sticker">⭐</div>
+<div class="sticker">🦋</div>
+<div class="sticker">🎀</div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="site-header">
+    <div class="site-title">★ HAPPY BIRTHDAY JIME ★</div>
+    <div class="site-subtitle">deja tu mensaje para ella ✿</div>
+  </div>
+
+  <div class="pixel-divider"><span>✦ TRIBUTE FORM ✦</span></div>
+
+  <!-- Foto de perfil -->
+  <div class="form-card">
+    <div class="card-label">01 · tu foto</div>
+    <div class="upload-zone">
+      <div class="upload-avatar">🐧</div>
+      <div class="upload-hint">click para subir tu foto de perfil</div>
+    </div>
+    <input class="form-input" type="text" placeholder="tu nombre / nickname...">
+  </div>
+
+  <!-- Preguntas estilo ask.fm -->
+  <div class="form-card">
+    <div class="card-label">02 · cuéntale algo</div>
+    <div class="question-bubble">¿qué es lo que más admiras de jime?</div>
+    <textarea class="form-input form-textarea" placeholder="escribe aquí..."></textarea>
+
+    <div class="question-bubble">¿cuál es tu recuerdo favorito con ella?</div>
+    <textarea class="form-input form-textarea" placeholder="escribe aquí..."></textarea>
+  </div>
+
+  <!-- Video -->
+  <div class="form-card">
+    <div class="card-label">03 · tu video para ella</div>
+    <div class="video-zone">
+      <div class="video-icon">🎬</div>
+      <div class="video-hint">sube un video corto (máx. 60 seg)</div>
+    </div>
+  </div>
+
+  <!-- Más fotos -->
+  <div class="form-card">
+    <div class="card-label">04 · fotos juntos</div>
+    <div class="photo-grid">
+      <div class="photo-slot">📷</div>
+      <div class="photo-slot filled">🖼️</div>
+      <div class="photo-slot">📷</div>
+      <div class="photo-slot">📷</div>
+      <div class="photo-slot">📷</div>
+      <div class="photo-slot">📷</div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="submit-btn">✉ enviar mi tributo ✉</button>
+
+  <!-- ── Opciones de estilo ── -->
+  <div class="pixel-divider" style="margin-top:40px"><span>✦ ¿QUÉ ESTILO TE GUSTA? ✦</span></div>
+  <p style="font-family:'VT323',monospace;font-size:18px;color:#888;text-align:center;margin-bottom:4px;">
+    Esto es el vibe base. ¿Lo ajustamos?
+  </p>
+
+  <div class="options-row">
+    <div class="style-opt" onclick="this.classList.toggle('selected')">
+      <div class="opt-title">A · Más oscuro</div>
+      <div class="opt-desc">Más contraste, más gothic-cute, fondo casi negro puro</div>
+    </div>
+    <div class="style-opt" onclick="this.classList.toggle('selected')">
+      <div class="opt-title">B · Más colorido</div>
+      <div class="opt-desc">Más neón, más Y2K rainbow, más stickers y confeti</div>
+    </div>
+    <div class="style-opt" onclick="this.classList.toggle('selected')">
+      <div class="opt-title">C · Más retro-web</div>
+      <div class="opt-desc">Frames de Windows XP, cursors custom, íconos de escritorio</div>
+    </div>
+  </div>
+
+  <div class="footer-note">made with ♡ for jime · 2025</div>
+</div>
+
+</body>
+</html>

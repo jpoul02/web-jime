@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — opciones de layout</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Nunito:wght@400;700;900&family=Caveat:wght@600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #c8eeff; font-family: 'Nunito', sans-serif; padding: 24px 16px 60px; }
+
+  h2 { font-family: 'Press Start 2P', monospace; font-size: 10px; color: #0d4a8a; text-align: center; margin-bottom: 6px; line-height: 1.8; }
+  .subtitle { font-family: 'VT323', monospace; font-size: 20px; color: #1a6fb5; text-align: center; margin-bottom: 28px; }
+
+  /* ─── Opción wrapper ─── */
+  .option-block {
+    background: #fff;
+    border: 3px solid #2896e0;
+    border-radius: 16px;
+    box-shadow: 0 4px 0 #0d4a8a;
+    margin-bottom: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .option-block:hover { transform: translateY(-3px); box-shadow: 0 7px 0 #0d4a8a; }
+  .option-block.selected { border-color: #ff69b4; box-shadow: 0 4px 0 #8b0057; }
+  .option-block.selected .opt-header { background: linear-gradient(135deg, #cc2366, #ff69b4); }
+
+  .opt-header {
+    background: linear-gradient(135deg, #1a6fb5, #2896e0);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .opt-letter { font-family: 'Press Start 2P', monospace; font-size: 10px; color: #a8e4ff; }
+  .opt-name { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #fff; }
+
+  .opt-preview { padding: 16px; }
+  .opt-desc { font-family: 'VT323', monospace; font-size: 18px; color: #1a6fb5; margin-bottom: 12px; }
+
+  /* ══════════════════════════════════
+     A · Polaroid Wall (Pinterest / 2000s)
+  ══════════════════════════════════ */
+  .polaroid-wall {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .polaroid {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 8px 8px 24px;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.18);
+    width: 100px;
+    transform: rotate(-3deg);
+    transition: transform 0.2s;
+  }
+  .polaroid:nth-child(2) { transform: rotate(2deg); }
+  .polaroid:nth-child(3) { transform: rotate(-1deg); }
+  .polaroid:nth-child(4) { transform: rotate(3deg); }
+  .polaroid:nth-child(5) { transform: rotate(-2deg); }
+  .polaroid-img {
+    width: 100%; aspect-ratio: 1;
+    background: linear-gradient(135deg, #c8eeff, #a8d8f0);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; border: 1px solid #eee;
+  }
+  .polaroid-name {
+    font-family: 'Caveat', cursive; font-size: 13px; color: #555;
+    text-align: center; margin-top: 6px;
+  }
+
+  /* ══════════════════════════════════
+     B · Cards de perfil estilo MySpace/CP
+  ══════════════════════════════════ */
+  .profile-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  }
+  .profile-card {
+    background: linear-gradient(135deg, #e8f7ff, #fff);
+    border: 2px solid #78c8f5;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    box-shadow: 0 2px 0 #2896e0;
+  }
+  .pcard-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #f09433, #dc2743);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(220,39,67,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .pcard-name { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 12px; color: #0d4a8a; }
+  .pcard-quote {
+    font-family: 'VT323', monospace; font-size: 15px; color: #1a6fb5;
+    text-align: center; line-height: 1.3;
+  }
+  .pcard-photos {
+    display: flex; gap: 3px;
+  }
+  .pcard-mini {
+    width: 28px; height: 28px; background: #c8eeff;
+    border: 1px solid #78c8f5; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+
+  /* ══════════════════════════════════
+     C · Feed estilo Instagram stories
+  ══════════════════════════════════ */
+  .ig-feed { display: flex; flex-direction: column; gap: 12px; }
+  .ig-post {
+    border: 2px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fff;
+  }
+  .ig-post-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-bottom: 1px solid #f0f0f0;
+  }
+  .ig-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #f09433, #dc2743);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #f09433;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .ig-user { font-weight: 900; font-size: 13px; color: #0d4a8a; }
+  .ig-time { font-size: 11px; color: #aaa; margin-left: auto; }
+  .ig-photo-strip {
+    display: flex; overflow: hidden;
+  }
+  .ig-photo {
+    min-width: 33.33%; aspect-ratio: 1;
+    background: linear-gradient(135deg, #c8eeff, #78c8f5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; border-right: 1px solid #eee;
+  }
+  .ig-caption { padding: 8px 12px; font-size: 13px; color: #333; }
+  .ig-caption strong { color: #0d4a8a; }
+</style>
+</head>
+<body>
+
+<h2>¿CÓMO SE VE LA GALERÍA?</h2>
+<p class="subtitle">así verá Jime (y todos) los tributos enviados ↓</p>
+
+<!-- ─── Opción A ─── -->
+<div class="option-block" data-choice="a" onclick="toggleSelect(this)">
+  <div class="opt-header">
+    <span class="opt-letter">A</span>
+    <span class="opt-name">Polaroid Wall — pared de fotos</span>
+  </div>
+  <div class="opt-preview">
+    <p class="opt-desc">Fotos apiladas como polaroids con nombre escrito a mano. Muy 2000s scrapbook, da sensación de álbum físico.</p>
+    <div class="polaroid-wall">
+      <div class="polaroid"><div class="polaroid-img">🐧</div><div class="polaroid-name">Sofi ♡</div></div>
+      <div class="polaroid"><div class="polaroid-img">🌸</div><div class="polaroid-name">Caro</div></div>
+      <div class="polaroid"><div class="polaroid-img">⭐</div><div class="polaroid-name">Luis</div></div>
+      <div class="polaroid"><div class="polaroid-img">🎀</div><div class="polaroid-name">Vale</div></div>
+      <div class="polaroid"><div class="polaroid-img">🦋</div><div class="polaroid-name">Marco</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Opción B ─── -->
+<div class="option-block" data-choice="b" onclick="toggleSelect(this)">
+  <div class="opt-header">
+    <span class="opt-letter">B</span>
+    <span class="opt-name">Profile Cards — estilo MySpace/CP</span>
+  </div>
+  <div class="opt-preview">
+    <p class="opt-desc">Tarjeta de perfil por persona: avatar, nombre, una frase de sus respuestas y miniaturas de fotos. Como el perfil de Club Penguin.</p>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <div class="pcard-avatar">🐧</div>
+        <div class="pcard-name">Sofi</div>
+        <div class="pcard-quote">"la mejor amiga del mundo"</div>
+        <div class="pcard-photos">
+          <div class="pcard-mini">📷</div>
+          <div class="pcard-mini">📷</div>
+          <div class="pcard-mini">🎬</div>
+        </div>
+      </div>
+      <div class="profile-card">
+        <div class="pcard-avatar">🌸</div>
+        <div class="pcard-name">Caro</div>
+        <div class="pcard-quote">"10/10 en randomness"</div>
+        <div class="pcard-photos">
+          <div class="pcard-mini">📷</div>
+          <div class="pcard-mini">📷</div>
+          <div class="pcard-mini">📷</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Opción C ─── -->
+<div class="option-block" data-choice="c" onclick="toggleSelect(this)">
+  <div class="opt-header">
+    <span class="opt-letter">C</span>
+    <span class="opt-name">Feed — estilo Instagram</span>
+  </div>
+  <div class="opt-preview">
+    <p class="opt-desc">Feed vertical de "posts": cada persona es una entrada con sus fotos en tira, nombre y un fragmento de su respuesta favorita. Familiar e intuitivo.</p>
+    <div class="ig-feed">
+      <div class="ig-post">
+        <div class="ig-post-header">
+          <div class="ig-avatar">🐧</div>
+          <div>
+            <div class="ig-user">sofi_123</div>
+          </div>
+          <span class="ig-time">hace 2h</span>
+        </div>
+        <div class="ig-photo-strip">
+          <div class="ig-photo">📷</div>
+          <div class="ig-photo">🌸</div>
+          <div class="ig-photo">🎬</div>
+        </div>
+        <div class="ig-caption"><strong>sofi_123</strong> "es la persona más random que conozco, 11/10"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.option-block').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.recordChoice) recordChoice(el.dataset.choice, el.querySelector('.opt-name').textContent);
+}
+</script>
+</body>
+</html>

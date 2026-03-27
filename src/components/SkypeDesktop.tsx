@@ -1,0 +1,239 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import {
+  Search, Home, Grid3x3, Plus, Monitor,
+  ChevronDown, Mic, Video, MessageSquare, PhoneOff,
+  Maximize2, Ellipsis, Headphones, Users,
+  HelpCircle, Clock,
+} from "lucide-react";
+
+type Contact = {
+  id: string;
+  name: string;
+  video: string;
+  img?: string;
+  label?: string;
+  labelColor?: string;
+  bg?: string;
+  iconBg?: string;
+  useHeadphones?: boolean;
+};
+
+const contacts: Contact[] = [
+  { id: "c1",  name: "Summarize ✅",           video: "/videos/c1.mp4",  img: "/skype-c1.png" },
+  { id: "c2",  name: "RPS Apocalypse ✅",       video: "/videos/c2.mp4",  img: "/skype-c2.png" },
+  { id: "c3",  name: "Hipmunk ✅",              video: "/videos/c3.mp4",  img: "/skype-c3.png" },
+  { id: "c4",  name: "IFTTT ✅",               video: "/videos/c4.mp4",  label: "IF",  bg: "#33AAFF" },
+  { id: "c5",  name: "Summarize ✅",           video: "/videos/c5.mp4",  bg: "#C8D8E8" },
+  { id: "c6",  name: "RPS Apocalypse ✅",       video: "/videos/c6.mp4",  bg: "#E8C8C8" },
+  { id: "c7",  name: "Hipmunk ✅",              video: "/videos/c7.mp4",  bg: "#E8D8C0" },
+  { id: "c8",  name: "IFTTT ✅",               video: "/videos/c8.mp4",  label: "IF",  bg: "#33AAFF" },
+  { id: "c9",  name: "Getty Images - Preview", video: "/videos/c9.mp4",  label: "g",   bg: "#E8E8E8", labelColor: "#AA0000" },
+  { id: "c10", name: "Bing Music - Preview ✅", video: "/videos/c10.mp4", iconBg: "#FFB800", useHeadphones: true },
+  { id: "c11", name: "MemeCat ✅",              video: "/videos/c11.mp4", label: "LOL", bg: "#00AFF0" },
+  { id: "c12", name: "Blackjack ✅",            video: "/videos/c12.mp4", bg: "#2D5E1E" },
+];
+
+const callControls = [
+  { icon: <Mic size={22} color="#FFFFFF" />,          bg: "#444444" },
+  { icon: <Video size={22} color="#FFFFFF" />,         bg: "#444444" },
+  { icon: <Monitor size={22} color="#FFFFFF" />,       bg: "#444444" },
+  { icon: <MessageSquare size={22} color="#FFFFFF" />, bg: "#444444" },
+  { icon: <Plus size={22} color="#FFFFFF" />,          bg: "#444444" },
+  { icon: <PhoneOff size={22} color="#FFFFFF" />,      bg: "#E81123", wide: true },
+];
+
+function ContactAvatar({ c }: { c: Contact }) {
+  if (c.img) return (
+    <Image src={c.img} alt="" width={36} height={36}
+      style={{ borderRadius: 18, objectFit: "cover", width: 36, height: 36, flexShrink: 0 }} />
+  );
+  if (c.useHeadphones) return (
+    <div className="flex items-center justify-center shrink-0"
+      style={{ width: 36, height: 36, borderRadius: 18, background: c.iconBg }}>
+      <Headphones size={18} color="#FFFFFF" />
+    </div>
+  );
+  return (
+    <div className="flex items-center justify-center shrink-0"
+      style={{ width: 36, height: 36, borderRadius: 18, background: c.bg || "#EEE" }}>
+      {c.label && (
+        <span style={{ color: c.labelColor || "#FFFFFF", fontSize: c.label.length > 2 ? 8 : 12, fontWeight: 900 }}>
+          {c.label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function WindowsClock() {
+  const [time, setTime] = useState(() => new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }));
+  useEffect(() => {
+    const id = setInterval(() => setTime(new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })), 10000);
+    return () => clearInterval(id);
+  }, []);
+  return <span className="text-white text-xs font-semibold tabular-nums">{time}</span>;
+}
+
+export default function SkypeDesktop() {
+  const router = useRouter();
+  const [selected, setSelected] = useState<Contact>(contacts[10]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(() => {});
+    }
+  }, [selected.id]);
+
+  return (
+    <div className="w-screen h-screen flex flex-col overflow-hidden bg-white font-[family-name:var(--font-geist-sans)]">
+
+      {/* ── Main Body ──────────────────────────────────────────────── */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* ── Sidebar ─────────────────────────────────────────────── */}
+        <div className="flex flex-col shrink-0 overflow-hidden border-r border-[#E0E0E0]" style={{ width: 340 }}>
+
+          {/* Profile */}
+          <div className="flex items-center gap-3 px-4" style={{ height: 70 }}>
+            <Image src="/skype-avatar-jime.png" alt="Jime" width={44} height={44}
+              style={{ borderRadius: 22, objectFit: "cover" }} />
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[#333333] text-sm font-semibold">Jime</span>
+              <span className="text-[#888888] text-[11px]">😊 waddle on!</span>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="flex items-center gap-2 h-9 bg-[#F5F5F5] px-4">
+            <Search size={14} color="#AAAAAA" />
+            <span className="text-[#AAAAAA] text-xs">Search</span>
+          </div>
+
+          {/* Nav Icons */}
+          <div className="flex items-center justify-around h-11 bg-[#FAFAFA] border-t border-b border-[#EEEEEE]">
+            {[Home, Grid3x3, Plus, Monitor].map((Icon, i) => (
+              <Icon key={i} size={20} color="#666666" />
+            ))}
+          </div>
+
+          {/* Tabs */}
+          <div className="flex items-center gap-4 h-8 px-4">
+            <span className="text-[#666666] text-[11px] font-semibold">CONTACTS</span>
+            <span className="text-[#00AFF0] text-[11px] font-bold">RECENT</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[#888888] text-[11px]">All</span>
+              <ChevronDown size={10} color="#888888" />
+            </div>
+          </div>
+
+          {/* Contact List */}
+          <div className="flex-1 overflow-y-auto">
+            {contacts.map((c) => {
+              const isSelected = selected.id === c.id;
+              return (
+                <button key={c.id} onClick={() => setSelected(c)}
+                  className="w-full flex items-center gap-3 text-left transition-colors border-none cursor-pointer"
+                  style={{ height: 56, padding: "8px 16px", background: isSelected ? "#D4EAFC" : "transparent" }}>
+                  <ContactAvatar c={c} />
+                  <span style={{ color: "#333333", fontSize: 13, fontWeight: isSelected ? 600 : 500 }}>
+                    {c.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Video Area ──────────────────────────────────────────── */}
+        <div className="relative flex-1 overflow-hidden bg-[#1A1A1A]">
+          <video key={selected.id} ref={videoRef} autoPlay loop playsInline
+            className="absolute inset-0 w-full h-full object-cover">
+            <source src={selected.video} type="video/mp4" />
+          </video>
+
+          {/* Top bar */}
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-between"
+            style={{ height: 60, padding: "0 24px", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
+            <div className="flex items-center gap-3">
+              <div style={{ width: 36, height: 36, borderRadius: 18, flexShrink: 0, overflow: "hidden" }}>
+                <ContactAvatar c={selected} />
+              </div>
+              <span className="text-white text-base font-semibold">{selected.name.replace(" ✅", "")}</span>
+              <span className="text-[#AAAAAA] text-sm">video</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Maximize2 size={18} color="#FFFFFF" className="cursor-pointer" />
+              <Ellipsis size={18} color="#FFFFFF" className="cursor-pointer" />
+            </div>
+          </div>
+
+          {/* Call Controls */}
+          <div className="absolute flex items-center justify-center"
+            style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
+            {callControls.map((ctrl, i) => (
+              <button key={i} className="flex items-center justify-center"
+                style={{ width: ctrl.wide ? 56 : 48, height: 48, borderRadius: 24, background: ctrl.bg, border: "none", cursor: "pointer" }}>
+                {ctrl.icon}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Windows Taskbar ─────────────────────────────────────────── */}
+      <footer
+        className="w-full shrink-0 flex items-center justify-between px-2"
+        style={{ height: 48, background: "linear-gradient(to bottom, #1F5BB5, #163D8F)", borderTop: "1px solid #4A7FCC" }}
+      >
+        {/* Start button */}
+        <button
+          onClick={() => router.push("/")}
+          className="flex items-center gap-2 px-3 h-8 rounded cursor-pointer hover:brightness-110 transition-all"
+          style={{ background: "linear-gradient(to bottom, #5CB85C, #3D8B3D)", border: "1px solid #2D6A2D", minWidth: 80 }}
+        >
+          <Image src="/jime-penguin-logo.png" alt="" width={20} height={20} className="object-contain" />
+          <span className="text-white text-[11px] font-bold">Inicio</span>
+        </button>
+
+        {/* Separador */}
+        <div className="w-px h-8 bg-white/20 mx-2" />
+
+        {/* App buttons */}
+        <div className="flex items-center gap-1 flex-1">
+          {/* Skype — activo */}
+          <div
+            className="flex items-center gap-2 px-3 h-8 rounded"
+            style={{ background: "rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.25)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.4)" }}>
+            <div className="w-4 h-4 rounded-full bg-[#00AFF0] flex items-center justify-center">
+              <Video size={9} color="#FFFFFF" />
+            </div>
+            <span className="text-white text-[11px] font-semibold">Skype</span>
+          </div>
+
+          {/* Ask.fm */}
+          <Link href="/ask"
+            className="flex items-center gap-2 px-3 h-8 rounded transition-all hover:bg-white/10"
+            style={{ border: "1px solid transparent" }}>
+            <HelpCircle size={16} color="#FFFFFF" />
+            <span className="text-white text-[11px]">Ask.fm</span>
+          </Link>
+        </div>
+
+        {/* System tray */}
+        <div className="flex items-center gap-3 pl-3 pr-1 h-8 rounded"
+          style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.15)" }}>
+          <Users size={13} color="#AACCFF" />
+          <Clock size={13} color="#AACCFF" />
+          <WindowsClock />
+        </div>
+      </footer>
+    </div>
+  );
+}
