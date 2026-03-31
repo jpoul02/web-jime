@@ -1,6 +1,31 @@
 import InstaFeed from "@/components/InstaFeed";
 import type { InstaPost } from "@/types/feed";
 
+function normalizeMediaUrl(rawUrl: string | null | undefined, apiBase: string): string | null {
+  if (!rawUrl) return null;
+
+  const url = rawUrl.trim();
+  if (!url) return null;
+
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith("//")) return `https:${url}`;
+
+  const normalizedBase = apiBase.replace(/\/$/, "");
+  const normalizedPath = url.startsWith("/") ? url : `/${url}`;
+  return `${normalizedBase}${normalizedPath}`;
+}
+
+function normalizePostMedia(post: InstaPost, apiBase: string): InstaPost {
+  return {
+    ...post,
+    profile_photo_url: normalizeMediaUrl(post.profile_photo_url, apiBase),
+    photos: (post.photos ?? []).map((photo) => ({
+      ...photo,
+      photo_url: normalizeMediaUrl(photo.photo_url, apiBase) ?? "",
+    })),
+  };
+}
+
 async function getFeedPosts(): Promise<InstaPost[]> {
   const api =
     process.env.NEXT_PUBLIC_API_URL ??
@@ -19,7 +44,9 @@ async function getFeedPosts(): Promise<InstaPost[]> {
       )
     );
 
-    return details.filter((p) => p.photos && p.photos.length > 0);
+    return details
+      .map((post) => normalizePostMedia(post, api))
+      .filter((p) => p.photos && p.photos.some((photo) => photo.photo_url));
   } catch {
     return [];
   }

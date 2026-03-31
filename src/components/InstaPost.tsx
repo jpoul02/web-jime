@@ -24,6 +24,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
   const multi = post.photos.length > 1;
   const photo: InstaPhoto = post.photos[idx];
   const initial = post.name.trim().charAt(0).toUpperCase();
+  const activePhotoUrl = photo?.photo_url;
 
   return (
     <article style={{ background: "#FFFFFF" }}>
@@ -44,7 +45,14 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             {post.profile_photo_url ? (
-              <Image src={post.profile_photo_url} alt="" fill sizes="36px" style={{ objectFit: "cover" }} />
+              <Image
+                src={post.profile_photo_url}
+                alt=""
+                fill
+                sizes="36px"
+                quality={100}
+                style={{ objectFit: "cover" }}
+              />
             ) : (
               <span style={{ color: "#fff", fontSize: 14, fontWeight: 700, lineHeight: 1 }}>{initial}</span>
             )}
@@ -59,14 +67,21 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
 
       {/* ── Photo / Carousel ── */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#EFEFEF", overflow: "hidden" }}>
-        <Image
-          src={photo.photo_url}
-          alt={`Foto de ${post.name}`}
-          fill
-          sizes="(max-width:614px) 100vw, 614px"
-          style={{ objectFit: "cover" }}
-          priority={false}
-        />
+        {activePhotoUrl ? (
+          <Image
+            src={activePhotoUrl}
+            alt={`Foto de ${post.name}`}
+            fill
+            sizes="(max-width:614px) 100vw, 614px"
+            quality={100}
+            style={{ objectFit: "cover" }}
+            priority={false}
+          />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
+            Imagen no disponible
+          </div>
+        )}
 
         {multi && (
           <>
