@@ -7,7 +7,7 @@ import Snowfall from "./Snowfall";
 
 const navLinks = [
   { label: "Sobre Mi", href: "#" },
-  { label: "Amigos",   href: "#" },
+  { label: "Amigos",   href: "/amigos" },
   { label: "Historia", href: "#" },
   { label: "Juegos",   href: "#" },
   { label: "Skype",    href: "/skype" },
