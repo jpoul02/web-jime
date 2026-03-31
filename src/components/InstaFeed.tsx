@@ -8,7 +8,7 @@ import InstaLogo from "./InstaLogo";
 import InstaPostCard from "./InstaPost";
 
 const LIMIT = 10;
-
+// Nota: El feed inicial se carga desde el servidor en page.tsx para mejorar SEO y evitar un flash de contenido vacío.
 export default function InstaFeed({ initialPosts }: { initialPosts: InstaPost[] }) {
   const [posts, setPosts] = useState<InstaPost[]>(initialPosts);
   const [skip, setSkip] = useState(initialPosts.length);
