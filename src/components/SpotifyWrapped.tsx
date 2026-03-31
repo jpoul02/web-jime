@@ -494,7 +494,7 @@ function SlideArtistaDive() {
           animation:"fadeUp 0.5s 0.7s both",
         }}>
           <p style={{fontFamily:"'Montserrat',sans-serif",fontStyle:"italic",fontSize:"clamp(11px,1.8vw,13px)",color:"#777",lineHeight:1.6,margin:0}}>
-            "Su voz te llega directo al pecho."
+            &ldquo;Su voz te llega directo al pecho.&rdquo;
           </p>
         </div>
       </div>
@@ -911,7 +911,7 @@ function SlideEnEscena() {
           animation:"fadeUp 0.5s 0.72s both",
         }}>
           <p style={{fontFamily:"'Montserrat',sans-serif",fontStyle:"italic",fontSize:"clamp(12px,1.6vw,14px)",color:"#666",lineHeight:1.7,margin:0}}>
-            "La música no es solo lo que escuchás — es lo que vos creás con las personas que amás."
+            &ldquo;La música no es solo lo que escuchás — es lo que vos creás con las personas que amás.&rdquo;
           </p>
         </div>
       </div>

@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: "https", hostname: "api-web-jime-production.up.railway.app" },
     ],
   },
+
 };
 
 export default nextConfig;
