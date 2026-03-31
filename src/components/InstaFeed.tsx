@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Home, Send, PlusSquare, Compass, Heart } from "lucide-react";
-import { useEffect, useRef, useState, useCallback } from "react";
 import type { InstaPost } from "@/types/feed";
-import InstaPostCard from "./InstaPost";
+import { Compass, Heart, Home, PlusSquare, Send } from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
 import InstaLogo from "./InstaLogo";
+import InstaPostCard from "./InstaPost";
 
 const LIMIT = 10;
 
