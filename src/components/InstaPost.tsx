@@ -5,6 +5,86 @@ import Image from "next/image";
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import type { InstaPost, InstaPhoto } from "@/types/feed";
 
+const BIRTHDAY_CARDS = [
+  // 0 — Clásico Instagram (púrpura → rosa → naranja)
+  {
+    background: "linear-gradient(135deg, #833AB4 0%, #E1306C 45%, #FCAF45 100%)",
+    render: (name: string) => (
+      <div style={{ width: "100%", aspectRatio: "1/1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, padding: 32, userSelect: "none" }}>
+        <div style={{ fontSize: 52, lineHeight: 1, textAlign: "center" }}>🎉🎂🥳</div>
+        <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(24px,5vw,36px)", fontWeight: 700, color: "#fff", textAlign: "center", textShadow: "0 2px 16px rgba(0,0,0,0.3)", lineHeight: 1.2 }}>¡Felicidades Jime!</p>
+        <div style={{ fontSize: 38, lineHeight: 1, textAlign: "center" }}>🎊✨🎈</div>
+        <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 2, textTransform: "uppercase" }}>{name}</p>
+      </div>
+    ),
+  },
+  // 1 — Minimalista oscuro (azul marino → violeta)
+  {
+    background: "linear-gradient(160deg, #0F0C29 0%, #302B63 50%, #24243E 100%)",
+    render: (name: string) => (
+      <div style={{ width: "100%", aspectRatio: "1/1", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", padding: 32, gap: 8, userSelect: "none", position: "relative" }}>
+        <div style={{ position: "absolute", top: 28, right: 28, fontSize: 64, opacity: 0.18, lineHeight: 1 }}>🎂</div>
+        <div style={{ fontSize: 40, lineHeight: 1 }}>✨🌟✨</div>
+        <p style={{ margin: 0, fontFamily: "monospace", fontSize: "clamp(11px,2.5vw,14px)", color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase" }}>de parte de</p>
+        <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(26px,5.5vw,38px)", fontWeight: 700, color: "#fff", lineHeight: 1.1, textShadow: "0 0 40px rgba(180,120,255,0.6)" }}>{name}</p>
+        <p style={{ margin: "4px 0 0", fontFamily: "'Georgia',serif", fontSize: "clamp(18px,4vw,26px)", fontStyle: "italic", color: "rgba(255,255,255,0.7)" }}>para ti, Jime 🤍</p>
+      </div>
+    ),
+  },
+  // 2 — Cálido floral (coral → durazno → amarillo)
+  {
+    background: "linear-gradient(145deg, #F857A6 0%, #FF5858 35%, #FFBE3D 100%)",
+    render: (name: string) => (
+      <div style={{ width: "100%", aspectRatio: "1/1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: "36px 28px", userSelect: "none" }}>
+        <div style={{ fontSize: 36, letterSpacing: 6 }}>🌸🌺🌸</div>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
+          <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontStyle: "italic", fontSize: "clamp(15px,3.5vw,20px)", color: "rgba(255,255,255,0.9)", letterSpacing: 1 }}>con mucho cariño</p>
+          <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(28px,6vw,42px)", fontWeight: 900, color: "#fff", lineHeight: 1, textShadow: "0 3px 20px rgba(0,0,0,0.2)" }}>¡Feliz Cumple!</p>
+          <p style={{ margin: 0, fontSize: "clamp(18px,4vw,26px)", fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>🎀 Jime 🎀</p>
+        </div>
+        <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", letterSpacing: 3, textTransform: "uppercase" }}>{name}</p>
+      </div>
+    ),
+  },
+  // 3 — Neón festivo (verde → cian → azul eléctrico)
+  {
+    background: "linear-gradient(135deg, #11998E 0%, #38EF7D 50%, #00C6FF 100%)",
+    render: (name: string) => (
+      <div style={{ width: "100%", aspectRatio: "1/1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 0, userSelect: "none", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 200, opacity: 0.07, pointerEvents: "none", lineHeight: 1 }}>🎊</div>
+        <p style={{ margin: 0, fontFamily: "monospace", fontSize: "clamp(10px,2vw,12px)", color: "rgba(0,0,0,0.45)", letterSpacing: 5, textTransform: "uppercase", marginBottom: 12 }}>JIME</p>
+        <div style={{ fontSize: "clamp(48px,10vw,72px)", lineHeight: 1, marginBottom: 12 }}>🥳</div>
+        <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(22px,5vw,34px)", fontWeight: 800, color: "#fff", textShadow: "0 2px 20px rgba(0,0,0,0.25)", textAlign: "center", lineHeight: 1.2, padding: "0 20px" }}>¡Muchas Felicidades!</p>
+        <p style={{ margin: "14px 0 0", fontSize: 13, color: "rgba(0,0,0,0.4)", letterSpacing: 2 }}>— {name}</p>
+      </div>
+    ),
+  },
+  // 4 — Galaxia (índigo → fucsia → rosa)
+  {
+    background: "linear-gradient(150deg, #1A1A2E 0%, #6A0572 45%, #FF6B9D 100%)",
+    render: (name: string) => (
+      <div style={{ width: "100%", aspectRatio: "1/1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: 28, userSelect: "none" }}>
+        <div style={{ fontSize: 28, letterSpacing: 8, lineHeight: 1 }}>⭐🌙⭐</div>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: 6 }}>
+          <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontStyle: "italic", fontSize: "clamp(13px,3vw,17px)", color: "rgba(255,255,255,0.6)", letterSpacing: 1 }}>un abrazo virtual de</p>
+          <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(16px,3.5vw,22px)", fontWeight: 600, color: "rgba(255,200,255,0.9)" }}>{name}</p>
+        </div>
+        <p style={{ margin: 0, fontFamily: "'Georgia',serif", fontSize: "clamp(26px,5.5vw,40px)", fontWeight: 900, color: "#fff", textAlign: "center", lineHeight: 1.15, textShadow: "0 0 30px rgba(255,107,157,0.7)" }}>¡Felicidades,{"\n"}Jime! 🎂</p>
+        <div style={{ fontSize: 26, letterSpacing: 6 }}>✨💜✨</div>
+      </div>
+    ),
+  },
+] as const;
+
+function BirthdayCard({ postId, name }: { postId: number; name: string }) {
+  const card = BIRTHDAY_CARDS[postId % BIRTHDAY_CARDS.length];
+  return (
+    <div style={{ background: card.background, width: "100%", aspectRatio: "1/1" }}>
+      {card.render(name)}
+    </div>
+  );
+}
+
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const h = Math.floor(diff / 3_600_000);
@@ -98,35 +178,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
 
       {/* ── Carousel or Birthday card ── */}
       {post.photos.length === 0 ? (
-        /* No photos — show Meta-style birthday gradient card */
-        <div style={{
-          width: "100%", aspectRatio: "1 / 1",
-          background: "linear-gradient(135deg, #833AB4 0%, #E1306C 40%, #FCAF45 100%)",
-          display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center",
-          gap: 16, padding: 24,
-          userSelect: "none",
-        }}>
-          <div style={{ fontSize: 56, lineHeight: 1, textAlign: "center" }}>
-            🎉🎂🥳
-          </div>
-          <p style={{
-            margin: 0,
-            fontFamily: "'Georgia', serif",
-            fontSize: "clamp(22px, 5vw, 34px)",
-            fontWeight: 700,
-            color: "#FFFFFF",
-            textAlign: "center",
-            textShadow: "0 2px 12px rgba(0,0,0,0.25)",
-            letterSpacing: 0.5,
-            lineHeight: 1.2,
-          }}>
-            ¡Felicidades Jime!
-          </p>
-          <div style={{ fontSize: 36, lineHeight: 1, textAlign: "center" }}>
-            🎊✨🎈
-          </div>
-        </div>
+        <BirthdayCard postId={post.id} name={post.name} />
       ) : (
         <div
           style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", overflow: "hidden", background: "#EFEFEF", touchAction: "pan-y" }}
