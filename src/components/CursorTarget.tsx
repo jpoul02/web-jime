@@ -26,8 +26,11 @@ export default function CursorTarget() {
   const scale  = useRef(1);
 
   useEffect(() => {
-    // Hide on touch-only devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    // Hide on touch devices or small screens
+    if (
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 768px)").matches
+    ) return;
 
     // ── Hide native cursor globally ──────────────────────────────
     document.documentElement.style.cursor = "none";
@@ -95,6 +98,7 @@ export default function CursorTarget() {
       <div
         ref={outerRef}
         aria-hidden="true"
+        className="custom-cursor-outer"
         style={{
           position: "fixed",
           top: 0,
@@ -115,6 +119,7 @@ export default function CursorTarget() {
       <div
         ref={innerRef}
         aria-hidden="true"
+        className="custom-cursor-inner"
         style={{
           position: "fixed",
           top: 0,
@@ -129,6 +134,13 @@ export default function CursorTarget() {
           mixBlendMode: "difference",
         }}
       />
+
+      <style>{`
+        @media (max-width: 768px) {
+          .custom-cursor-outer,
+          .custom-cursor-inner { display: none !important; }
+        }
+      `}</style>
     </>
   );
 }
