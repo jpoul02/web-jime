@@ -96,89 +96,121 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
         <MoreHorizontal size={20} color="#262626" />
       </div>
 
-      {/* ── Carousel ── */}
-      <div
-        style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", overflow: "hidden", background: "#EFEFEF", touchAction: "pan-y" }}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        {/* Sliding strip — all photos rendered side by side */}
+      {/* ── Carousel or Birthday card ── */}
+      {post.photos.length === 0 ? (
+        /* No photos — show Meta-style birthday gradient card */
         <div style={{
-          display: "flex",
-          width: `${post.photos.length * 100}%`,
-          height: "100%",
-          transform: `translateX(${(-idx * 100) / post.photos.length}%)`,
-          transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)",
-          willChange: "transform",
+          width: "100%", aspectRatio: "1 / 1",
+          background: "linear-gradient(135deg, #833AB4 0%, #E1306C 40%, #FCAF45 100%)",
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: 16, padding: 24,
+          userSelect: "none",
         }}>
-          {post.photos.map((photo: InstaPhoto, i: number) => (
-            <div key={photo.id} style={{
-              position: "relative",
-              width: `${100 / post.photos.length}%`,
-              flexShrink: 0,
-              height: "100%",
-            }}>
-              {photo.photo_url ? (
-                <Image
-                  src={photo.photo_url}
-                  alt={`Foto ${i + 1} de ${post.name}`}
-                  fill
-                  sizes="(max-width:614px) 100vw, 614px"
-                  quality={100}
-                  style={{ objectFit: "cover" }}
-                  priority={i === 0}
-                />
-              ) : (
-                <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
-                  Imagen no disponible
-                </div>
-              )}
-            </div>
-          ))}
+          <div style={{ fontSize: 56, lineHeight: 1, textAlign: "center" }}>
+            🎉🎂🥳
+          </div>
+          <p style={{
+            margin: 0,
+            fontFamily: "'Georgia', serif",
+            fontSize: "clamp(22px, 5vw, 34px)",
+            fontWeight: 700,
+            color: "#FFFFFF",
+            textAlign: "center",
+            textShadow: "0 2px 12px rgba(0,0,0,0.25)",
+            letterSpacing: 0.5,
+            lineHeight: 1.2,
+          }}>
+            ¡Felicidades Jime!
+          </p>
+          <div style={{ fontSize: 36, lineHeight: 1, textAlign: "center" }}>
+            🎊✨🎈
+          </div>
         </div>
-
-        {/* Prev / Next buttons */}
-        {multi && (
-          <>
-            {idx > 0 && (
-              <button onClick={prev} aria-label="anterior" style={{
-                position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)",
-                background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%",
-                width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+      ) : (
+        <div
+          style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", overflow: "hidden", background: "#EFEFEF", touchAction: "pan-y" }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          {/* Sliding strip — all photos rendered side by side */}
+          <div style={{
+            display: "flex",
+            width: `${post.photos.length * 100}%`,
+            height: "100%",
+            transform: `translateX(${(-idx * 100) / post.photos.length}%)`,
+            transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)",
+            willChange: "transform",
+          }}>
+            {post.photos.map((photo: InstaPhoto, i: number) => (
+              <div key={photo.id} style={{
+                position: "relative",
+                width: `${100 / post.photos.length}%`,
+                flexShrink: 0,
+                height: "100%",
               }}>
-                <ChevronLeft size={18} color="#262626" />
-              </button>
-            )}
-            {idx < post.photos.length - 1 && (
-              <button onClick={next} aria-label="siguiente" style={{
-                position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
-                background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%",
-                width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
-              }}>
-                <ChevronRight size={18} color="#262626" />
-              </button>
-            )}
+                {photo.photo_url ? (
+                  <Image
+                    src={photo.photo_url}
+                    alt={`Foto ${i + 1} de ${post.name}`}
+                    fill
+                    sizes="(max-width:614px) 100vw, 614px"
+                    quality={100}
+                    style={{ objectFit: "cover" }}
+                    priority={i === 0}
+                  />
+                ) : (
+                  <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
+                    Imagen no disponible
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
 
-            {/* Dots */}
-            <div style={{
-              position: "absolute", bottom: 10, left: "50%", transform: "translateX(-50%)",
-              display: "flex", gap: 4,
-            }}>
-              {post.photos.map((_, i) => (
-                <button key={i} onClick={() => setIdx(i)} aria-label={`foto ${i + 1}`} style={{
-                  width: i === idx ? 8 : 6, height: i === idx ? 8 : 6,
-                  borderRadius: "50%", border: "none", padding: 0, cursor: "pointer",
-                  background: i === idx ? "#0095F6" : "rgba(255,255,255,0.65)",
-                  transition: "all 0.15s",
-                }} />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+          {/* Prev / Next buttons */}
+          {multi && (
+            <>
+              {idx > 0 && (
+                <button onClick={prev} aria-label="anterior" style={{
+                  position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)",
+                  background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%",
+                  width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+                }}>
+                  <ChevronLeft size={18} color="#262626" />
+                </button>
+              )}
+              {idx < post.photos.length - 1 && (
+                <button onClick={next} aria-label="siguiente" style={{
+                  position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+                  background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%",
+                  width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+                }}>
+                  <ChevronRight size={18} color="#262626" />
+                </button>
+              )}
+
+              {/* Dots */}
+              <div style={{
+                position: "absolute", bottom: 10, left: "50%", transform: "translateX(-50%)",
+                display: "flex", gap: 4,
+              }}>
+                {post.photos.map((_, i) => (
+                  <button key={i} onClick={() => setIdx(i)} aria-label={`foto ${i + 1}`} style={{
+                    width: i === idx ? 8 : 6, height: i === idx ? 8 : 6,
+                    borderRadius: "50%", border: "none", padding: 0, cursor: "pointer",
+                    background: i === idx ? "#0095F6" : "rgba(255,255,255,0.65)",
+                    transition: "all 0.15s",
+                  }} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── Action buttons ── */}
       <div style={{
