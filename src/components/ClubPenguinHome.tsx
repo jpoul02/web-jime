@@ -12,7 +12,7 @@ const navLinks = [
   { label: "Juegos",   href: "#" },
   { label: "Skype",    href: "/skype" },
   { label: "Ask.fm",   href: "/ask" },
-  { label: "Música 🎵", href: "/wrapped" },
+  { label: "Música 🎵", href: "/musica" },
 ];
 
 export default function ClubPenguinHome() {

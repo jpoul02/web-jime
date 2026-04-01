@@ -162,8 +162,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                 src={post.profile_photo_url}
                 alt=""
                 fill
-                sizes="36px"
-                quality={100}
+                unoptimized
                 style={{ objectFit: "cover" }}
               />
             ) : (
@@ -207,8 +206,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                     src={photo.photo_url}
                     alt={`Foto ${i + 1} de ${post.name}`}
                     fill
-                    sizes="(max-width:614px) 100vw, 614px"
-                    quality={100}
+                    unoptimized
                     style={{ objectFit: "cover" }}
                     priority={i === 0}
                   />
