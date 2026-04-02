@@ -1355,57 +1355,24 @@ function SlideFin() {
 /* ─────────────────────────────────────────────────────────────
    MINI AUDIO PLAYER
 ───────────────────────────────────────────────────────────── */
-function WrappedPlayer({ title, audio_url, onClose }: { title: string; audio_url: string; onClose: () => void }) {
+function WrappedPlayer({ audio_url }: { audio_url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [pct, setPct] = useState(0);
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
     a.src = audio_url;
-    a.play().then(() => setPlaying(true)).catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    a.load();
   }, [audio_url]);
 
-  function toggle() {
+  function handleMetadata() {
     const a = audioRef.current;
-    if (!a) return;
-    if (playing) { a.pause(); setPlaying(false); }
-    else { a.play(); setPlaying(true); }
+    if (!a || !a.duration) return;
+    a.currentTime = Math.random() * a.duration;
+    a.play().catch(() => {});
   }
 
-  return (
-    <div style={{
-      position:"absolute", bottom:0, left:0, right:0, zIndex:500,
-      height:56, background:"rgba(10,10,20,0.92)", backdropFilter:"blur(12px)",
-      borderTop:"1px solid rgba(124,111,205,0.3)",
-      display:"flex", alignItems:"center", gap:12, padding:"0 16px",
-    }}>
-      <audio
-        ref={audioRef}
-        onTimeUpdate={() => { const a = audioRef.current; if (a && a.duration) setPct(a.currentTime / a.duration * 100); }}
-        onEnded={() => setPlaying(false)}
-      />
-      <button onClick={toggle} style={{
-        width:32, height:32, borderRadius:"50%", background:"#7C6FCD",
-        border:"none", cursor:"pointer", flexShrink:0,
-        display:"flex", alignItems:"center", justifyContent:"center",
-      }}>
-        {playing
-          ? <svg width={12} height={12} viewBox="0 0 12 12" fill="#fff"><rect x="2" y="1" width="3" height="10"/><rect x="7" y="1" width="3" height="10"/></svg>
-          : <svg width={12} height={12} viewBox="0 0 12 12" fill="#fff"><polygon points="2,1 11,6 2,11"/></svg>
-        }
-      </button>
-      <div style={{flex:1, minWidth:0}}>
-        <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:12,fontWeight:700,color:"#fff",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{title}</div>
-        <div style={{height:3, background:"rgba(255,255,255,0.1)", borderRadius:2, marginTop:4}}>
-          <div style={{width:`${pct}%`, height:"100%", background:"#7C6FCD", borderRadius:2, transition:"width 0.1s"}}/>
-        </div>
-      </div>
-      <button onClick={onClose} style={{background:"none",border:"none",color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:16,flexShrink:0,lineHeight:1}}>✕</button>
-    </div>
-  );
+  return <audio ref={audioRef} onLoadedMetadata={handleMetadata} />;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1672,9 +1639,8 @@ export default function SpotifyWrapped() {
 
       {/* ── Dot nav (bottom) ─────────────────────────────────────── */}
       <div style={{
-        position:"absolute", bottom: nowPlaying ? 72 : 16, left:"50%", transform:"translateX(-50%)",
+        position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)",
         zIndex:200, display:"flex", gap:5, alignItems:"center",
-        transition:"bottom 0.3s",
       }}>
         {Array.from({ length: TOTAL_SLIDES }).map((_, i) => (
           <div key={i}
@@ -1691,14 +1657,8 @@ export default function SpotifyWrapped() {
         ))}
       </div>
 
-      {/* ── Mini audio player ────────────────────────────────────── */}
-      {nowPlaying && (
-        <WrappedPlayer
-          title={nowPlaying.title}
-          audio_url={nowPlaying.audio_url}
-          onClose={() => setNowPlaying(null)}
-        />
-      )}
+      {/* ── Invisible audio player ───────────────────────────────── */}
+      {nowPlaying && <WrappedPlayer audio_url={nowPlaying.audio_url} />}
     </div>
   );
 }
