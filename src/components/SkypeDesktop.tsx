@@ -70,7 +70,9 @@ export default function SkypeDesktop() {
   const [contacts, setContacts] = useState<VideoPostal[]>([]);
   const [selected, setSelected] = useState<VideoPostal | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPortrait, setIsPortrait] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     fetch(`${API}/postales/videos`)
@@ -84,11 +86,19 @@ export default function SkypeDesktop() {
   }, []);
 
   useEffect(() => {
-    if (videoRef.current && selected) {
-      videoRef.current.load();
-      videoRef.current.play().catch(() => {});
-    }
+    setIsPortrait(false); // reset while loading new video
+    [videoRef, bgVideoRef].forEach(ref => {
+      if (ref.current) {
+        ref.current.load();
+        ref.current.play().catch(() => {});
+      }
+    });
   }, [selected?.id]);
+
+  function handleMetadata() {
+    const v = videoRef.current;
+    if (v) setIsPortrait(v.videoHeight > v.videoWidth);
+  }
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden bg-white font-[family-name:var(--font-geist-sans)]">
@@ -190,10 +200,43 @@ export default function SkypeDesktop() {
           {/* Video background */}
           <div className="relative flex-1 overflow-hidden">
             {selected ? (
-              <video key={selected.id} ref={videoRef} autoPlay loop playsInline
-                className="absolute inset-0 w-full h-full object-cover">
-                <source src={selected.video_url} type="video/mp4" />
-              </video>
+              <>
+                {/* Blurred background — always rendered, visible only for portrait */}
+                <video
+                  key={`bg-${selected.id}`}
+                  ref={bgVideoRef}
+                  autoPlay loop playsInline muted
+                  aria-hidden
+                  style={{
+                    position: "absolute", inset: 0,
+                    width: "100%", height: "100%",
+                    objectFit: "cover",
+                    filter: "blur(24px) brightness(0.45) saturate(1.4)",
+                    transform: "scale(1.08)",
+                    opacity: isPortrait ? 1 : 0,
+                    transition: "opacity 0.3s",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <source src={selected.video_url} type="video/mp4" />
+                </video>
+
+                {/* Main video */}
+                <video
+                  key={selected.id}
+                  ref={videoRef}
+                  autoPlay loop playsInline
+                  onLoadedMetadata={handleMetadata}
+                  style={{
+                    position: "absolute", inset: 0,
+                    width: "100%", height: "100%",
+                    objectFit: isPortrait ? "contain" : "cover",
+                    transition: "object-fit 0s",
+                  }}
+                >
+                  <source src={selected.video_url} type="video/mp4" />
+                </video>
+              </>
             ) : (
               <div className="absolute inset-0 bg-[#1A1A1A] flex items-center justify-center">
                 <p className="text-white/30 text-sm">
