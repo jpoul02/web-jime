@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video } from "lucide-react";
