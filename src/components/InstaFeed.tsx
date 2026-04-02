@@ -1,7 +1,7 @@
 "use client";
 
 import type { InstaPost } from "@/types/feed";
-import { Compass, Heart, Home, PlusSquare, Send } from "lucide-react";
+import { Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, Video } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstaLogo from "./InstaLogo";
@@ -69,6 +69,15 @@ export default function InstaFeed({ initialPosts }: { initialPosts: InstaPost[] 
           <PlusSquare size={24} color="#262626" style={{ opacity: 0.35, cursor: "default" }} />
           <Compass size={24} color="#262626" style={{ opacity: 0.35, cursor: "default" }} />
           <Heart size={24} color="#262626" style={{ opacity: 0.35, cursor: "default" }} />
+          <Link href="/skype" aria-label="Skype" style={{ display: "flex", color: "inherit" }}>
+            <Video size={24} color="#262626" />
+          </Link>
+          <Link href="/ask" aria-label="Ask.fm" style={{ display: "flex", color: "inherit" }}>
+            <HelpCircle size={24} color="#262626" />
+          </Link>
+          <Link href="/musica" aria-label="Música" style={{ display: "flex", color: "inherit" }}>
+            <Music size={24} color="#262626" />
+          </Link>
           <div style={{
             width: 24, height: 24, borderRadius: "50%",
             background: "linear-gradient(45deg,#FCAF45,#E1306C,#833AB4)",

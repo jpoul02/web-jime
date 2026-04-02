@@ -7,36 +7,18 @@ import { useState, useRef, useEffect } from "react";
 import {
   Search, Home, Grid3x3, Plus, Monitor,
   ChevronDown, Mic, Video, MessageSquare, PhoneOff,
-  Maximize2, Ellipsis, Headphones, Users,
-  HelpCircle, Clock,
+  Maximize2, Ellipsis, Users, HelpCircle, Clock,
+  Music, Instagram, User,
 } from "lucide-react";
 
-type Contact = {
-  id: string;
-  name: string;
-  video: string;
-  img?: string;
-  label?: string;
-  labelColor?: string;
-  bg?: string;
-  iconBg?: string;
-  useHeadphones?: boolean;
-};
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
 
-const contacts: Contact[] = [
-  { id: "c1",  name: "Summarize ✅",           video: "/videos/c1.mp4",  img: "/skype-c1.png" },
-  { id: "c2",  name: "RPS Apocalypse ✅",       video: "/videos/c2.mp4",  img: "/skype-c2.png" },
-  { id: "c3",  name: "Hipmunk ✅",              video: "/videos/c3.mp4",  img: "/skype-c3.png" },
-  { id: "c4",  name: "IFTTT ✅",               video: "/videos/c4.mp4",  label: "IF",  bg: "#33AAFF" },
-  { id: "c5",  name: "Summarize ✅",           video: "/videos/c5.mp4",  bg: "#C8D8E8" },
-  { id: "c6",  name: "RPS Apocalypse ✅",       video: "/videos/c6.mp4",  bg: "#E8C8C8" },
-  { id: "c7",  name: "Hipmunk ✅",              video: "/videos/c7.mp4",  bg: "#E8D8C0" },
-  { id: "c8",  name: "IFTTT ✅",               video: "/videos/c8.mp4",  label: "IF",  bg: "#33AAFF" },
-  { id: "c9",  name: "Getty Images - Preview", video: "/videos/c9.mp4",  label: "g",   bg: "#E8E8E8", labelColor: "#AA0000" },
-  { id: "c10", name: "Bing Music - Preview ✅", video: "/videos/c10.mp4", iconBg: "#FFB800", useHeadphones: true },
-  { id: "c11", name: "MemeCat ✅",              video: "/videos/c11.mp4", label: "LOL", bg: "#00AFF0" },
-  { id: "c12", name: "Blackjack ✅",            video: "/videos/c12.mp4", bg: "#2D5E1E" },
-];
+interface VideoPostal {
+  id: number;
+  name: string;
+  profile_photo_url: string | null;
+  video_url: string;
+}
 
 const callControls = [
   { icon: <Mic size={22} color="#FFFFFF" />,          bg: "#444444" },
@@ -47,27 +29,23 @@ const callControls = [
   { icon: <PhoneOff size={22} color="#FFFFFF" />,      bg: "#E81123", wide: true },
 ];
 
-function ContactAvatar({ c, small = false }: { c: Contact; small?: boolean }) {
-  const size = small ? 32 : 36;
-  const radius = size / 2;
-  if (c.img) return (
-    <Image src={c.img} alt="" width={size} height={size}
-      style={{ borderRadius: radius, objectFit: "cover", width: size, height: size, flexShrink: 0 }} />
-  );
-  if (c.useHeadphones) return (
-    <div className="flex items-center justify-center shrink-0"
-      style={{ width: size, height: size, borderRadius: radius, background: c.iconBg }}>
-      <Headphones size={small ? 14 : 18} color="#FFFFFF" />
-    </div>
-  );
+function Avatar({ postal, size = 36 }: { postal: VideoPostal; size?: number }) {
+  if (postal.profile_photo_url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={postal.profile_photo_url}
+        alt={postal.name}
+        style={{ width: size, height: size, borderRadius: size / 2, objectFit: "cover", flexShrink: 0 }}
+      />
+    );
+  }
+  const initials = postal.name.slice(0, 2).toUpperCase();
+  const colors = ["#4A76A8", "#00AFF0", "#2D5E1E", "#E81123", "#FFB800", "#833AB4"];
+  const bg = colors[postal.id % colors.length];
   return (
-    <div className="flex items-center justify-center shrink-0"
-      style={{ width: size, height: size, borderRadius: radius, background: c.bg || "#EEE" }}>
-      {c.label && (
-        <span style={{ color: c.labelColor || "#FFFFFF", fontSize: c.label.length > 2 ? (small ? 6 : 8) : (small ? 9 : 12), fontWeight: 900 }}>
-          {c.label}
-        </span>
-      )}
+    <div style={{ width: size, height: size, borderRadius: size / 2, background: bg, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <span style={{ color: "#fff", fontSize: size * 0.35, fontWeight: 700 }}>{initials}</span>
     </div>
   );
 }
@@ -81,17 +59,36 @@ function WindowsClock() {
   return <span className="text-white text-xs font-semibold tabular-nums">{time}</span>;
 }
 
+const TASKBAR_LINKS = [
+  { label: "Amigos",  href: "/amigos",  icon: <Instagram size={14} color="#FFFFFF" /> },
+  { label: "Ask.fm",  href: "/ask",     icon: <HelpCircle size={14} color="#FFFFFF" /> },
+  { label: "Música",  href: "/musica",  icon: <Music size={14} color="#FFFFFF" /> },
+];
+
 export default function SkypeDesktop() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Contact>(contacts[10]);
+  const [contacts, setContacts] = useState<VideoPostal[]>([]);
+  const [selected, setSelected] = useState<VideoPostal | null>(null);
+  const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
+    fetch(`${API}/postales/videos`)
+      .then(r => r.ok ? r.json() : [])
+      .then((data: VideoPostal[]) => {
+        setContacts(data);
+        if (data.length > 0) setSelected(data[0]);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current && selected) {
       videoRef.current.load();
       videoRef.current.play().catch(() => {});
     }
-  }, [selected.id]);
+  }, [selected?.id]);
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden bg-white font-[family-name:var(--font-geist-sans)]">
@@ -115,7 +112,7 @@ export default function SkypeDesktop() {
           {/* Search */}
           <div className="flex items-center gap-2 h-9 bg-[#F5F5F5] px-4">
             <Search size={14} color="#AAAAAA" />
-            <span className="text-[#AAAAAA] text-xs">Search</span>
+            <span className="text-[#AAAAAA] text-xs">Buscar...</span>
           </div>
 
           {/* Nav Icons */}
@@ -127,23 +124,31 @@ export default function SkypeDesktop() {
 
           {/* Tabs */}
           <div className="flex items-center gap-4 h-8 px-4">
-            <span className="text-[#666666] text-[11px] font-semibold">CONTACTS</span>
-            <span className="text-[#00AFF0] text-[11px] font-bold">RECENT</span>
+            <span className="text-[#00AFF0] text-[11px] font-bold">VIDEOS</span>
             <div className="flex items-center gap-1">
-              <span className="text-[#888888] text-[11px]">All</span>
+              <span className="text-[#888888] text-[11px]">Todos</span>
               <ChevronDown size={10} color="#888888" />
             </div>
           </div>
 
           {/* Contact List */}
           <div className="flex-1 overflow-y-auto">
+            {loading && (
+              <div className="flex items-center justify-center h-20 text-[#AAAAAA] text-xs">Cargando...</div>
+            )}
+            {!loading && contacts.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-32 gap-2 text-center px-6">
+                <User size={32} color="#CCCCCC" />
+                <p className="text-[#AAAAAA] text-xs">Todavía nadie subió un video</p>
+              </div>
+            )}
             {contacts.map((c) => {
-              const isSelected = selected.id === c.id;
+              const isSelected = selected?.id === c.id;
               return (
                 <button key={c.id} onClick={() => setSelected(c)}
                   className="w-full flex items-center gap-3 text-left transition-colors border-none cursor-pointer"
                   style={{ height: 56, padding: "8px 16px", background: isSelected ? "#D4EAFC" : "transparent" }}>
-                  <ContactAvatar c={c} />
+                  <Avatar postal={c} size={36} />
                   <span style={{ color: "#333333", fontSize: 13, fontWeight: isSelected ? 600 : 500 }}>
                     {c.name}
                   </span>
@@ -156,11 +161,14 @@ export default function SkypeDesktop() {
         {/* ── Video Area ──────────────────────────────────────────── */}
         <div className="relative flex-1 overflow-hidden bg-[#1A1A1A] flex flex-col">
 
-          {/* Mobile contacts strip — horizontal scrollable, shown only on mobile */}
+          {/* Mobile contacts strip */}
           <div className="md:hidden w-full overflow-x-auto flex-shrink-0 bg-black/60 flex items-center gap-3 px-3 py-2"
             style={{ scrollbarWidth: "none" }}>
+            {contacts.length === 0 && !loading && (
+              <span className="text-white/50 text-xs px-2">Sin videos todavía</span>
+            )}
             {contacts.map((c) => {
-              const isSelected = selected.id === c.id;
+              const isSelected = selected?.id === c.id;
               return (
                 <button
                   key={c.id}
@@ -169,45 +177,53 @@ export default function SkypeDesktop() {
                   style={{ opacity: isSelected ? 1 : 0.6 }}
                 >
                   <div style={{ borderRadius: "50%", border: isSelected ? "2px solid #00AFF0" : "2px solid transparent" }}>
-                    <ContactAvatar c={c} small />
+                    <Avatar postal={c} size={32} />
                   </div>
                   <span style={{ color: "#fff", fontSize: 9, whiteSpace: "nowrap", maxWidth: 48, overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {c.name.replace(" ✅", "")}
+                    {c.name}
                   </span>
                 </button>
               );
             })}
           </div>
 
-          {/* Video background — fills remaining space */}
+          {/* Video background */}
           <div className="relative flex-1 overflow-hidden">
-            <video key={selected.id} ref={videoRef} autoPlay loop playsInline
-              className="absolute inset-0 w-full h-full object-cover">
-              <source src={selected.video} type="video/mp4" />
-            </video>
+            {selected ? (
+              <video key={selected.id} ref={videoRef} autoPlay loop playsInline
+                className="absolute inset-0 w-full h-full object-cover">
+                <source src={selected.video_url} type="video/mp4" />
+              </video>
+            ) : (
+              <div className="absolute inset-0 bg-[#1A1A1A] flex items-center justify-center">
+                <p className="text-white/30 text-sm">
+                  {loading ? "Cargando videos..." : "Nadie ha subido video todavía 🐧"}
+                </p>
+              </div>
+            )}
 
             {/* Top bar */}
-            <div className="absolute top-0 left-0 right-0 flex items-center justify-between"
-              style={{ height: 60, padding: "0 24px", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
-              <div className="flex items-center gap-3">
-                <div style={{ width: 36, height: 36, borderRadius: 18, flexShrink: 0, overflow: "hidden" }}>
-                  <ContactAvatar c={selected} />
+            {selected && (
+              <div className="absolute top-0 left-0 right-0 flex items-center justify-between"
+                style={{ height: 60, padding: "0 24px", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
+                <div className="flex items-center gap-3">
+                  <Avatar postal={selected} size={36} />
+                  <span className="text-white text-base font-semibold">{selected.name}</span>
+                  <span className="text-[#AAAAAA] text-sm hidden md:inline">video</span>
                 </div>
-                <span className="text-white text-base font-semibold">{selected.name.replace(" ✅", "")}</span>
-                <span className="text-[#AAAAAA] text-sm hidden md:inline">video</span>
+                <div className="flex items-center gap-3">
+                  <Maximize2 size={18} color="#FFFFFF" className="cursor-pointer hidden md:block" />
+                  <Ellipsis size={18} color="#FFFFFF" className="cursor-pointer" />
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Maximize2 size={18} color="#FFFFFF" className="cursor-pointer hidden md:block" />
-                <Ellipsis size={18} color="#FFFFFF" className="cursor-pointer" />
-              </div>
-            </div>
+            )}
 
             {/* Call Controls */}
             <div className="absolute flex items-center justify-center"
               style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
               {callControls.map((ctrl, i) => (
                 <button key={i} className="flex items-center justify-center"
-                  style={{ width: ctrl.wide ? 56 : 48, height: 48, borderRadius: 24, background: ctrl.bg, border: "none", cursor: "pointer" }}>
+                  style={{ width: (ctrl as { wide?: boolean }).wide ? 56 : 48, height: 48, borderRadius: 24, background: ctrl.bg, border: "none", cursor: "pointer" }}>
                   {ctrl.icon}
                 </button>
               ))}
@@ -231,31 +247,30 @@ export default function SkypeDesktop() {
           <span className="text-white text-[11px] font-bold">Inicio</span>
         </button>
 
-        {/* Separador */}
         <div className="w-px h-8 bg-white/20 mx-2" />
 
-        {/* App buttons — hidden on mobile */}
+        {/* App buttons */}
         <div className="hidden md:flex items-center gap-1 flex-1">
           {/* Skype — activo */}
-          <div
-            className="flex items-center gap-2 px-3 h-8 rounded"
+          <div className="flex items-center gap-2 px-3 h-8 rounded"
             style={{ background: "rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.25)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.4)" }}>
             <div className="w-4 h-4 rounded-full bg-[#00AFF0] flex items-center justify-center">
               <Video size={9} color="#FFFFFF" />
             </div>
             <span className="text-white text-[11px] font-semibold">Skype</span>
           </div>
-
-          {/* Ask.fm */}
-          <Link href="/ask"
-            className="flex items-center gap-2 px-3 h-8 rounded transition-all hover:bg-white/10"
-            style={{ border: "1px solid transparent" }}>
-            <HelpCircle size={16} color="#FFFFFF" />
-            <span className="text-white text-[11px]">Ask.fm</span>
-          </Link>
+          {/* Other pages */}
+          {TASKBAR_LINKS.map(l => (
+            <Link key={l.href} href={l.href}
+              className="flex items-center gap-2 px-3 h-8 rounded transition-all hover:bg-white/10"
+              style={{ border: "1px solid transparent" }}>
+              {l.icon}
+              <span className="text-white text-[11px]">{l.label}</span>
+            </Link>
+          ))}
         </div>
 
-        {/* System tray — on mobile: just clock */}
+        {/* System tray */}
         <div className="flex items-center gap-3 pl-3 pr-1 h-8 rounded ml-auto"
           style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.15)" }}>
           <Users size={13} color="#AACCFF" className="hidden md:block" />

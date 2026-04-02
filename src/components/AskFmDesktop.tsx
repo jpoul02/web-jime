@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video } from "lucide-react";
+import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video, Music } from "lucide-react";
 
 interface AnswerCard {
   id: number;
@@ -82,6 +82,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
           <Link href="#"       title="Historia" className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><BookOpen size={20} color="#FFFFFF" /></Link>
           <Link href="#"       title="Juegos"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Gamepad2 size={20} color="#FFFFFF" /></Link>
           <Link href="/skype"  title="Skype"    className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Video    size={20} color="#FFFFFF" /></Link>
+          <Link href="/musica" title="Música"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Music    size={20} color="#FFFFFF" /></Link>
           <div className="w-px h-5 bg-white/30 mx-1 hidden md:block" />
           <button className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"><Bell size={20} color="#FFFFFF" /></button>
           <button className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"><Mail size={20} color="#FFFFFF" /></button>

@@ -414,18 +414,26 @@ export default function SpotifyArtistPage() {
           <div style={{ padding: "8px 12px" }}>
             <SpotifyLogo size={32} />
           </div>
-          <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <Link href="/" style={{
-              display: "flex", alignItems: "center", gap: 16,
-              padding: "10px 12px", borderRadius: 4,
-              color: "#fff", textDecoration: "none", fontSize: 15, fontWeight: 700,
-            }}>
-              <svg width={24} height={24} viewBox="0 0 24 24" fill="#fff">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="#fff" strokeWidth="2"/>
-              </svg>
-              Inicio
-            </Link>
+          <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {[
+              { href: "/",       label: "Inicio",   icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="#fff"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="#fff" strokeWidth="2"/></svg> },
+              { href: "/amigos", label: "Amigos",   icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> },
+              { href: "/skype",  label: "Skype",    icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> },
+              { href: "/ask",    label: "Ask.fm",   icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+            ].map(({ href, label, icon }) => (
+              <Link key={href} href={href} style={{
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "10px 12px", borderRadius: 4,
+                color: "#fff", textDecoration: "none", fontSize: 14, fontWeight: 600,
+                opacity: 0.85,
+              }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = "1"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = "0.85"}
+              >
+                {icon}
+                {label}
+              </Link>
+            ))}
           </nav>
           <div style={{ background: "#121212", borderRadius: 8, padding: "16px 12px", flexGrow: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, color: MUT, fontWeight: 700, fontSize: 15, marginBottom: 16 }}>
