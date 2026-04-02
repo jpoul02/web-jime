@@ -16,7 +16,6 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.
 
 interface WrappedSong  { id: number; title: string; cover_url: string | null; audio_url: string | null; }
 interface WrappedAlbum { id: number; title: string; cover_url: string | null; year: number | null; }
-type OnPlay = (title: string, audio_url: string) => void;
 
 const ALBUM_COLORS = ["#C9853A","#B5547A","#7BA67E","#3A5FA6","#8B6914"];
 const ALBUM_EMOJIS = ["💿","🎵","🎶","🎸","🎤"];
@@ -540,10 +539,10 @@ function SlideArtistaDive() {
 /* ─────────────────────────────────────────────────────────────
    SLIDE 6 — TOP SONGS  (dark moody · indigo accent)
 ───────────────────────────────────────────────────────────── */
-function SlideCanciones({ apiSongs, onPlay }: { apiSongs?: WrappedSong[]; onPlay?: OnPlay }) {
+function SlideCanciones({ apiSongs }: { apiSongs?: WrappedSong[] }) {
   const songs = apiSongs && apiSongs.length > 0
-    ? apiSongs.slice(0, 5).map((s, i) => ({ title: s.title, artist: "Jimena Sings", plays: FAKE_PLAYS[i] ?? 150 - i * 15, audio_url: s.audio_url }))
-    : topSongs.map(s => ({ ...s, audio_url: null as string | null }));
+    ? apiSongs.slice(0, 5).map((s, i) => ({ title: s.title, artist: "Jimena Sings", plays: FAKE_PLAYS[i] ?? 150 - i * 15 }))
+    : topSongs;
   return (
     <div className="ws" style={{background:"#0E0B2A"}}>
       {/* Vinyl record bg */}
@@ -567,16 +566,13 @@ function SlideCanciones({ apiSongs, onPlay }: { apiSongs?: WrappedSong[]; onPlay
       <div className="sc" style={{width:"100%",maxWidth:500,padding:"0 28px",position:"relative",zIndex:3}}>
         <p className="sc-label" style={{color:"#7C6FCD"}}>Tus canciones favoritas</p>
         {songs.map((s,i)=>(
-          <div key={i}
-            onClick={() => s.audio_url && onPlay?.(s.title, s.audio_url)}
-            style={{
-              display:"flex",alignItems:"center",
-              padding:"12px 0",
-              borderBottom:i<4?"1px solid rgba(255,255,255,0.07)":"none",
-              gap:14,
-              animation:`slideInLeft 0.5s ${0.2+i*0.1}s both`,
-              cursor: s.audio_url ? "pointer" : "default",
-            }}>
+          <div key={i} style={{
+            display:"flex",alignItems:"center",
+            padding:"12px 0",
+            borderBottom:i<4?"1px solid rgba(255,255,255,0.07)":"none",
+            gap:14,
+            animation:`slideInLeft 0.5s ${0.2+i*0.1}s both`,
+          }}>
             <span style={{
               fontFamily:"'SM','Montserrat',sans-serif",
               fontSize:i===0?"38px":"24px",
@@ -588,14 +584,13 @@ function SlideCanciones({ apiSongs, onPlay }: { apiSongs?: WrappedSong[]; onPlay
               <p style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:i===0?"clamp(16px,3.5vw,20px)":"clamp(13px,3vw,16px)",fontWeight:i===0?800:600,color:"#fff",margin:"0 0 2px",lineHeight:1.2}}>{s.title}</p>
               <p style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,color:"#666",margin:0}}>{s.artist}</p>
             </div>
-            {s.audio_url
-              ? <div style={{width:28,height:28,borderRadius:"50%",background:"rgba(124,111,205,0.25)",border:"1px solid rgba(124,111,205,0.5)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <svg width={10} height={10} viewBox="0 0 10 10" fill="#7C6FCD"><polygon points="2,1 9,5 2,9"/></svg>
-                </div>
-              : <div style={{background:i===0?"rgba(124,111,205,0.2)":"rgba(255,255,255,0.04)",border:`1px solid ${i===0?"rgba(124,111,205,0.4)":"rgba(255,255,255,0.07)"}`,borderRadius:40,padding:"3px 10px"}}>
-                  <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:i===0?"#7C6FCD":"#555"}}>{s.plays}×</span>
-                </div>
-            }
+            <div style={{
+              background:i===0?"rgba(124,111,205,0.2)":"rgba(255,255,255,0.04)",
+              border:`1px solid ${i===0?"rgba(124,111,205,0.4)":"rgba(255,255,255,0.07)"}`,
+              borderRadius:40,padding:"3px 10px",
+            }}>
+              <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:i===0?"#7C6FCD":"#555"}}>{s.plays}×</span>
+            </div>
           </div>
         ))}
       </div>
@@ -606,10 +601,9 @@ function SlideCanciones({ apiSongs, onPlay }: { apiSongs?: WrappedSong[]; onPlay
 /* ─────────────────────────────────────────────────────────────
    SLIDE 7 — LA CANCIÓN DEL AÑO  (dark red · #1 song special)
 ───────────────────────────────────────────────────────────── */
-function SlideCancionDelAnio({ firstSong, onPlay }: { firstSong?: WrappedSong; onPlay?: OnPlay }) {
-  const title   = firstSong ? firstSong.title : "Tití Me Preguntó";
-  const artist  = firstSong ? "Jimena Sings"  : "Bad Bunny";
-  const canPlay = !!(firstSong?.audio_url);
+function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
+  const title  = firstSong ? firstSong.title : "Tití Me Preguntó";
+  const artist = firstSong ? "Jimena Sings"  : "Bad Bunny";
   return (
     <div className="ws" style={{background:"#1A0A0A"}}>
       {/* Pulsing ring */}
@@ -642,20 +636,6 @@ function SlideCancionDelAnio({ firstSong, onPlay }: { firstSong?: WrappedSong; o
         <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:16,color:"#aaa",marginTop:6,animation:"fadeUp 0.5s 0.4s both"}}>
           {artist}
         </div>
-        {canPlay && (
-          <button
-            onClick={() => firstSong!.audio_url && onPlay?.(firstSong!.title, firstSong!.audio_url!)}
-            style={{
-              marginTop:20,display:"inline-flex",alignItems:"center",gap:10,
-              background:"#E8143F",border:"none",borderRadius:40,
-              padding:"12px 28px",cursor:"pointer",
-              animation:"fadeUp 0.5s 0.5s both",
-              boxShadow:"0 4px 20px rgba(232,20,63,0.4)",
-            }}>
-            <svg width={14} height={14} viewBox="0 0 14 14" fill="#fff"><polygon points="2,1 13,7 2,13"/></svg>
-            <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:13,fontWeight:700,color:"#fff",letterSpacing:0.5}}>Escuchar</span>
-          </button>
-        )}
         <div style={{
           marginTop:28,
           display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,
@@ -1452,6 +1432,16 @@ export default function SpotifyWrapped() {
     }).catch(() => {});
   }, []);
 
+  // Auto-play: una canción distinta por cada slide (cicla por la lista)
+  useEffect(() => {
+    if (songs.length === 0) return;
+    const playable = songs.filter(s => s.audio_url);
+    if (playable.length === 0) return;
+    const song = playable[current % playable.length];
+    setNowPlaying({ title: song.title, audio_url: song.audio_url! });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, songs.length]);
+
   const currentRef   = useRef(current);
   const isPausedRef  = useRef(isPaused);
   const touchStartX  = useRef<number|null>(null);
@@ -1536,8 +1526,8 @@ export default function SpotifyWrapped() {
     <SlideGeneros key="generos"/>,           // 3
     <SlideArtista key="artista"/>,           // 4
     <SlideArtistaDive key="artista-dive"/>,  // 5  ← Joaquina
-    <SlideCanciones key="canciones" apiSongs={songs} onPlay={(t,u) => setNowPlaying({title:t,audio_url:u})}/>,        // 6
-    <SlideCancionDelAnio key="cancion-anio" firstSong={songs[0]} onPlay={(t,u) => setNowPlaying({title:t,audio_url:u})}/>, // 7
+    <SlideCanciones key="canciones" apiSongs={songs}/>,        // 6
+    <SlideCancionDelAnio key="cancion-anio" firstSong={songs[0]}/>, // 7
     <SlideAlbumes key="albumes" apiAlbums={albums}/>,         // 8
     <SlideJimeArtista key="jime-artista"/>,  // 9  ← Jime La Artista
     <SlideEnEscena key="en-escena"/>,        // 10 ← Banda (full-width)
