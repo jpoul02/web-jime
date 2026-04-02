@@ -47,22 +47,24 @@ const callControls = [
   { icon: <PhoneOff size={22} color="#FFFFFF" />,      bg: "#E81123", wide: true },
 ];
 
-function ContactAvatar({ c }: { c: Contact }) {
+function ContactAvatar({ c, small = false }: { c: Contact; small?: boolean }) {
+  const size = small ? 32 : 36;
+  const radius = size / 2;
   if (c.img) return (
-    <Image src={c.img} alt="" width={36} height={36}
-      style={{ borderRadius: 18, objectFit: "cover", width: 36, height: 36, flexShrink: 0 }} />
+    <Image src={c.img} alt="" width={size} height={size}
+      style={{ borderRadius: radius, objectFit: "cover", width: size, height: size, flexShrink: 0 }} />
   );
   if (c.useHeadphones) return (
     <div className="flex items-center justify-center shrink-0"
-      style={{ width: 36, height: 36, borderRadius: 18, background: c.iconBg }}>
-      <Headphones size={18} color="#FFFFFF" />
+      style={{ width: size, height: size, borderRadius: radius, background: c.iconBg }}>
+      <Headphones size={small ? 14 : 18} color="#FFFFFF" />
     </div>
   );
   return (
     <div className="flex items-center justify-center shrink-0"
-      style={{ width: 36, height: 36, borderRadius: 18, background: c.bg || "#EEE" }}>
+      style={{ width: size, height: size, borderRadius: radius, background: c.bg || "#EEE" }}>
       {c.label && (
-        <span style={{ color: c.labelColor || "#FFFFFF", fontSize: c.label.length > 2 ? 8 : 12, fontWeight: 900 }}>
+        <span style={{ color: c.labelColor || "#FFFFFF", fontSize: c.label.length > 2 ? (small ? 6 : 8) : (small ? 9 : 12), fontWeight: 900 }}>
           {c.label}
         </span>
       )}
@@ -97,8 +99,8 @@ export default function SkypeDesktop() {
       {/* ── Main Body ──────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ── Sidebar ─────────────────────────────────────────────── */}
-        <div className="flex flex-col shrink-0 overflow-hidden border-r border-[#E0E0E0]" style={{ width: 340 }}>
+        {/* ── Sidebar — hidden on mobile ───────────────────────────── */}
+        <div className="hidden md:flex flex-col shrink-0 overflow-hidden border-r border-[#E0E0E0]" style={{ width: 340 }}>
 
           {/* Profile */}
           <div className="flex items-center gap-3 px-4" style={{ height: 70 }}>
@@ -152,37 +154,64 @@ export default function SkypeDesktop() {
         </div>
 
         {/* ── Video Area ──────────────────────────────────────────── */}
-        <div className="relative flex-1 overflow-hidden bg-[#1A1A1A]">
-          <video key={selected.id} ref={videoRef} autoPlay loop playsInline
-            className="absolute inset-0 w-full h-full object-cover">
-            <source src={selected.video} type="video/mp4" />
-          </video>
+        <div className="relative flex-1 overflow-hidden bg-[#1A1A1A] flex flex-col">
 
-          {/* Top bar */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-between"
-            style={{ height: 60, padding: "0 24px", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
-            <div className="flex items-center gap-3">
-              <div style={{ width: 36, height: 36, borderRadius: 18, flexShrink: 0, overflow: "hidden" }}>
-                <ContactAvatar c={selected} />
-              </div>
-              <span className="text-white text-base font-semibold">{selected.name.replace(" ✅", "")}</span>
-              <span className="text-[#AAAAAA] text-sm">video</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Maximize2 size={18} color="#FFFFFF" className="cursor-pointer" />
-              <Ellipsis size={18} color="#FFFFFF" className="cursor-pointer" />
-            </div>
+          {/* Mobile contacts strip — horizontal scrollable, shown only on mobile */}
+          <div className="md:hidden w-full overflow-x-auto flex-shrink-0 bg-black/60 flex items-center gap-3 px-3 py-2"
+            style={{ scrollbarWidth: "none" }}>
+            {contacts.map((c) => {
+              const isSelected = selected.id === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setSelected(c)}
+                  className="flex flex-col items-center gap-1 shrink-0 border-none bg-transparent cursor-pointer"
+                  style={{ opacity: isSelected ? 1 : 0.6 }}
+                >
+                  <div style={{ borderRadius: "50%", border: isSelected ? "2px solid #00AFF0" : "2px solid transparent" }}>
+                    <ContactAvatar c={c} small />
+                  </div>
+                  <span style={{ color: "#fff", fontSize: 9, whiteSpace: "nowrap", maxWidth: 48, overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {c.name.replace(" ✅", "")}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Call Controls */}
-          <div className="absolute flex items-center justify-center"
-            style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
-            {callControls.map((ctrl, i) => (
-              <button key={i} className="flex items-center justify-center"
-                style={{ width: ctrl.wide ? 56 : 48, height: 48, borderRadius: 24, background: ctrl.bg, border: "none", cursor: "pointer" }}>
-                {ctrl.icon}
-              </button>
-            ))}
+          {/* Video background — fills remaining space */}
+          <div className="relative flex-1 overflow-hidden">
+            <video key={selected.id} ref={videoRef} autoPlay loop playsInline
+              className="absolute inset-0 w-full h-full object-cover">
+              <source src={selected.video} type="video/mp4" />
+            </video>
+
+            {/* Top bar */}
+            <div className="absolute top-0 left-0 right-0 flex items-center justify-between"
+              style={{ height: 60, padding: "0 24px", background: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)" }}>
+              <div className="flex items-center gap-3">
+                <div style={{ width: 36, height: 36, borderRadius: 18, flexShrink: 0, overflow: "hidden" }}>
+                  <ContactAvatar c={selected} />
+                </div>
+                <span className="text-white text-base font-semibold">{selected.name.replace(" ✅", "")}</span>
+                <span className="text-[#AAAAAA] text-sm hidden md:inline">video</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Maximize2 size={18} color="#FFFFFF" className="cursor-pointer hidden md:block" />
+                <Ellipsis size={18} color="#FFFFFF" className="cursor-pointer" />
+              </div>
+            </div>
+
+            {/* Call Controls */}
+            <div className="absolute flex items-center justify-center"
+              style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
+              {callControls.map((ctrl, i) => (
+                <button key={i} className="flex items-center justify-center"
+                  style={{ width: ctrl.wide ? 56 : 48, height: 48, borderRadius: 24, background: ctrl.bg, border: "none", cursor: "pointer" }}>
+                  {ctrl.icon}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -205,8 +234,8 @@ export default function SkypeDesktop() {
         {/* Separador */}
         <div className="w-px h-8 bg-white/20 mx-2" />
 
-        {/* App buttons */}
-        <div className="flex items-center gap-1 flex-1">
+        {/* App buttons — hidden on mobile */}
+        <div className="hidden md:flex items-center gap-1 flex-1">
           {/* Skype — activo */}
           <div
             className="flex items-center gap-2 px-3 h-8 rounded"
@@ -226,11 +255,11 @@ export default function SkypeDesktop() {
           </Link>
         </div>
 
-        {/* System tray */}
-        <div className="flex items-center gap-3 pl-3 pr-1 h-8 rounded"
+        {/* System tray — on mobile: just clock */}
+        <div className="flex items-center gap-3 pl-3 pr-1 h-8 rounded ml-auto"
           style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.15)" }}>
-          <Users size={13} color="#AACCFF" />
-          <Clock size={13} color="#AACCFF" />
+          <Users size={13} color="#AACCFF" className="hidden md:block" />
+          <Clock size={13} color="#AACCFF" className="hidden md:block" />
           <WindowsClock />
         </div>
       </footer>

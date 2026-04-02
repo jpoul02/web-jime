@@ -1,8 +1,9 @@
 "use client";
 
-import { Snowflake } from "lucide-react";
+import { Snowflake, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import Snowfall from "./Snowfall";
 
 const navLinks = [
@@ -16,6 +17,8 @@ const navLinks = [
 ];
 
 export default function ClubPenguinHome() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div
       className="min-h-screen flex flex-col overflow-hidden"
@@ -23,7 +26,7 @@ export default function ClubPenguinHome() {
     >
       {/* ── Header ───────────────────────────────────────────────────── */}
       <header
-        className="w-full shrink-0 flex items-center justify-between py-2 px-10"
+        className="w-full shrink-0 flex items-center justify-between py-2 px-4 md:px-10 relative"
         style={{
           background: "linear-gradient(to bottom, #0B1D42, #15306A)",
         }}
@@ -31,11 +34,10 @@ export default function ClubPenguinHome() {
         {/* Logo */}
         <div className="flex items-center">
           <Image src="/jime-penguin-logo.png" alt="" width={130} height={100} quality={100} />
-
         </div>
 
-        {/* Nav */}
-        <nav className="flex items-center" style={{ gap: 36 }}>
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center" style={{ gap: 36 }}>
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -47,6 +49,38 @@ export default function ClubPenguinHome() {
             </Link>
           ))}
         </nav>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="md:hidden flex items-center justify-center p-2"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Abrir menú"
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
+          {menuOpen
+            ? <X size={24} color="#FFFFFF" />
+            : <Menu size={24} color="#FFFFFF" />}
+        </button>
+
+        {/* Mobile Dropdown */}
+        {menuOpen && (
+          <div
+            className="md:hidden absolute top-full left-0 right-0 z-50 flex flex-col py-2"
+            style={{ background: "#0B1D42", borderTop: "1px solid rgba(255,255,255,0.1)" }}
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{ color: "#FFFFFF", fontSize: 15, fontWeight: 600 }}
+                className="px-6 py-3 hover:bg-white/10 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
       </header>
 
       {/* ── Main Content ─────────────────────────────────────────────── */}
@@ -77,14 +111,14 @@ export default function ClubPenguinHome() {
         </div>
 
         {/* Columna derecha — Panel info */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-12">
+        <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 md:px-8 md:py-12">
           <div
             className="flex flex-col w-full"
             style={{
               maxWidth: 560,
               background: "#0B1E44DD",
               borderRadius: 24,
-              padding: "40px 48px",
+              padding: "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 48px)",
               gap: 24,
               boxShadow: "0 6px 20px rgba(0,0,0,0.4)",
             }}
@@ -98,7 +132,7 @@ export default function ClubPenguinHome() {
             <h1
               style={{
                 color: "#FFD700",
-                fontSize: 56,
+                fontSize: "clamp(36px, 8vw, 56px)",
                 fontWeight: 900,
                 letterSpacing: 3,
                 margin: 0,
@@ -110,9 +144,9 @@ export default function ClubPenguinHome() {
 
             {/* Divisor degradado */}
             <div
+              className="w-full md:w-[400px]"
               style={{
                 height: 4,
-                width: 400,
                 borderRadius: 2,
                 background: "linear-gradient(to right, #00DDFF, #FFD700)",
               }}
@@ -133,7 +167,7 @@ export default function ClubPenguinHome() {
 
             {/* Botón CTA */}
             <button
-              className="flex items-center justify-center self-start hover:opacity-90 active:opacity-75 transition-opacity"
+              className="flex items-center justify-center w-full md:w-auto md:self-start hover:opacity-90 active:opacity-75 transition-opacity"
               style={{
                 background: "linear-gradient(to bottom, #00DDFF, #0099DD)",
                 borderRadius: 16,

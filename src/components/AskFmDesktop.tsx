@@ -71,34 +71,39 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
     <div className="min-h-screen flex flex-col bg-[#EAEDF2] font-[family-name:var(--font-geist-sans)]">
 
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <header className="w-full shrink-0 h-14 flex items-center justify-between px-6 bg-[#3B5998]">
+      <header className="w-full shrink-0 h-14 flex items-center justify-between px-4 md:px-6 bg-[#3B5998]">
         <Image src="/ask-jime-logo.png" quality={100} alt="Ask.fm Jime" width={120} height={40} className="object-contain" />
-        <nav className="flex items-center gap-5">
-          <Link href="/"      title="Inicio"   className="opacity-80 hover:opacity-100 transition-opacity"><Home     size={20} color="#FFFFFF" /></Link>
-          <Link href="#"      title="Sobre Mi" className="opacity-80 hover:opacity-100 transition-opacity"><User     size={20} color="#FFFFFF" /></Link>
-          <Link href="/amigos" title="Amigos"  className="opacity-80 hover:opacity-100 transition-opacity"><Users    size={20} color="#FFFFFF" /></Link>
-          <Link href="#"      title="Historia" className="opacity-80 hover:opacity-100 transition-opacity"><BookOpen size={20} color="#FFFFFF" /></Link>
-          <Link href="#"      title="Juegos"   className="opacity-80 hover:opacity-100 transition-opacity"><Gamepad2 size={20} color="#FFFFFF" /></Link>
-          <Link href="/skype" title="Skype"    className="opacity-80 hover:opacity-100 transition-opacity"><Video    size={20} color="#FFFFFF" /></Link>
-          <div className="w-px h-5 bg-white/30 mx-1" />
+
+        {/* Nav icons — mobile: only Home, Bell, Mail; desktop: full set */}
+        <nav className="flex items-center gap-4 md:gap-5">
+          <Link href="/"       title="Inicio"   className="opacity-80 hover:opacity-100 transition-opacity"><Home     size={20} color="#FFFFFF" /></Link>
+          <Link href="#"       title="Sobre Mi" className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><User     size={20} color="#FFFFFF" /></Link>
+          <Link href="/amigos" title="Amigos"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Users    size={20} color="#FFFFFF" /></Link>
+          <Link href="#"       title="Historia" className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><BookOpen size={20} color="#FFFFFF" /></Link>
+          <Link href="#"       title="Juegos"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Gamepad2 size={20} color="#FFFFFF" /></Link>
+          <Link href="/skype"  title="Skype"    className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Video    size={20} color="#FFFFFF" /></Link>
+          <div className="w-px h-5 bg-white/30 mx-1 hidden md:block" />
           <button className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"><Bell size={20} color="#FFFFFF" /></button>
           <button className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"><Mail size={20} color="#FFFFFF" /></button>
         </nav>
-        <div className="flex items-center gap-2 w-[280px] h-[34px] rounded-[17px] bg-[#2E4A80] px-[14px]">
+
+        {/* Search bar — hidden on mobile */}
+        <div className="hidden md:flex items-center gap-2 w-[280px] h-[34px] rounded-[17px] bg-[#2E4A80] px-[14px]">
           <Search size={16} color="#8899BB" />
           <span className="text-[#8899BB] text-[13px]">Buscar personas...</span>
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="hidden md:flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#6B8CC7]" />
           <span className="text-white text-[13px] font-semibold">jimepenguin</span>
         </div>
       </header>
 
       {/* ── Body ───────────────────────────────────────────────────── */}
-      <div className="flex-1 flex justify-center gap-6 py-6 px-20">
+      <div className="flex-1 flex justify-center gap-6 py-6 px-4 md:px-20">
 
         {/* ── Feed ───────────────────────────────────────────────── */}
-        <div className="flex flex-col gap-4 w-[580px]">
+        <div className="flex flex-col gap-4 w-full md:w-[580px]">
 
           {/* Ask box (decorative) */}
           <div className="bg-white rounded-lg p-4 flex items-center gap-3">
@@ -133,7 +138,6 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
               <div className="flex gap-3 px-4 pb-3">
                 <div className="w-9 h-9 rounded-full bg-[#4A76A8] shrink-0 overflow-hidden">
                   {card.profile_photo_url
-                    // eslint-disable-next-line @next/next/no-img-element
                     ? <img src={card.profile_photo_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     : <div className="w-full h-full flex items-center justify-center"><User size={18} color="#fff" /></div>
                   }
@@ -173,8 +177,8 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
           )}
         </div>
 
-        {/* ── Sidebar ────────────────────────────────────────────── */}
-        <div className="flex flex-col gap-4 w-[340px]">
+        {/* ── Sidebar — hidden on mobile ──────────────────────────── */}
+        <div className="hidden md:flex flex-col gap-4 w-[340px]">
 
           {/* Profile card */}
           <div className="bg-white rounded-lg flex flex-col items-center gap-3 py-5 px-4">

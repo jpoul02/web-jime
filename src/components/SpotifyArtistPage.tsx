@@ -16,6 +16,19 @@ const CARD = "#181818";
 const HOVER = "#282828";
 const MUT = "#B3B3B3";
 
+/* ── useIsMobile hook ─────────────────────────────────────── */
+function useIsMobile() {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setM(mq.matches);
+    const h = (e: MediaQueryListEvent) => setM(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
+  return m;
+}
+
 /* ── Types ────────────────────────────────────────────────── */
 interface Song {
   id: number;
@@ -96,10 +109,11 @@ function CoverThumb({ src, size = 40, emoji = "🎵" }: { src: string | null; si
 
 /* ── Bottom Player ────────────────────────────────────────── */
 function BottomPlayer({
-  now, onClose,
+  now, onClose, isMobile,
 }: {
   now: NowPlaying;
   onClose: () => void;
+  isMobile: boolean;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -145,12 +159,12 @@ function BottomPlayer({
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
-      height: 90,
+      height: isMobile ? 72 : 90,
       background: "#181818",
       borderTop: "1px solid #282828",
       display: "flex", alignItems: "center",
-      padding: "0 16px",
-      gap: 16,
+      padding: isMobile ? "0 12px" : "0 16px",
+      gap: isMobile ? 10 : 16,
     }}>
       <audio
         ref={audioRef}
@@ -161,11 +175,11 @@ function BottomPlayer({
       />
 
       {/* Left: cover + info */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: "0 0 280px" }}>
-        <CoverThumb src={now.cover_url} size={56} />
+      <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, minWidth: 0, flex: isMobile ? "1 1 0" : "0 0 280px" }}>
+        <CoverThumb src={now.cover_url} size={isMobile ? 44 : 56} />
         <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{now.title}</div>
-          {now.album_title && <div style={{ fontSize: 11, color: MUT, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jimena Sings · {now.album_title}</div>}
+          {now.album_title && !isMobile && <div style={{ fontSize: 11, color: MUT, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jimena Sings · {now.album_title}</div>}
         </div>
         <button
           onClick={onClose}
@@ -175,14 +189,16 @@ function BottomPlayer({
       </div>
 
       {/* Center: controls + progress */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+      <div style={{ flex: isMobile ? "0 0 auto" : 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
         {/* Buttons */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <button style={ctrlBtn}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
-              <polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20" stroke={MUT} strokeWidth="2"/>
-            </svg>
-          </button>
+        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 16 : 24 }}>
+          {!isMobile && (
+            <button style={ctrlBtn}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
+                <polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20" stroke={MUT} strokeWidth="2"/>
+              </svg>
+            </button>
+          )}
           <button
             onClick={togglePlay}
             style={{
@@ -193,41 +209,47 @@ function BottomPlayer({
           >
             {playing ? <PauseIcon size={18} color="#000" /> : <PlayIcon size={18} color="#000" />}
           </button>
-          <button style={ctrlBtn}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
-              <polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20" stroke={MUT} strokeWidth="2"/>
-            </svg>
-          </button>
+          {!isMobile && (
+            <button style={ctrlBtn}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
+                <polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20" stroke={MUT} strokeWidth="2"/>
+              </svg>
+            </button>
+          )}
         </div>
-        {/* Progress */}
-        <div style={{ width: "100%", display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 11, color: MUT, minWidth: 36, textAlign: "right", fontFamily: "monospace" }}>{fmt(progress)}</span>
-          <div
-            style={{ flex: 1, height: 4, background: "#535353", borderRadius: 2, cursor: "pointer", position: "relative" }}
-            onClick={seek}
-          >
-            <div style={{
-              width: `${pct}%`, height: "100%", background: "#fff", borderRadius: 2,
-              transition: "width 0.1s",
-            }} />
+        {/* Progress — hidden on mobile */}
+        {!isMobile && (
+          <div style={{ width: "100%", display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: MUT, minWidth: 36, textAlign: "right", fontFamily: "monospace" }}>{fmt(progress)}</span>
+            <div
+              style={{ flex: 1, height: 4, background: "#535353", borderRadius: 2, cursor: "pointer", position: "relative" }}
+              onClick={seek}
+            >
+              <div style={{
+                width: `${pct}%`, height: "100%", background: "#fff", borderRadius: 2,
+                transition: "width 0.1s",
+              }} />
+            </div>
+            <span style={{ fontSize: 11, color: MUT, minWidth: 36, fontFamily: "monospace" }}>{fmt(duration)}</span>
           </div>
-          <span style={{ fontSize: 11, color: MUT, minWidth: 36, fontFamily: "monospace" }}>{fmt(duration)}</span>
-        </div>
+        )}
       </div>
 
-      {/* Right: volume */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "0 0 180px", justifyContent: "flex-end" }}>
-        <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
-          <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
-          {volume > 0 && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke={MUT} strokeWidth="2" fill="none"/>}
-          {volume > 0.5 && <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke={MUT} strokeWidth="2" fill="none"/>}
-        </svg>
-        <input
-          type="range" min={0} max={1} step={0.02} value={volume}
-          onChange={e => setVolume(Number(e.target.value))}
-          style={{ width: 80, accentColor: G, cursor: "pointer" }}
-        />
-      </div>
+      {/* Right: volume — hidden on mobile */}
+      {!isMobile && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "0 0 180px", justifyContent: "flex-end" }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
+            <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+            {volume > 0 && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke={MUT} strokeWidth="2" fill="none"/>}
+            {volume > 0.5 && <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke={MUT} strokeWidth="2" fill="none"/>}
+          </svg>
+          <input
+            type="range" min={0} max={1} step={0.02} value={volume}
+            onChange={e => setVolume(Number(e.target.value))}
+            style={{ width: 80, accentColor: G, cursor: "pointer" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -312,6 +334,7 @@ function AlbumModal({
 
 /* ── Main component ───────────────────────────────────────── */
 export default function SpotifyArtistPage() {
+  const isMobile = useIsMobile();
   const [showWrapped, setShowWrapped] = useState(false);
   const [discFilter, setDiscFilter] = useState<"popular" | "albums" | "singles">("popular");
   const [liked, setLiked] = useState(false);
@@ -365,6 +388,8 @@ export default function SpotifyArtistPage() {
     );
   }
 
+  const contentPadding = isMobile ? 16 : 32;
+
   return (
     <div style={{
       display: "flex", height: "100vh", overflow: "hidden",
@@ -379,69 +404,71 @@ export default function SpotifyArtistPage() {
         />
       )}
 
-      {/* ═══ SIDEBAR ═══════════════════════════════════════════ */}
-      <aside style={{
-        width: 240, flexShrink: 0, background: SBG,
-        display: "flex", flexDirection: "column",
-        padding: "16px 12px", gap: 20, overflowY: "auto",
-      }}>
-        <div style={{ padding: "8px 12px" }}>
-          <SpotifyLogo size={32} />
-        </div>
-        <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <Link href="/" style={{
-            display: "flex", alignItems: "center", gap: 16,
-            padding: "10px 12px", borderRadius: 4,
-            color: "#fff", textDecoration: "none", fontSize: 15, fontWeight: 700,
-          }}>
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="#fff">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="#fff" strokeWidth="2"/>
-            </svg>
-            Inicio
-          </Link>
-        </nav>
-        <div style={{ background: "#121212", borderRadius: 8, padding: "16px 12px", flexGrow: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, color: MUT, fontWeight: 700, fontSize: 15, marginBottom: 16 }}>
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={MUT} strokeWidth="2">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>
-            Tu biblioteca
+      {/* ═══ SIDEBAR — hidden on mobile ═════════════════════════════ */}
+      {!isMobile && (
+        <aside style={{
+          width: 240, flexShrink: 0, background: SBG,
+          display: "flex", flexDirection: "column",
+          padding: "16px 12px", gap: 20, overflowY: "auto",
+        }}>
+          <div style={{ padding: "8px 12px" }}>
+            <SpotifyLogo size={32} />
           </div>
-          {albums.slice(0, 5).map((album) => (
-            <div
-              key={album.id}
-              onClick={() => setSelectedAlbum(album)}
-              style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "8px 4px", borderRadius: 4, cursor: "pointer",
-              }}
-            >
-              <CoverThumb src={album.cover_url} size={40} />
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{album.title}</div>
-                <div style={{ fontSize: 12, color: MUT }}>Álbum{album.year ? ` · ${album.year}` : ""}</div>
-              </div>
+          <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <Link href="/" style={{
+              display: "flex", alignItems: "center", gap: 16,
+              padding: "10px 12px", borderRadius: 4,
+              color: "#fff", textDecoration: "none", fontSize: 15, fontWeight: 700,
+            }}>
+              <svg width={24} height={24} viewBox="0 0 24 24" fill="#fff">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="#fff" strokeWidth="2"/>
+              </svg>
+              Inicio
+            </Link>
+          </nav>
+          <div style={{ background: "#121212", borderRadius: 8, padding: "16px 12px", flexGrow: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: MUT, fontWeight: 700, fontSize: 15, marginBottom: 16 }}>
+              <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={MUT} strokeWidth="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              Tu biblioteca
             </div>
-          ))}
-          {albums.length === 0 && !loading && (
-            <div style={{ fontSize: 13, color: MUT }}>Sin álbumes todavía</div>
-          )}
-        </div>
-      </aside>
+            {albums.slice(0, 5).map((album) => (
+              <div
+                key={album.id}
+                onClick={() => setSelectedAlbum(album)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "8px 4px", borderRadius: 4, cursor: "pointer",
+                }}
+              >
+                <CoverThumb src={album.cover_url} size={40} />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{album.title}</div>
+                  <div style={{ fontSize: 12, color: MUT }}>Álbum{album.year ? ` · ${album.year}` : ""}</div>
+                </div>
+              </div>
+            ))}
+            {albums.length === 0 && !loading && (
+              <div style={{ fontSize: 13, color: MUT }}>Sin álbumes todavía</div>
+            )}
+          </div>
+        </aside>
+      )}
 
       {/* ═══ MAIN CONTENT ════════════════════════════════════════ */}
       <main style={{
         flex: 1, overflowY: "auto",
         background: BG,
         scrollbarWidth: "thin", scrollbarColor: "#333 transparent",
-        paddingBottom: nowPlaying ? 90 : 0,
+        paddingBottom: nowPlaying ? (isMobile ? 72 : 90) : 0,
       }}>
         {/* ── Top bar */}
         <header style={{
           position: "sticky", top: 0, zIndex: 50,
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 32px", height: 64,
+          padding: `0 ${contentPadding}px`, height: 64,
           background: "rgba(18,18,18,0.85)", backdropFilter: "blur(12px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}>
@@ -465,26 +492,28 @@ export default function SpotifyArtistPage() {
         </header>
 
         {/* ── Hero */}
-        <section style={{ position: "relative", height: 340, overflow: "hidden", background: "linear-gradient(to bottom,#1A3A5C,#0A1628)" }}>
+        <section style={{ position: "relative", height: isMobile ? 220 : 340, overflow: "hidden", background: "linear-gradient(to bottom,#1A3A5C,#0A1628)" }}>
           <Image src={HERO_IMAGE} alt="" fill unoptimized style={{ objectFit: "cover", objectPosition: "center 20%" }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.1) 40%,#121212 100%)" }}/>
-          <div style={{ position: "absolute", top: -60, right: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(29,185,84,0.25) 0%,transparent 70%)", pointerEvents: "none" }}/>
-          <div style={{ position: "absolute", inset: 0, bottom: 32, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 40px 32px", zIndex: 10 }}>
+          {!isMobile && (
+            <div style={{ position: "absolute", top: -60, right: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(29,185,84,0.25) 0%,transparent 70%)", pointerEvents: "none" }}/>
+          )}
+          <div style={{ position: "absolute", inset: 0, bottom: 32, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${contentPadding}px 24px`, zIndex: 10 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill={G}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Artista verificada
             </div>
-            <h1 style={{ fontSize: "clamp(48px,7vw,96px)", fontWeight: 900, lineHeight: 1, letterSpacing: -3, color: "#fff", margin: "0 0 16px" }}>
+            <h1 style={{ fontSize: isMobile ? "clamp(32px,10vw,52px)" : "clamp(48px,7vw,96px)", fontWeight: 900, lineHeight: 1, letterSpacing: isMobile ? -1 : -3, color: "#fff", margin: "0 0 12px" }}>
               Jimena Sings
             </h1>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", margin: 0 }}>
+            <p style={{ fontSize: isMobile ? 13 : 16, color: "rgba(255,255,255,0.8)", margin: 0 }}>
               {songs.length > 0 ? `${songs.length} canciones populares` : "2.450.320 oyentes mensuales"}
             </p>
           </div>
         </section>
 
         {/* ── Artist controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24, padding: "24px 32px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24, padding: `24px ${contentPadding}px` }}>
           <button
             onClick={() => songs[0]?.audio_url && playSong(songs[0])}
             style={{
@@ -509,7 +538,7 @@ export default function SpotifyArtistPage() {
         </div>
 
         {/* ── Populares */}
-        <section style={{ padding: "0 32px 32px" }}>
+        <section style={{ padding: `0 ${contentPadding}px 32px` }}>
           <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16, color: "#fff" }}>Populares</h2>
           {loading && <p style={{ color: MUT, fontSize: 14 }}>Cargando...</p>}
           {!loading && songs.length === 0 && (
@@ -525,8 +554,8 @@ export default function SpotifyArtistPage() {
                   onMouseLeave={() => setHoveredTrack(null)}
                   onClick={() => playSong(song)}
                   style={{
-                    display: "flex", alignItems: "center", gap: 16,
-                    padding: "8px 16px", borderRadius: 6,
+                    display: "flex", alignItems: "center", gap: isMobile ? 10 : 16,
+                    padding: isMobile ? "8px 8px" : "8px 16px", borderRadius: 6,
                     background: hoveredTrack === song.id ? HOVER : "transparent",
                     cursor: song.audio_url ? "pointer" : "default",
                     transition: "background 0.1s", height: 56,
@@ -545,7 +574,7 @@ export default function SpotifyArtistPage() {
                   {/* Title */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 15, fontWeight: 600, color: isPlaying ? G : "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{song.title}</div>
-                    <div style={{ fontSize: 13, color: MUT }}>Jimena Sings</div>
+                    {!isMobile && <div style={{ fontSize: 13, color: MUT }}>Jimena Sings</div>}
                   </div>
                   {!song.audio_url && <span style={{ fontSize: 12, color: "#444" }}>sin audio</span>}
                 </div>
@@ -555,12 +584,12 @@ export default function SpotifyArtistPage() {
         </section>
 
         {/* ── Discografía */}
-        <section style={{ padding: "0 32px 32px" }}>
+        <section style={{ padding: `0 ${contentPadding}px 32px` }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <h2 style={{ fontSize: 24, fontWeight: 700, color: "#fff", margin: 0 }}>Discografía</h2>
           </div>
           {/* Filter pills */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
             {(["popular", "albums", "singles"] as const).map((f) => {
               const labels = { popular: "Todo", albums: "Álbumes", singles: "Sencillos y EP" };
               return (
@@ -578,37 +607,41 @@ export default function SpotifyArtistPage() {
           {!loading && albums.length === 0 && (
             <p style={{ color: MUT, fontSize: 14 }}>Todavía no hay álbumes.</p>
           )}
-          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-            {albums.map((album) => (
-              <div
-                key={album.id}
-                onClick={() => setSelectedAlbum(album)}
-                style={{
-                  width: 180, cursor: "pointer",
-                  padding: "16px 16px 24px", borderRadius: 8,
-                  background: "transparent", transition: "background 0.15s",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = HOVER)}
-                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-              >
-                <CoverThumb src={album.cover_url} size={148} emoji="💿" />
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginTop: 12, marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{album.title}</div>
-                <div style={{ fontSize: 13, color: MUT }}>{album.year ?? "—"} · Álbum</div>
-              </div>
-            ))}
+          <div style={{ display: "flex", gap: isMobile ? 12 : 24, flexWrap: "wrap" }}>
+            {albums.map((album) => {
+              const cardWidth = isMobile ? 140 : 180;
+              const thumbSize = isMobile ? 108 : 148;
+              return (
+                <div
+                  key={album.id}
+                  onClick={() => setSelectedAlbum(album)}
+                  style={{
+                    width: cardWidth, cursor: "pointer",
+                    padding: "16px 16px 24px", borderRadius: 8,
+                    background: "transparent", transition: "background 0.15s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = HOVER)}
+                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                >
+                  <CoverThumb src={album.cover_url} size={thumbSize} emoji="💿" />
+                  <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", marginTop: 12, marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{album.title}</div>
+                  <div style={{ fontSize: 13, color: MUT }}>{album.year ?? "—"} · Álbum</div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
         {/* ── Información */}
-        <section style={{ padding: "0 32px 48px" }}>
+        <section style={{ padding: `0 ${contentPadding}px 48px` }}>
           <h2 style={{ fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 24 }}>Información</h2>
-          <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 32, flexDirection: isMobile ? "column" : "row", flexWrap: "wrap" }}>
             {/* Bio */}
-            <div style={{ flex: "1 1 420px", minWidth: 320 }}>
-              <div style={{ display: "flex", gap: 24, marginBottom: 24 }}>
-                <div style={{ width: 200, height: 200, flexShrink: 0, borderRadius: 8, background: "linear-gradient(135deg,#1A3A5C,#833AB4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 72, boxShadow: "0 16px 40px rgba(0,0,0,0.5)" }}>🐧</div>
+            <div style={{ flex: "1 1 420px", minWidth: isMobile ? "unset" : 320 }}>
+              <div style={{ display: "flex", gap: 24, marginBottom: 24, flexWrap: "wrap" }}>
+                <div style={{ width: isMobile ? 120 : 200, height: isMobile ? 120 : 200, flexShrink: 0, borderRadius: 8, background: "linear-gradient(135deg,#1A3A5C,#833AB4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isMobile ? 48 : 72, boxShadow: "0 16px 40px rgba(0,0,0,0.5)" }}>🐧</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}>Jimena<br/>Sings</div>
+                  <div style={{ fontSize: isMobile ? 22 : 28, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}>Jimena<br/>Sings</div>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#2A2A2A", borderRadius: 20, padding: "6px 14px", alignSelf: "flex-start" }}>
                     <span style={{ fontSize: 13, color: MUT, fontWeight: 600 }}>🌍 Ríos de Mundo</span>
                   </div>
@@ -621,12 +654,12 @@ export default function SpotifyArtistPage() {
                 <div style={{ fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 }}>Proyectos musicales</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {BANDS.map(b => (
-                    <div key={b.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: CARD, borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div key={b.name} style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 6 : 0, padding: "12px 16px", background: CARD, borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{b.name}</div>
                         <div style={{ fontSize: 13, color: MUT }}>{b.role}</div>
                       </div>
-                      <div style={{ fontSize: 12, color: MUT, background: "#2A2A2A", padding: "4px 10px", borderRadius: 12 }}>{b.years}</div>
+                      <div style={{ fontSize: 12, color: MUT, background: "#2A2A2A", padding: "4px 10px", borderRadius: 12, alignSelf: isMobile ? "flex-start" : "auto" }}>{b.years}</div>
                     </div>
                   ))}
                 </div>
@@ -634,7 +667,7 @@ export default function SpotifyArtistPage() {
             </div>
 
             {/* Wrapped card */}
-            <div style={{ flex: "0 0 340px" }}>
+            <div style={{ flex: isMobile ? "1 1 auto" : "0 0 340px" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 }}>Tu año en música</div>
               <div
                 onClick={() => setShowWrapped(true)}
@@ -673,7 +706,7 @@ export default function SpotifyArtistPage() {
         </section>
 
         {/* Footer */}
-        <footer style={{ padding: "24px 32px 48px", borderTop: "1px solid rgba(255,255,255,0.08)", color: MUT, fontSize: 12, display: "flex", gap: 24, flexWrap: "wrap" }}>
+        <footer style={{ padding: `24px ${contentPadding}px 48px`, borderTop: "1px solid rgba(255,255,255,0.08)", color: MUT, fontSize: 12, display: "flex", gap: 24, flexWrap: "wrap" }}>
           {["Legal", "Privacidad", "Cookies"].map(l => <span key={l} style={{ cursor: "pointer" }}>{l}</span>)}
           <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
             <SpotifyLogo size={16} /> Jimena Sings
@@ -683,7 +716,7 @@ export default function SpotifyArtistPage() {
 
       {/* ── Bottom player */}
       {nowPlaying && (
-        <BottomPlayer now={nowPlaying} onClose={() => setNowPlaying(null)} />
+        <BottomPlayer now={nowPlaying} onClose={() => setNowPlaying(null)} isMobile={isMobile} />
       )}
     </div>
   );
