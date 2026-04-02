@@ -10,6 +10,18 @@ const SLIDE_DURATION = 9000; // ms per slide (más largo para leer textos)
 const TOTAL_SLIDES = 16;
 
 /* ─────────────────────────────────────────────────────────────
+   API
+───────────────────────────────────────────────────────────── */
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+
+interface WrappedSong  { id: number; title: string; cover_url: string | null; }
+interface WrappedAlbum { id: number; title: string; cover_url: string | null; year: number | null; }
+
+const ALBUM_COLORS = ["#C9853A","#B5547A","#7BA67E","#3A5FA6","#8B6914"];
+const ALBUM_EMOJIS = ["💿","🎵","🎶","🎸","🎤"];
+const FAKE_PLAYS   = [312, 287, 254, 231, 198];
+
+/* ─────────────────────────────────────────────────────────────
    DATA
 ───────────────────────────────────────────────────────────── */
 const topGenres = [
@@ -527,7 +539,10 @@ function SlideArtistaDive() {
 /* ─────────────────────────────────────────────────────────────
    SLIDE 6 — TOP SONGS  (dark moody · indigo accent)
 ───────────────────────────────────────────────────────────── */
-function SlideCanciones() {
+function SlideCanciones({ apiSongs }: { apiSongs?: WrappedSong[] }) {
+  const songs = apiSongs && apiSongs.length > 0
+    ? apiSongs.slice(0, 5).map((s, i) => ({ title: s.title, artist: "Jimena Sings", plays: FAKE_PLAYS[i] ?? 150 - i * 15 }))
+    : topSongs;
   return (
     <div className="ws" style={{background:"#0E0B2A"}}>
       {/* Vinyl record bg */}
@@ -550,7 +565,7 @@ function SlideCanciones() {
 
       <div className="sc" style={{width:"100%",maxWidth:500,padding:"0 28px",position:"relative",zIndex:3}}>
         <p className="sc-label" style={{color:"#7C6FCD"}}>Tus canciones favoritas</p>
-        {topSongs.map((s,i)=>(
+        {songs.map((s,i)=>(
           <div key={i} style={{
             display:"flex",alignItems:"center",
             padding:"12px 0",
@@ -586,7 +601,9 @@ function SlideCanciones() {
 /* ─────────────────────────────────────────────────────────────
    SLIDE 7 — LA CANCIÓN DEL AÑO  (dark red · #1 song special)
 ───────────────────────────────────────────────────────────── */
-function SlideCancionDelAnio() {
+function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
+  const title  = firstSong ? firstSong.title  : "Tití Me Preguntó";
+  const artist = firstSong ? "Jimena Sings"   : "Bad Bunny";
   return (
     <div className="ws" style={{background:"#1A0A0A"}}>
       {/* Pulsing ring */}
@@ -614,10 +631,10 @@ function SlideCancionDelAnio() {
           <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,fontWeight:700,color:"#E8143F",letterSpacing:2,textTransform:"uppercase"}}>Canción del año</span>
         </div>
         <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(28px,7vw,58px)",fontWeight:900,color:"#fff",lineHeight:1.1,animation:"slideInLeft 0.6s 0.25s both"}}>
-          Tití Me Preguntó
+          {title}
         </div>
         <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:16,color:"#aaa",marginTop:6,animation:"fadeUp 0.5s 0.4s both"}}>
-          Bad Bunny
+          {artist}
         </div>
         <div style={{
           marginTop:28,
@@ -640,8 +657,18 @@ function SlideCancionDelAnio() {
 /* ─────────────────────────────────────────────────────────────
    SLIDE 8 — TOP ALBUMS  (dark · featured #1 + grid)
 ───────────────────────────────────────────────────────────── */
-function SlideAlbumes() {
-  const [featured, ...rest] = topAlbums;
+function SlideAlbumes({ apiAlbums }: { apiAlbums?: WrappedAlbum[] }) {
+  const displayAlbums = apiAlbums && apiAlbums.length > 0
+    ? apiAlbums.slice(0, 5).map((a, i) => ({
+        title: a.title,
+        artist: "Jimena Sings",
+        color: ALBUM_COLORS[i % ALBUM_COLORS.length],
+        emoji: ALBUM_EMOJIS[i % ALBUM_EMOJIS.length],
+        cover_url: a.cover_url,
+        year: a.year,
+      }))
+    : topAlbums.map(a => ({ ...a, cover_url: null as string | null, year: null as number | null }));
+  const [featured, ...rest] = displayAlbums;
   return (
     <div className="ws" style={{background:"#0D0D0D",overflow:"hidden"}}>
       {/* ── Gradient accent bottom ── */}
@@ -685,7 +712,13 @@ function SlideAlbumes() {
             fontSize:"clamp(24px,5vw,40px)",
             boxShadow:`0 8px 30px ${featured.color}60`,
             animation:"float 5s ease-in-out infinite",
-          }}>{featured.emoji}</div>
+            overflow:"hidden",
+          }}>
+            {featured.cover_url
+              // eslint-disable-next-line @next/next/no-img-element
+              ? <img src={featured.cover_url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+              : featured.emoji}
+          </div>
           {/* Info */}
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
@@ -699,7 +732,7 @@ function SlideAlbumes() {
             <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(16px,3.5vw,26px)",fontWeight:900,color:"#fff",lineHeight:1.1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
               {featured.title}
             </div>
-            <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:"clamp(11px,2vw,13px)",color:"#888",marginTop:3}}>{featured.artist}</div>
+            <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:"clamp(11px,2vw,13px)",color:"#888",marginTop:3}}>{featured.artist}{featured.year ? ` · ${featured.year}` : ""}</div>
           </div>
           {/* Big rank */}
           <div style={{
@@ -732,7 +765,10 @@ function SlideAlbumes() {
               }}
               onMouseEnter={e=>(e.currentTarget.style.transform="scale(1.06) rotate(-2deg)")}
               onMouseLeave={e=>(e.currentTarget.style.transform="")}>
-                {a.emoji}
+                {a.cover_url
+                  // eslint-disable-next-line @next/next/no-img-element
+                  ? <img src={a.cover_url} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
+                  : a.emoji}
                 {/* Rank badge */}
                 <div style={{
                   position:"absolute",top:4,left:4,
@@ -1326,6 +1362,19 @@ export default function SpotifyWrapped() {
   const [isPaused, setIsPaused]   = useState(false);
   const [progress, setProgress]   = useState(0);
 
+  const [songs,  setSongs]  = useState<WrappedSong[]>([]);
+  const [albums, setAlbums] = useState<WrappedAlbum[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${API}/musica/popular`).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/musica/albums`).then(r => r.ok ? r.json() : []),
+    ]).then(([s, a]) => {
+      setSongs(s);
+      setAlbums(a);
+    }).catch(() => {});
+  }, []);
+
   const currentRef   = useRef(current);
   const isPausedRef  = useRef(isPaused);
   const touchStartX  = useRef<number|null>(null);
@@ -1410,9 +1459,9 @@ export default function SpotifyWrapped() {
     <SlideGeneros key="generos"/>,           // 3
     <SlideArtista key="artista"/>,           // 4
     <SlideArtistaDive key="artista-dive"/>,  // 5  ← Joaquina
-    <SlideCanciones key="canciones"/>,       // 6
-    <SlideCancionDelAnio key="cancion-anio"/>,// 7
-    <SlideAlbumes key="albumes"/>,           // 8
+    <SlideCanciones key="canciones" apiSongs={songs}/>,        // 6
+    <SlideCancionDelAnio key="cancion-anio" firstSong={songs[0]}/>, // 7
+    <SlideAlbumes key="albumes" apiAlbums={albums}/>,         // 8
     <SlideJimeArtista key="jime-artista"/>,  // 9  ← Jime La Artista
     <SlideEnEscena key="en-escena"/>,        // 10 ← Banda (full-width)
     <SlidePhotoCantando key="foto-cantando"/>,// 11 ← Foto Jime cantando

@@ -261,8 +261,8 @@ export default function SkypeDesktop() {
               </div>
             )}
 
-            {/* Call Controls */}
-            <div className="absolute flex items-center justify-center"
+            {/* Call Controls — desktop only */}
+            <div className="hidden md:flex absolute items-center justify-center"
               style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
               {callControls.map((ctrl, i) => (
                 <button key={i} className="flex items-center justify-center"
@@ -275,9 +275,30 @@ export default function SkypeDesktop() {
         </div>
       </div>
 
-      {/* ── Windows Taskbar ─────────────────────────────────────────── */}
+      {/* ── Mobile bottom nav ───────────────────────────────────────── */}
+      <nav
+        className="md:hidden w-full shrink-0 flex items-stretch"
+        style={{ height: 56, background: "#0B1D42", borderTop: "1px solid #1a3a6e" }}
+      >
+        {[
+          { href: "/",       label: "Inicio",  icon: <Home      size={20} color="#FFFFFF" /> },
+          { href: "/amigos", label: "Amigos",  icon: <Users     size={20} color="#FFFFFF" /> },
+          { href: "/ask",    label: "Ask.fm",  icon: <HelpCircle size={20} color="#FFFFFF" /> },
+          { href: "/musica", label: "Música",  icon: <Music     size={20} color="#FFFFFF" /> },
+        ].map(({ href, label, icon }) => (
+          <Link key={href} href={href}
+            className="flex-1 flex flex-col items-center justify-center gap-[3px]"
+            style={{ textDecoration: "none", opacity: 0.7 }}
+          >
+            {icon}
+            <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: 0.3 }}>{label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* ── Windows Taskbar — desktop only ──────────────────────────── */}
       <footer
-        className="w-full shrink-0 flex items-center justify-between px-2"
+        className="hidden md:flex w-full shrink-0 items-center justify-between px-2"
         style={{ height: 48, background: "linear-gradient(to bottom, #1F5BB5, #163D8F)", borderTop: "1px solid #4A7FCC" }}
       >
         {/* Start button */}
