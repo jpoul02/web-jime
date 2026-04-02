@@ -54,11 +54,20 @@ interface Album {
   tracks: AlbumTrack[];
 }
 
+interface QueueItem {
+  title: string;
+  audio_url: string | null;
+  cover_url: string | null;
+}
+
 interface NowPlaying {
   title: string;
   audio_url: string;
   cover_url: string | null;
   album_title?: string;
+  queue?: QueueItem[];
+  queueIndex?: number;
+  onPlayQueueItem?: (i: number) => void;
 }
 
 /* ── Static data ──────────────────────────────────────────── */
@@ -109,10 +118,14 @@ function CoverThumb({ src, size = 40, emoji = "🎵" }: { src: string | null; si
 
 /* ── Bottom Player ────────────────────────────────────────── */
 function BottomPlayer({
-  now, onClose, isMobile,
+  now, onClose, onPrev, onNext, hasPrev, hasNext, isMobile,
 }: {
   now: NowPlaying;
   onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  hasPrev: boolean;
+  hasNext: boolean;
   isMobile: boolean;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -120,6 +133,7 @@ function BottomPlayer({
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
+  const [showQueue, setShowQueue] = useState(false);
 
   // auto-play when track changes
   useEffect(() => {
@@ -157,100 +171,188 @@ function BottomPlayer({
   const pct = duration ? (progress / duration) * 100 : 0;
 
   return (
-    <div style={{
-      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
-      height: isMobile ? 72 : 90,
-      background: "#181818",
-      borderTop: "1px solid #282828",
-      display: "flex", alignItems: "center",
-      padding: isMobile ? "0 12px" : "0 16px",
-      gap: isMobile ? 10 : 16,
-    }}>
+    <>
       <audio
         ref={audioRef}
         src={now.audio_url}
         onTimeUpdate={() => { const a = audioRef.current; if (a) setProgress(a.currentTime); }}
         onLoadedMetadata={() => { const a = audioRef.current; if (a) setDuration(a.duration); }}
-        onEnded={() => setPlaying(false)}
+        onEnded={() => { setPlaying(false); if (hasNext) onNext(); }}
       />
 
-      {/* Left: cover + info */}
-      <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, minWidth: 0, flex: isMobile ? "1 1 0" : "0 0 280px" }}>
-        <CoverThumb src={now.cover_url} size={isMobile ? 44 : 56} />
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{now.title}</div>
-          {now.album_title && !isMobile && <div style={{ fontSize: 11, color: MUT, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jimena Sings · {now.album_title}</div>}
+      {/* Queue panel */}
+      {showQueue && (
+        <div style={{
+          position: "fixed", bottom: isMobile ? 72 : 90, right: 0,
+          width: isMobile ? "100%" : 340,
+          maxHeight: 380,
+          background: "#282828",
+          borderTop: "1px solid #383838",
+          borderLeft: isMobile ? "none" : "1px solid #383838",
+          zIndex: 199,
+          overflowY: "auto",
+          display: "flex", flexDirection: "column",
+        }}>
+          <div style={{ padding: "14px 16px 10px", fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.2, borderBottom: "1px solid #383838", flexShrink: 0 }}>
+            Cola de reproducción
+          </div>
+          {now.queue && now.queue.map((item, i) => (
+            <div
+              key={(item.audio_url ?? "") + i}
+              onClick={() => item.audio_url && now.onPlayQueueItem?.(i)}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 16px",
+                background: item.audio_url === now.audio_url ? "rgba(255,255,255,0.08)" : "transparent",
+                cursor: item.audio_url ? "pointer" : "default",
+                transition: "background 0.1s",
+              }}
+              onMouseEnter={e => { if (item.audio_url) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = item.audio_url === now.audio_url ? "rgba(255,255,255,0.08)" : "transparent"; }}
+            >
+              <CoverThumb src={item.cover_url ?? null} size={36} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: 13, fontWeight: 600,
+                  color: item.audio_url === now.audio_url ? G : "#fff",
+                  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                }}>{item.title}</div>
+                <div style={{ fontSize: 11, color: MUT }}>Jimena Sings</div>
+              </div>
+              {item.audio_url === now.audio_url && (
+                <span style={{ fontSize: 11, color: G }}>▶</span>
+              )}
+              {!item.audio_url && <span style={{ fontSize: 11, color: "#555" }}>sin audio</span>}
+            </div>
+          ))}
         </div>
-        <button
-          onClick={onClose}
-          style={{ background: "none", border: "none", color: MUT, cursor: "pointer", fontSize: 18, flexShrink: 0, marginLeft: 8 }}
-          title="Cerrar"
-        >✕</button>
-      </div>
+      )}
 
-      {/* Center: controls + progress */}
-      <div style={{ flex: isMobile ? "0 0 auto" : 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        {/* Buttons */}
-        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 16 : 24 }}>
-          {!isMobile && (
-            <button style={ctrlBtn}>
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
+        height: isMobile ? 72 : 90,
+        background: "#181818",
+        borderTop: "1px solid #282828",
+        display: "flex", alignItems: "center",
+        padding: isMobile ? "0 12px" : "0 16px",
+        gap: isMobile ? 10 : 16,
+        flexWrap: isMobile ? "wrap" : "nowrap",
+      }}>
+        {/* Mobile progress bar — top of player */}
+        {isMobile && (
+          <div
+            style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "#535353", cursor: "pointer" }}
+            onClick={seek}
+          >
+            <div style={{ width: `${pct}%`, height: "100%", background: G, transition: "width 0.1s" }} />
+          </div>
+        )}
+        {/* Left: cover + info */}
+        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, minWidth: 0, flex: isMobile ? "1 1 0" : "0 0 280px" }}>
+          <CoverThumb src={now.cover_url} size={isMobile ? 44 : 56} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{now.title}</div>
+            {now.album_title && !isMobile && <div style={{ fontSize: 11, color: MUT, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jimena Sings · {now.album_title}</div>}
+          </div>
+          <button
+            onClick={onClose}
+            style={{ background: "none", border: "none", color: MUT, cursor: "pointer", fontSize: 18, flexShrink: 0, marginLeft: 8 }}
+            title="Cerrar"
+          >✕</button>
+        </div>
+
+        {/* Center: controls + progress */}
+        <div style={{ flex: isMobile ? "0 0 auto" : 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+          {/* Buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 12 : 24 }}>
+            <button
+              onClick={onPrev}
+              disabled={!hasPrev}
+              style={{ ...ctrlBtn, opacity: hasPrev ? 1 : 0.3 }}
+              title="Anterior"
+            >
               <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
                 <polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20" stroke={MUT} strokeWidth="2"/>
               </svg>
             </button>
-          )}
-          <button
-            onClick={togglePlay}
-            style={{
-              width: 40, height: 40, borderRadius: "50%", background: "#fff",
-              border: "none", cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}
-          >
-            {playing ? <PauseIcon size={18} color="#000" /> : <PlayIcon size={18} color="#000" />}
-          </button>
-          {!isMobile && (
-            <button style={ctrlBtn}>
+            <button
+              onClick={togglePlay}
+              style={{
+                width: 40, height: 40, borderRadius: "50%", background: "#fff",
+                border: "none", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              {playing ? <PauseIcon size={18} color="#000" /> : <PlayIcon size={18} color="#000" />}
+            </button>
+            <button
+              onClick={onNext}
+              disabled={!hasNext}
+              style={{ ...ctrlBtn, opacity: hasNext ? 1 : 0.3 }}
+              title="Siguiente"
+            >
               <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
                 <polygon points="5,4 15,12 5,20"/><line x1="19" y1="4" x2="19" y2="20" stroke={MUT} strokeWidth="2"/>
               </svg>
             </button>
+          </div>
+            {/* Progress bar */}
+          {!isMobile && (
+            <div style={{ width: "100%", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: MUT, minWidth: 36, textAlign: "right", fontFamily: "monospace" }}>{fmt(progress)}</span>
+              <div
+                style={{ flex: 1, height: 4, background: "#535353", borderRadius: 2, cursor: "pointer", position: "relative" }}
+                onClick={seek}
+              >
+                <div style={{
+                  width: `${pct}%`, height: "100%", background: "#fff", borderRadius: 2,
+                  transition: "width 0.1s",
+                }} />
+              </div>
+              <span style={{ fontSize: 11, color: MUT, minWidth: 36, fontFamily: "monospace" }}>{fmt(duration)}</span>
+            </div>
           )}
         </div>
-        {/* Progress — hidden on mobile */}
-        {!isMobile && (
-          <div style={{ width: "100%", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, color: MUT, minWidth: 36, textAlign: "right", fontFamily: "monospace" }}>{fmt(progress)}</span>
-            <div
-              style={{ flex: 1, height: 4, background: "#535353", borderRadius: 2, cursor: "pointer", position: "relative" }}
-              onClick={seek}
-            >
-              <div style={{
-                width: `${pct}%`, height: "100%", background: "#fff", borderRadius: 2,
-                transition: "width 0.1s",
-              }} />
-            </div>
-            <span style={{ fontSize: 11, color: MUT, minWidth: 36, fontFamily: "monospace" }}>{fmt(duration)}</span>
-          </div>
-        )}
-      </div>
 
-      {/* Right: volume — hidden on mobile */}
-      {!isMobile && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "0 0 180px", justifyContent: "flex-end" }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
-            <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
-            {volume > 0 && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke={MUT} strokeWidth="2" fill="none"/>}
-            {volume > 0.5 && <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke={MUT} strokeWidth="2" fill="none"/>}
-          </svg>
-          <input
-            type="range" min={0} max={1} step={0.02} value={volume}
-            onChange={e => setVolume(Number(e.target.value))}
-            style={{ width: 80, accentColor: G, cursor: "pointer" }}
-          />
+        {/* Right: volume + queue toggle */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: isMobile ? "0 0 auto" : "0 0 180px", justifyContent: "flex-end" }}>
+          {/* Queue button */}
+          <button
+            onClick={() => setShowQueue(q => !q)}
+            style={{
+              ...ctrlBtn,
+              opacity: showQueue ? 1 : 0.6,
+              color: showQueue ? G : MUT,
+            }}
+            title="Cola"
+          >
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={showQueue ? G : MUT} strokeWidth="2">
+              <line x1="8" y1="6" x2="21" y2="6"/>
+              <line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/>
+              <line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+          </button>
+          {/* Volume — desktop only */}
+          {!isMobile && (
+            <>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill={MUT}>
+                <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+                {volume > 0 && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke={MUT} strokeWidth="2" fill="none"/>}
+                {volume > 0.5 && <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke={MUT} strokeWidth="2" fill="none"/>}
+              </svg>
+              <input
+                type="range" min={0} max={1} step={0.02} value={volume}
+                onChange={e => setVolume(Number(e.target.value))}
+                style={{ width: 80, accentColor: G, cursor: "pointer" }}
+              />
+            </>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -266,7 +368,7 @@ function AlbumModal({
 }: {
   album: Album;
   onClose: () => void;
-  onPlay: (t: NowPlaying) => void;
+  onPlay: (t: NowPlaying, tracks: AlbumTrack[]) => void;
 }) {
   const [hoveredTrack, setHoveredTrack] = useState<number | null>(null);
 
@@ -308,7 +410,7 @@ function AlbumModal({
               key={t.id}
               onMouseEnter={() => setHoveredTrack(t.id)}
               onMouseLeave={() => setHoveredTrack(null)}
-              onClick={() => t.audio_url && onPlay({ title: t.title, audio_url: t.audio_url, cover_url: album.cover_url, album_title: album.title })}
+              onClick={() => t.audio_url && onPlay({ title: t.title, audio_url: t.audio_url, cover_url: album.cover_url, album_title: album.title }, album.tracks)}
               style={{
                 display: "flex", alignItems: "center", gap: 14,
                 padding: "8px 12px", borderRadius: 6,
@@ -347,6 +449,8 @@ export default function SpotifyArtistPage() {
 
   // Player
   const [nowPlaying, setNowPlaying] = useState<NowPlaying | null>(null);
+  const [queueIndex, setQueueIndex] = useState(0);
+  const [queue, setQueue] = useState<QueueItem[]>([]);
 
   // Album modal
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -362,9 +466,39 @@ export default function SpotifyArtistPage() {
     }).catch(() => setLoading(false));
   }, []);
 
+  function buildNowPlaying(item: QueueItem, idx: number, q: QueueItem[]): NowPlaying | null {
+    if (!item.audio_url) return null;
+    return {
+      title: item.title,
+      audio_url: item.audio_url,
+      cover_url: item.cover_url,
+      queue: q,
+      queueIndex: idx,
+      onPlayQueueItem: (i: number) => playFromQueue(q, i),
+    };
+  }
+
+  function playFromQueue(q: QueueItem[], idx: number) {
+    const item = q[idx];
+    if (!item?.audio_url) return;
+    setQueue(q);
+    setQueueIndex(idx);
+    setNowPlaying(buildNowPlaying(item, idx, q)!);
+  }
+
   function playSong(song: Song) {
     if (!song.audio_url) return;
-    setNowPlaying({ title: song.title, audio_url: song.audio_url, cover_url: song.cover_url });
+    const q: QueueItem[] = songs.map(s => ({ title: s.title, audio_url: s.audio_url, cover_url: s.cover_url }));
+    const idx = songs.findIndex(s => s.id === song.id);
+    playFromQueue(q, idx >= 0 ? idx : 0);
+  }
+
+  function handlePrev() {
+    if (queueIndex > 0) playFromQueue(queue, queueIndex - 1);
+  }
+
+  function handleNext() {
+    if (queueIndex < queue.length - 1) playFromQueue(queue, queueIndex + 1);
   }
 
   if (showWrapped) {
@@ -400,7 +534,12 @@ export default function SpotifyArtistPage() {
         <AlbumModal
           album={selectedAlbum}
           onClose={() => setSelectedAlbum(null)}
-          onPlay={(t) => { setNowPlaying(t); setSelectedAlbum(null); }}
+          onPlay={(t, albumTracks) => {
+            const q: QueueItem[] = albumTracks.map(tr => ({ title: tr.title, audio_url: tr.audio_url, cover_url: selectedAlbum.cover_url }));
+            const idx = albumTracks.findIndex(tr => tr.audio_url === t.audio_url);
+            playFromQueue(q, idx >= 0 ? idx : 0);
+            setSelectedAlbum(null);
+          }}
         />
       )}
 
@@ -755,7 +894,15 @@ export default function SpotifyArtistPage() {
 
       {/* ── Bottom player */}
       {nowPlaying && (
-        <BottomPlayer now={nowPlaying} onClose={() => setNowPlaying(null)} isMobile={isMobile} />
+        <BottomPlayer
+          now={nowPlaying}
+          onClose={() => setNowPlaying(null)}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          hasPrev={queueIndex > 0}
+          hasNext={queueIndex < queue.length - 1}
+          isMobile={isMobile}
+        />
       )}
     </div>
   );

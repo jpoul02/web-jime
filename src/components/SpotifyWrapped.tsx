@@ -1355,21 +1355,33 @@ function SlideFin() {
 /* ─────────────────────────────────────────────────────────────
    MINI AUDIO PLAYER
 ───────────────────────────────────────────────────────────── */
-function WrappedPlayer({ audio_url }: { audio_url: string }) {
+function WrappedPlayer({ audio_url, isPaused }: { audio_url: string; isPaused: boolean }) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const startedRef = useRef(false);
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
+    startedRef.current = false;
     a.src = audio_url;
     a.load();
   }, [audio_url]);
+
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a || !startedRef.current) return;
+    if (isPaused) a.pause();
+    else a.play().catch(() => {});
+  }, [isPaused]);
 
   function handleMetadata() {
     const a = audioRef.current;
     if (!a || !a.duration) return;
     a.currentTime = Math.random() * a.duration;
-    a.play().catch(() => {});
+    if (!isPaused) {
+      a.play().catch(() => {});
+      startedRef.current = true;
+    }
   }
 
   return <audio ref={audioRef} onLoadedMetadata={handleMetadata} />;
@@ -1658,7 +1670,7 @@ export default function SpotifyWrapped() {
       </div>
 
       {/* ── Invisible audio player ───────────────────────────────── */}
-      {nowPlaying && <WrappedPlayer audio_url={nowPlaying.audio_url} />}
+      {nowPlaying && <WrappedPlayer audio_url={nowPlaying.audio_url} isPaused={isPaused} />}
     </div>
   );
 }
