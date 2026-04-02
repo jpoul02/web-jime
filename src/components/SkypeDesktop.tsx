@@ -293,7 +293,7 @@ export default function SkypeDesktop() {
         <div className="w-px h-8 bg-white/20 mx-2" />
 
         {/* App buttons */}
-        <div className="hidden md:flex items-center gap-1 flex-1">
+        <div className="flex items-center gap-1 flex-1 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           {/* Skype — activo */}
           <div className="flex items-center gap-2 px-3 h-8 rounded"
             style={{ background: "rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.25)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.4)" }}>

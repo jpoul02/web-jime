@@ -100,6 +100,38 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
         </div>
       </header>
 
+      {/* Mobile nav strip */}
+      <div
+        className="md:hidden"
+        style={{
+          background: "#3B5998", borderBottom: "1px solid #2d4a80",
+          display: "flex", gap: 6, padding: "8px 12px",
+          overflowX: "auto", scrollbarWidth: "none",
+        }}
+      >
+        {[
+          { href: "/",       label: "Inicio"  },
+          { href: "/amigos", label: "Amigos"  },
+          { href: "/skype",  label: "Skype"   },
+          { href: "/musica", label: "Música"  },
+        ].map(({ href, label }) => (
+          <Link
+            key={href}
+            href={href}
+            style={{
+              display: "flex", alignItems: "center",
+              padding: "6px 14px", borderRadius: 20,
+              background: "rgba(255,255,255,0.18)",
+              color: "#fff", textDecoration: "none",
+              fontSize: 12, fontWeight: 600,
+              whiteSpace: "nowrap", flexShrink: 0,
+            }}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
+
       {/* ── Body ───────────────────────────────────────────────────── */}
       <div className="flex-1 flex justify-center gap-6 py-6 px-4 md:px-20">
 

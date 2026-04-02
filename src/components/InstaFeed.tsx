@@ -1,11 +1,19 @@
 "use client";
 
 import type { InstaPost } from "@/types/feed";
-import { Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, Video } from "lucide-react";
+import { Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, Video, Users } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstaLogo from "./InstaLogo";
 import InstaPostCard from "./InstaPost";
+
+const MOBILE_NAV = [
+  { href: "/",       label: "Inicio",  icon: <Home     size={16} color="#262626" /> },
+  { href: "/amigos", label: "Amigos",  icon: <Users    size={16} color="#262626" /> },
+  { href: "/skype",  label: "Skype",   icon: <Video    size={16} color="#262626" /> },
+  { href: "/ask",    label: "Ask.fm",  icon: <HelpCircle size={16} color="#262626" /> },
+  { href: "/musica", label: "Música",  icon: <Music    size={16} color="#262626" /> },
+];
 
 const LIMIT = 10;
 // Nota: El feed inicial se carga desde el servidor en page.tsx para mejorar SEO y evitar un flash de contenido vacío.
@@ -61,7 +69,8 @@ export default function InstaFeed({ initialPosts }: { initialPosts: InstaPost[] 
       }}>
         <InstaLogo />
 
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        {/* Desktop icons */}
+        <div className="hidden md:flex" style={{ alignItems: "center", gap: 20 }}>
           <Link href="/" aria-label="Inicio" style={{ display: "flex", color: "inherit" }}>
             <Home size={24} color="#262626" />
           </Link>
@@ -83,7 +92,41 @@ export default function InstaFeed({ initialPosts }: { initialPosts: InstaPost[] 
             background: "linear-gradient(45deg,#FCAF45,#E1306C,#833AB4)",
           }} />
         </div>
+
+        {/* Mobile: avatar only */}
+        <div className="md:hidden" style={{
+          width: 24, height: 24, borderRadius: "50%",
+          background: "linear-gradient(45deg,#FCAF45,#E1306C,#833AB4)",
+        }} />
       </header>
+
+      {/* Mobile nav strip */}
+      <div
+        className="md:hidden"
+        style={{
+          position: "sticky", top: 60, zIndex: 99,
+          background: "#FFFFFF", borderBottom: "1px solid #DBDBDB",
+          display: "flex", gap: 8, padding: "8px 12px",
+          overflowX: "auto", scrollbarWidth: "none",
+        }}
+      >
+        {MOBILE_NAV.map(({ href, label, icon }) => (
+          <Link
+            key={href}
+            href={href}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "6px 14px", borderRadius: 20,
+              background: "#F5F5F5", color: "#262626",
+              textDecoration: "none", fontSize: 13, fontWeight: 600,
+              whiteSpace: "nowrap", flexShrink: 0,
+            }}
+          >
+            {icon}
+            {label}
+          </Link>
+        ))}
+      </div>
 
       {/* ── Feed column ─────────────────────────────────────────── */}
       <main style={{

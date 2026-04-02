@@ -470,7 +470,7 @@ export default function SpotifyArtistPage() {
         flex: 1, overflowY: "auto",
         background: BG,
         scrollbarWidth: "thin", scrollbarColor: "#333 transparent",
-        paddingBottom: nowPlaying ? (isMobile ? 72 : 90) : 0,
+        paddingBottom: nowPlaying ? (isMobile ? 72 : 90) : (isMobile ? 64 : 0),
       }}>
         {/* ── Top bar */}
         <header style={{
@@ -721,6 +721,37 @@ export default function SpotifyArtistPage() {
           </span>
         </footer>
       </main>
+
+      {/* ── Mobile bottom nav */}
+      {isMobile && !nowPlaying && (
+        <nav style={{
+          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
+          height: 64, background: "#000000",
+          borderTop: "1px solid #282828",
+          display: "flex", alignItems: "stretch",
+        }}>
+          {[
+            { href: "/",       label: "Inicio",  icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="#fff"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="#fff" strokeWidth="2"/></svg> },
+            { href: "/amigos", label: "Amigos",  icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> },
+            { href: "/skype",  label: "Skype",   icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> },
+            { href: "/ask",    label: "Ask.fm",  icon: <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+          ].map(({ href, label, icon }) => (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                flex: 1, display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", gap: 4,
+                textDecoration: "none", color: "#fff",
+                opacity: 0.7,
+              }}
+            >
+              {icon}
+              <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.3 }}>{label}</span>
+            </Link>
+          ))}
+        </nav>
+      )}
 
       {/* ── Bottom player */}
       {nowPlaying && (
