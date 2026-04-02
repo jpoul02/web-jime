@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video } from "lucide-react";
@@ -32,7 +31,7 @@ function timeAgo(dateStr: string): string {
 
 export default function AskFmDesktop({ initialAnswers, initialStats }: { initialAnswers: AnswerCard[]; initialStats: Stats | null }) {
   const [answers, setAnswers] = useState<AnswerCard[]>(initialAnswers);
-  const [stats, setStats] = useState<Stats | null>(initialStats);
+  const [stats] = useState<Stats | null>(initialStats);
   const [skip, setSkip] = useState(initialAnswers.length);
   const [hasMore, setHasMore] = useState(initialAnswers.length === LIMIT);
   const [loading, setLoading] = useState(false);
@@ -133,7 +132,8 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
               <div className="flex gap-3 px-4 pb-3">
                 <div className="w-9 h-9 rounded-full bg-[#4A76A8] shrink-0 overflow-hidden">
                   {card.profile_photo_url
-                    ? <img src={card.profile_photo_url} alt="" className="w-full h-full object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    ? <img src={card.profile_photo_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     : <div className="w-full h-full flex items-center justify-center"><User size={18} color="#fff" /></div>
                   }
                 </div>
