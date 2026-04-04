@@ -151,7 +151,7 @@ function BottomPlayer({
     const a = audioRef.current;
     if (a) a.volume = volume;
   }, [volume]);
-
+  //forcing redeploy
   function fmt(s: number) {
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
@@ -196,6 +196,7 @@ function BottomPlayer({
           overflowY: "auto",
           display: "flex", flexDirection: "column",
         }}>
+        
           <div style={{ padding: "14px 16px 10px", fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.2, borderBottom: "1px solid #383838", flexShrink: 0 }}>
             Cola de reproducción
           </div>
