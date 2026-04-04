@@ -910,7 +910,7 @@ function SlideEnEscena() {
           animation:"fadeUp 0.5s 0.42s both",
         }}>
           Empezamos a tocar casi sin querer, juntándonos los viernes para
-          pasar el rato y terminar siempre haciendo covers hasta las 2 AM.
+          pasar el rato y terminar haciendo música en el ccu.
           Lo que arrancó como una joda entre amigos se convirtió en algo
           real: escenarios, gente cantando con nosotros, canciones que son
           nuestras de verdad. Todos mis amigos se llaman Javier es la banda
@@ -920,7 +920,7 @@ function SlideEnEscena() {
 
         {/* Info row */}
         <div style={{display:"flex",flexWrap:"wrap",gap:"clamp(6px,1.5vw,12px)",marginTop:20,animation:"fadeUp 0.5s 0.58s both"}}>
-          {[["🎤","Voz principal"],["🎸","Pop Punk / Rock"],["📅","4 años juntos"],["👥","5 integrantes"],["🎵","Covers + originales"],["🏟️","Shows en vivo"]].map(([ico,txt],i)=>(
+          {[["🎤","Voz principal"],["🎸","Tocamos de todo"],["📅","2 años juntos"],["🎵","Covers + originales"],["🏟️","Shows en vivo"]].map(([ico,txt],i)=>(
             <div key={i} style={{
               background:"rgba(255,255,255,0.05)",
               border:"1px solid rgba(255,255,255,0.1)",
@@ -965,73 +965,77 @@ function SlideEnEscena() {
 ───────────────────────────────────────────────────────────── */
 function SlidePhotoCantando() {
   return (
-    <div className="ws" style={{background:"#000",overflow:"hidden"}}>
+    <div className="ws" style={{background:"#0a0a0a",overflow:"hidden"}}>
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/jime-cantando.jpg" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime cantando"/>
-
-      {/* Gradient overlay — oscurece abajo para leer el texto */}
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%)",pointerEvents:"none"}}/>
-      {/* Gradient lateral izquierdo */}
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 50%)",pointerEvents:"none"}}/>
-
-      {/* Decoraciones top */}
-      <div style={{position:"absolute",top:52,left:24,zIndex:10}}>
-        <SpotifyLogo size={24}/>
+      {/* ── FOTO lado izquierdo ── */}
+      <div style={{position:"absolute",left:0,top:0,bottom:0,width:"clamp(42%,50%,55%)",overflow:"hidden"}}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/jime-cantando.jpg" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime cantando"/>
+        {/* Scan lines */}
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px)",pointerEvents:"none"}}/>
+        {/* Fade to right */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:"45%",background:"linear-gradient(to right,transparent,#0a0a0a)",pointerEvents:"none"}}/>
       </div>
-      <svg style={{position:"absolute",top:50,right:60,opacity:0.4,animation:"float 5s ease-in-out infinite"}} width="120" height="65" viewBox="0 0 120 65" fill="none">
-        <path d="M5,50 Q35,5 70,38 Q105,68 118,18" stroke="white" strokeWidth="1.5" fill="none"/>
-      </svg>
 
-      {/* ── TEXTO OVERLAY — abajo ── */}
+      {/* ── Anillos decorativos (detrás del texto) ── */}
+      <div style={{position:"absolute",left:-80,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}>
+        {[50,90,130,170].map((r,i)=>(
+          <div key={i} style={{
+            position:"absolute",width:r*2,height:r*2,borderRadius:"50%",
+            border:`1px solid rgba(124,111,205,${0.3-i*0.06})`,
+            top:"50%",left:"50%",transform:"translate(-50%,-50%)",
+            animation:`rotateSlow ${18+i*6}s linear infinite ${i%2===0?"":"reverse"}`,
+          }}/>
+        ))}
+      </div>
+
+      {/* Logo */}
+      <div style={{position:"absolute",top:28,right:28,zIndex:10}}>
+        <SpotifyLogo size={22}/>
+      </div>
+
+      {/* ── TEXTO lado derecho ── */}
       <div style={{
-        position:"absolute",bottom:0,left:0,right:0,
-        padding:"0 clamp(24px,6vw,72px) clamp(55px,9%,80px)",
+        position:"absolute",right:0,top:0,bottom:0,
+        width:"clamp(46%,52%,58%)",
+        display:"flex",flexDirection:"column",justifyContent:"center",
+        padding:"40px clamp(20px,4vw,48px) 40px 16px",
         zIndex:5,
       }}>
-        {/* Label */}
         <div style={{
-          display:"inline-block",background:"#7C6FCD",padding:"4px 14px",marginBottom:14,
+          display:"inline-block",background:"#7C6FCD",padding:"4px 14px",marginBottom:18,alignSelf:"flex-start",
           animation:"fadeUp 0.4s 0.2s both",
         }}>
           <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:9,fontWeight:800,letterSpacing:3,textTransform:"uppercase",color:"#fff"}}>En escena</span>
         </div>
 
-        {/* Título */}
         <div style={{
           fontFamily:"'SM','Montserrat',sans-serif",
-          fontSize:"clamp(32px,8vw,80px)",
-          fontWeight:900,
-          color:"#fff",
-          lineHeight:0.9,
+          fontSize:"clamp(28px,5vw,62px)",
+          fontWeight:900,color:"#fff",lineHeight:0.92,
           animation:"slideInLeft 0.55s 0.3s both",
-          textShadow:"0 2px 20px rgba(0,0,0,0.8)",
+          textShadow:"0 2px 20px rgba(0,0,0,0.6)",
         }}>
           Cuando<br/>
           <span style={{color:"#7C6FCD"}}>Jime canta</span>,<br/>
           todo para.
         </div>
 
-        {/* Descripción larga */}
         <p style={{
           fontFamily:"'Montserrat',sans-serif",
-          fontSize:"clamp(13px,1.7vw,16px)",
-          color:"rgba(255,255,255,0.75)",
-          lineHeight:1.75,
-          marginTop:16,
-          maxWidth:620,
+          fontSize:"clamp(12px,1.5vw,14px)",
+          color:"rgba(255,255,255,0.7)",
+          lineHeight:1.7,marginTop:18,
           animation:"fadeUp 0.5s 0.48s both",
         }}>
           Hay algo que pasa cuando Jime toma el micrófono: la sala cambia.
           No importa si es un show enorme o una juntada de veinte personas —
           su voz tiene esa rara capacidad de hacer que todos dejen de hablar
-          y simplemente escuchen. Años de corales, ensayos, notas altas y
-          canciones propias forjaron algo que no se aprende: presencia.
-          La música, para ella, siempre fue un idioma antes que una habilidad.
+          y simplemente escuchen. Años de corales, ensayos y canciones propias
+          forjaron algo que no se aprende: presencia.
         </p>
 
-        {/* Tags */}
-        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:16,animation:"fadeUp 0.5s 0.62s both"}}>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:18,animation:"fadeUp 0.5s 0.62s both"}}>
           {["Soprano","Voz en vivo","Coros","Shows","Canciones propias"].map((t,i)=>(
             <span key={i} style={{
               fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,
@@ -1052,50 +1056,58 @@ function SlidePhotoCantando() {
 ───────────────────────────────────────────────────────────── */
 function SlidePhotoMusica() {
   return (
-    <div className="ws" style={{background:"#000",overflow:"hidden"}}>
+    <div className="ws" style={{background:"#0a0805",overflow:"hidden"}}>
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/haciendo-juntos.jpg" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}} alt="Haciendo música juntas"/>
+      {/* ── FOTO lado derecho ── */}
+      <div style={{position:"absolute",right:0,top:0,bottom:0,width:"clamp(42%,50%,55%)",overflow:"hidden"}}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/haciendo-juntos.jpg" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}} alt="Haciendo música juntas"/>
+        {/* Scan lines */}
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.1) 3px,rgba(0,0,0,0.1) 4px)",pointerEvents:"none"}}/>
+        {/* Fade to left */}
+        <div style={{position:"absolute",top:0,left:0,bottom:0,width:"45%",background:"linear-gradient(to left,transparent,#0a0805)",pointerEvents:"none"}}/>
+      </div>
 
-      {/* Overlays */}
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.05) 100%)",pointerEvents:"none"}}/>
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 60%)",pointerEvents:"none"}}/>
-
-      {/* Anillos concéntricos top-right como decoración */}
-      <div style={{position:"absolute",top:-60,right:-60,pointerEvents:"none"}}>
-        {[50,90,130,170,210].map((r,i)=>(
+      {/* ── Anillos decorativos ── */}
+      <div style={{position:"absolute",right:-80,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}}>
+        {[50,90,130,170].map((r,i)=>(
           <div key={i} style={{
             position:"absolute",width:r*2,height:r*2,borderRadius:"50%",
-            border:`1px solid rgba(201,133,58,${0.3-i*0.05})`,
+            border:`1px solid rgba(201,133,58,${0.3-i*0.06})`,
             top:"50%",left:"50%",transform:"translate(-50%,-50%)",
-            animation:`rotateSlow ${20+i*5}s linear infinite`,
+            animation:`rotateSlow ${20+i*5}s linear infinite ${i%2===0?"":"reverse"}`,
           }}/>
         ))}
       </div>
 
-      {/* ── TEXTO BOTTOM ── */}
+      {/* Logo */}
+      <div style={{position:"absolute",top:28,left:28,zIndex:10}}>
+        <SpotifyLogo size={22}/>
+      </div>
+
+      {/* ── TEXTO lado izquierdo ── */}
       <div style={{
-        position:"absolute",bottom:0,left:0,right:0,
-        padding:"0 clamp(24px,6vw,72px) clamp(55px,9%,80px)",
+        position:"absolute",left:0,top:0,bottom:0,
+        width:"clamp(46%,52%,58%)",
+        display:"flex",flexDirection:"column",justifyContent:"center",
+        padding:"40px 16px 40px clamp(20px,4vw,48px)",
         zIndex:5,
       }}>
         <div style={{
           display:"inline-flex",alignItems:"center",gap:6,
           background:"rgba(201,133,58,0.2)",border:"1px solid rgba(201,133,58,0.4)",
-          borderRadius:40,padding:"5px 14px",marginBottom:14,
+          borderRadius:40,padding:"5px 14px",marginBottom:18,alignSelf:"flex-start",
           animation:"fadeUp 0.4s 0.2s both",
         }}>
-          <span style={{fontSize:12}}>✨</span>
-          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:"#C9853A",letterSpacing:2,textTransform:"uppercase"}}>Haciendo música juntos</span>
+          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:9,fontWeight:800,color:"#C9853A",letterSpacing:2,textTransform:"uppercase"}}>Haciendo música juntos</span>
         </div>
 
         <div style={{
           fontFamily:"'SM','Montserrat',sans-serif",
-          fontSize:"clamp(30px,7.5vw,75px)",
-          fontWeight:900,
-          color:"#fff",lineHeight:0.9,
+          fontSize:"clamp(28px,5vw,62px)",
+          fontWeight:900,color:"#fff",lineHeight:0.92,
           animation:"slideInLeft 0.55s 0.3s both",
-          textShadow:"0 2px 20px rgba(0,0,0,0.9)",
+          textShadow:"0 2px 20px rgba(0,0,0,0.6)",
         }}>
           Dos voces,<br/>
           <span style={{color:"#C9853A"}}>una canción.</span>
@@ -1103,23 +1115,19 @@ function SlidePhotoMusica() {
 
         <p style={{
           fontFamily:"'Montserrat',sans-serif",
-          fontSize:"clamp(13px,1.7vw,16px)",
-          color:"rgba(255,255,255,0.75)",
-          lineHeight:1.75,
-          marginTop:16,
-          maxWidth:600,
+          fontSize:"clamp(12px,1.5vw,14px)",
+          color:"rgba(255,255,255,0.7)",
+          lineHeight:1.7,marginTop:18,
           animation:"fadeUp 0.5s 0.48s both",
         }}>
           Hay momentos que no se planean: te sentás con alguien,
           uno empieza a tocar un acorde, la otra tararea algo,
           y de repente hay una canción que no existía antes.
-          Eso es lo que pasa cuando hacemos música juntas —
-          no es un ensayo, es una conversación en el idioma
-          que más nos gusta. Este momento es de esos que guardás
-          para siempre, aunque la grabación sea del celular.
+          No es un ensayo — es una conversación en el idioma
+          que más nos gusta.
         </p>
 
-        <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap",animation:"fadeUp 0.5s 0.62s both"}}>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:18,animation:"fadeUp 0.5s 0.62s both"}}>
           {["Sesión de música","Composición","Improvisación","Amistad","Canciones nuevas"].map((t,i)=>(
             <span key={i} style={{
               fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,

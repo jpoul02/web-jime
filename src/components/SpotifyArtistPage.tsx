@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import SpotifyWrapped from "./SpotifyWrapped";
 
-const HERO_IMAGE = "/hero-jime.jpg";
+const HERO_IMAGE = "/verified_artist.jpg";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 /* ── Palette ──────────────────────────────────────────────── */
@@ -643,12 +642,29 @@ export default function SpotifyArtistPage() {
         </header>
 
         {/* ── Hero */}
-        <section style={{ position: "relative", height: isMobile ? 220 : 340, overflow: "hidden", background: "linear-gradient(to bottom,#1A3A5C,#0A1628)" }}>
-          <Image src={HERO_IMAGE} alt="" fill unoptimized style={{ objectFit: "cover", objectPosition: "center 20%" }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.1) 40%,#121212 100%)" }}/>
-          {!isMobile && (
-            <div style={{ position: "absolute", top: -60, right: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(29,185,84,0.25) 0%,transparent 70%)", pointerEvents: "none" }}/>
+        <section style={{ position: "relative", height: isMobile ? 260 : 420, overflow: "hidden", background: "#0A1628" }}>
+          {isMobile ? (
+            /* Mobile: full-bleed, objectPosition top para mostrar cara */
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={HERO_IMAGE} alt="" style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.05) 40%,#121212 100%)" }}/>
+            </>
+          ) : (
+            /* Desktop: foto portrait en lado derecho, gradiente tapa el borde izquierdo */
+            <>
+              <div style={{ position:"absolute", right:0, top:0, bottom:0, width:"45%", overflow:"hidden" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={HERO_IMAGE} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center top" }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                {/* fade hacia la izquierda */}
+                <div style={{ position:"absolute", inset:0, background:"linear-gradient(to right,#0A1628 0%,transparent 40%)" }}/>
+              </div>
+              {/* gradiente bottom para fundir con el contenido */}
+              <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent 50%,#121212 100%)" }}/>
+              <div style={{ position:"absolute", top:-60, left:-60, width:320, height:320, borderRadius:"50%", background:"radial-gradient(circle,rgba(29,185,84,0.15) 0%,transparent 70%)", pointerEvents:"none" }}/>
+            </>
           )}
+
           <div style={{ position: "absolute", inset: 0, bottom: 32, display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${contentPadding}px 24px`, zIndex: 10 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill={G}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
