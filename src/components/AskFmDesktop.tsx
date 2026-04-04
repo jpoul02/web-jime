@@ -21,6 +21,15 @@ interface Stats {
 
 const LIMIT = 10;
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   if (diff < 60) return "hace un momento";
@@ -31,7 +40,7 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function AskFmDesktop({ initialAnswers, initialStats }: { initialAnswers: AnswerCard[]; initialStats: Stats | null }) {
-  const [answers, setAnswers] = useState<AnswerCard[]>(initialAnswers);
+  const [answers, setAnswers] = useState<AnswerCard[]>(() => shuffle(initialAnswers));
   const [stats] = useState<Stats | null>(initialStats);
   const [skip, setSkip] = useState(initialAnswers.length);
   const [hasMore, setHasMore] = useState(initialAnswers.length === LIMIT);
@@ -46,7 +55,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
       const data: { answers: AnswerCard[] } = await res.json();
       if (data.answers.length < LIMIT) setHasMore(false);
       if (data.answers.length > 0) {
-        setAnswers(prev => [...prev, ...data.answers]);
+        setAnswers(prev => [...prev, ...shuffle(data.answers)]);
         setSkip(prev => prev + data.answers.length);
       }
     } catch {
