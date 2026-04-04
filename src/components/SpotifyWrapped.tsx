@@ -596,7 +596,8 @@ function SlideCanciones({ apiSongs }: { apiSongs?: WrappedSong[] }) {
    SLIDE 7 — LA CANCIÓN DEL AÑO  (dark red · #1 song special)
 ───────────────────────────────────────────────────────────── */
 function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
-  const title  = firstSong ? firstSong.title : "Amigos Con Derecho";
+  // const title  = firstSong ? firstSong.title : "Amigos Con Derecho";
+  const title  = "Rabia - Joaquina"
   const artist = firstSong ? "Jimena Sings"  : "Joaquina";
   return (
     <div className="ws" style={{background:"#1A0A0A"}}>
