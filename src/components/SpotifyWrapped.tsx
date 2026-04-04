@@ -33,28 +33,28 @@ const topGenres = [
 ];
 
 const topSongs = [
-  { title: "Tití Me Preguntó",        artist: "Bad Bunny",              plays: 312 },
-  { title: "Flowers",                 artist: "Miley Cyrus",            plays: 287 },
-  { title: "Bzrp Music Sessions #52", artist: "Bizarrap, Quevedo",      plays: 254 },
-  { title: "As It Was",               artist: "Harry Styles",           plays: 231 },
-  { title: "Unholy",                  artist: "Sam Smith, Kim Petras",  plays: 198 },
+  { title: "Amigos Con Derecho",       artist: "Joaquina",               plays: 2847 },
+  { title: "Cupid (Twin Ver.)",        artist: "FIFTY FIFTY",            plays: 2631 },
+  { title: "Flores",                   artist: "Miley Cyrus",            plays: 2418 },
+  { title: "Seven",                    artist: "Jung Kook",              plays: 2204 },
+  { title: "Quevedo: Bzrp Session 52", artist: "Bizarrap, Quevedo",      plays: 1987 },
 ];
 
 const topAlbums = [
-  { title: "Un Verano Sin Ti",        artist: "Bad Bunny",    color: "#C9853A", emoji: "☀️" },
-  { title: "Endless Summer Vacation", artist: "Miley Cyrus",  color: "#B5547A", emoji: "🌊" },
-  { title: "Harry's House",           artist: "Harry Styles", color: "#7BA67E", emoji: "🏡" },
-  { title: "SOS",                     artist: "SZA",          color: "#3A5FA6", emoji: "🌊" },
-  { title: "Renaissance",             artist: "Beyoncé",      color: "#8B6914", emoji: "👑" },
+  { title: "Joaquina",           artist: "Joaquina",     color: "#9B4E97", emoji: "🎤" },
+  { title: "SOS",                artist: "SZA",          color: "#3A5FA6", emoji: "🌊" },
+  { title: "Renaissance",        artist: "Beyoncé",      color: "#8B6914", emoji: "👑" },
+  { title: "Harry's House",      artist: "Harry Styles", color: "#7BA67E", emoji: "🏡" },
+  { title: "Map of the Soul: 7", artist: "BTS",          color: "#C9853A", emoji: "✨" },
 ];
 
 const funStats = [
-  { label: "Hora pico de escucha",   value: "11PM",    icon: "🌙" },
-  { label: "Día más musical",        value: "Lunes",   icon: "📅" },
-  { label: "Año de tu vida con música", value: "87%",  icon: "🎵" },
-  { label: "Géneros distintos",      value: "38",      icon: "🎨" },
-  { label: "Artistas únicos",        value: "642",     icon: "⭐" },
-  { label: "Podcasts ignorados",     value: "∞",       icon: "😅" },
+  { label: "Hora pico de escucha",        value: "11PM",    icon: "🌙" },
+  { label: "Día más musical",             value: "Lunes",   icon: "📅" },
+  { label: "De tu vida con música",       value: "87%",     icon: "🎵" },
+  { label: "Géneros distintos",           value: "38",      icon: "🎨" },
+  { label: "Artistas únicos",             value: "642",     icon: "⭐" },
+  { label: "Podcasts ignorados",          value: "∞",       icon: "😅" },
 ];
 
 const bands = [
@@ -279,30 +279,30 @@ function SlideMinutos() {
       </svg>
 
       <div className="sc" style={{padding:"0 36px",position:"relative",zIndex:2,textAlign:"center"}}>
-        <p className="sc-label" style={{color:"#666",marginBottom:16}}>Este año escuchaste</p>
+        <p className="sc-label" style={{color:"#666",marginBottom:16}}>En 24 años escuchaste</p>
         <div style={{
           fontFamily:"'SM','Montserrat',sans-serif",
-          fontSize:"clamp(60px,18vw,145px)",
+          fontSize:"clamp(48px,14vw,120px)",
           fontWeight:900,
           color:"#7C6FCD",
           lineHeight:1,
           letterSpacing:-3,
           animation:"slideInLeft 0.5s 0.2s both",
           textShadow:"0 0 80px rgba(124,111,205,0.4)",
-        }}>87.432</div>
+        }}>2.103.840</div>
         <p style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(20px,4vw,30px)",fontWeight:800,color:"#fff",marginTop:4,animation:"fadeUp 0.5s 0.4s both"}}>
           minutos de música
         </p>
         <div style={{marginTop:24,display:"flex",justifyContent:"center",gap:28,animation:"fadeUp 0.5s 0.6s both"}}>
-          {[["61","días"],["1.457","horas"],["87.432","minutos"]].map(([val,unit],i)=>(
+          {[["1.461","días"],["35.064","horas"],["2.103.840","minutos"]].map(([val,unit],i)=>(
             <div key={i} style={{textAlign:"center"}}>
-              <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(22px,5vw,38px)",fontWeight:900,color:i===2?"#7C6FCD":"#fff"}}>{val}</div>
+              <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(18px,4vw,32px)",fontWeight:900,color:i===2?"#7C6FCD":"#fff"}}>{val}</div>
               <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,color:"#666",textTransform:"uppercase",letterSpacing:1}}>{unit}</div>
             </div>
           ))}
         </div>
         <p style={{fontFamily:"'Montserrat',sans-serif",fontSize:14,color:"#888",marginTop:28,lineHeight:1.6,animation:"fadeUp 0.5s 0.8s both"}}>
-          Eso equivale a no dormir <strong style={{color:"#fff"}}>2 meses seguidos</strong>.<br/>Imparable, Jime.
+          Eso equivale a pasar <strong style={{color:"#fff"}}>4 años enteros</strong> sin dormir, solo escuchando.<br/>Imparable, Jime.
         </p>
       </div>
     </div>
@@ -377,7 +377,7 @@ function SlideArtista() {
       <div className="logo-tr"><SpotifyLogo size={24}/></div>
 
       <div className="sc" style={{padding:"0 36px",position:"relative",zIndex:2,textAlign:"center"}}>
-        <p className="sc-label" style={{color:"#888"}}>Tu artista #1</p>
+        <p className="sc-label" style={{color:"#888"}}>Tu artista #1 — 24 años</p>
         <div style={{
           fontFamily:"'SM','Montserrat',sans-serif",
           fontSize:"clamp(44px,13vw,105px)",
@@ -388,18 +388,18 @@ function SlideArtista() {
           animation:"slideInLeft 0.6s 0.3s both",
           textShadow:"0 0 40px rgba(255,255,255,0.1)",
         }}>
-          BAD<br/>BUNNY
+          JOA-<br/>QUINA
         </div>
         <div style={{marginTop:24,display:"flex",justifyContent:"center",gap:16,flexWrap:"wrap",animation:"fadeUp 0.5s 0.55s both"}}>
           <div style={{background:"rgba(255,214,0,0.15)",border:"1px solid rgba(255,214,0,0.4)",borderRadius:40,padding:"8px 20px"}}>
             <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:13,fontWeight:700,color:"#FFD600"}}>Top 2% fan</span>
           </div>
           <div style={{background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:40,padding:"8px 20px"}}>
-            <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:13,fontWeight:700,color:"#ccc"}}>312 minutos</span>
+            <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:13,fontWeight:700,color:"#ccc"}}>2.847 minutos</span>
           </div>
         </div>
         <p style={{fontFamily:"'Montserrat',sans-serif",fontSize:14,color:"#888",marginTop:20,lineHeight:1.6,animation:"fadeUp 0.5s 0.7s both"}}>
-          No hay verano que valga sin sus canciones.
+          Su voz te llegó directo al pecho — y no salió más.
         </p>
       </div>
     </div>
@@ -602,8 +602,8 @@ function SlideCanciones({ apiSongs }: { apiSongs?: WrappedSong[] }) {
    SLIDE 7 — LA CANCIÓN DEL AÑO  (dark red · #1 song special)
 ───────────────────────────────────────────────────────────── */
 function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
-  const title  = firstSong ? firstSong.title : "Tití Me Preguntó";
-  const artist = firstSong ? "Jimena Sings"  : "Bad Bunny";
+  const title  = firstSong ? firstSong.title : "Amigos Con Derecho";
+  const artist = firstSong ? "Jimena Sings"  : "Joaquina";
   return (
     <div className="ws" style={{background:"#1A0A0A"}}>
       {/* Pulsing ring */}
@@ -628,7 +628,7 @@ function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
           animation:"pulse 3s ease-in-out infinite",
         }}>
           <span style={{fontSize:14}}>🔥</span>
-          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,fontWeight:700,color:"#E8143F",letterSpacing:2,textTransform:"uppercase"}}>Canción del año</span>
+          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,fontWeight:700,color:"#E8143F",letterSpacing:2,textTransform:"uppercase"}}>La canción de tu vida</span>
         </div>
         <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(28px,7vw,58px)",fontWeight:900,color:"#fff",lineHeight:1.1,animation:"slideInLeft 0.6s 0.25s both"}}>
           {title}
@@ -642,7 +642,7 @@ function SlideCancionDelAnio({ firstSong }: { firstSong?: WrappedSong }) {
           maxWidth:340,margin:"28px auto 0",
           animation:"fadeUp 0.5s 0.55s both",
         }}>
-          {[["312","reproducciones"],["4:06","duración media"],["#1","en tu top"],["🇵🇷","tu verano"]].map(([val,lbl],i)=>(
+          {[["2.847","reproducciones"],["3:48","duración media"],["#1","en 24 años"],["❤️","tu canción"]].map(([val,lbl],i)=>(
             <div key={i} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:10,padding:"14px"}}>
               <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:24,fontWeight:900,color:"#fff",lineHeight:1}}>{val}</div>
               <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,color:"#666",textTransform:"uppercase",letterSpacing:1,marginTop:4}}>{lbl}</div>
