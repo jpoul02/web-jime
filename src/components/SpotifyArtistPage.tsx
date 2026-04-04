@@ -75,7 +75,7 @@ const BANDS = [
   { name: "Todos mis amigos se llaman Javier", role: "Voz principal", years: "2025–presente" },
   { name: "Coro Nacional",                     role: "Soprano",       years: "2025–presente" },
   { name: "Banda Pop",                         role: "Voz",           years: "2025–presente" },
-  { name: "Coro Universitario",                role: "Contralto",     years: "2022–presente" },
+  { name: "Coro Universitario",                role: "Soprano",     years: "2022–presente" },
   { name: "Coro Esperanza Azteca",             role: "Soprano",       years: "2015–2017"     },
   { name: "Coro Alianza Francesa",             role: "Soprano",       years: "2026"          },
 ];
