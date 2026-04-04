@@ -8,7 +8,7 @@ export const metadata = {
 
 export default async function AskPage() {
   const [answersRes, statsRes] = await Promise.all([
-    fetch(`${API}/postales/answers-feed?skip=0&limit=10`, { cache: "no-store" }).catch(() => null),
+    fetch(`${API}/postales/answers-feed?skip=0&limit=500`, { cache: "no-store" }).catch(() => null),
     fetch(`${API}/postales/stats`, { cache: "no-store" }).catch(() => null),
   ]);
 

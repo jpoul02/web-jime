@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video, Music } from "lucide-react";
 
 interface AnswerCard {
@@ -19,7 +19,14 @@ interface Stats {
   total_answers: number;
 }
 
-const LIMIT = 10;
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -31,41 +38,9 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function AskFmDesktop({ initialAnswers, initialStats }: { initialAnswers: AnswerCard[]; initialStats: Stats | null }) {
-  const [answers, setAnswers] = useState<AnswerCard[]>(initialAnswers);
+  // Shuffle once on mount — all answers arrive in one request so no pagination duplicates
+  const answers = useMemo(() => shuffle(initialAnswers), [initialAnswers]);
   const [stats] = useState<Stats | null>(initialStats);
-  const [skip, setSkip] = useState(initialAnswers.length);
-  const [hasMore, setHasMore] = useState(initialAnswers.length === LIMIT);
-  const [loading, setLoading] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-
-  const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/answers?skip=${skip}&limit=${LIMIT}`);
-      const data: { answers: AnswerCard[] } = await res.json();
-      if (data.answers.length < LIMIT) setHasMore(false);
-      if (data.answers.length > 0) {
-        setAnswers(prev => [...prev, ...data.answers]);
-        setSkip(prev => prev + data.answers.length);
-      }
-    } catch {
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, hasMore, skip]);
-
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      entries => { if (entries[0].isIntersecting) loadMore(); },
-      { rootMargin: "200px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [loadMore]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EAEDF2] font-[family-name:var(--font-geist-sans)]">
@@ -150,7 +125,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
           </div>
 
           {/* Empty state */}
-          {answers.length === 0 && !loading && (
+          {answers.length === 0 && (
             <div className="bg-white rounded-lg p-10 flex flex-col items-center gap-3 text-center">
               <MessageCircle size={40} color="#CCCCCC" />
               <p className="text-[#333333] font-semibold">Todavía no hay respuestas</p>
@@ -196,14 +171,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
             </div>
           ))}
 
-          {/* Sentinel */}
-          <div ref={sentinelRef} style={{ height: 1 }} />
-
-          {loading && (
-            <div className="text-center py-6 text-[#999999] text-sm">Cargando más...</div>
-          )}
-
-          {!hasMore && answers.length > 0 && (
+          {answers.length > 0 && (
             <div className="text-center py-8 text-[#999999] text-sm">
               Ya leíste todas las respuestas ✨
             </div>

@@ -72,9 +72,12 @@ interface NowPlaying {
 
 /* ── Static data ──────────────────────────────────────────── */
 const BANDS = [
-  { name: "Voz de Ángeles Coro",              role: "Soprano",       years: "2018–2022"    },
-  { name: "Todos mis amigos se llaman Javier", role: "Voz principal", years: "2021–presente"},
-  { name: "Coro Universitario",               role: "Contralto",     years: "2023–presente"},
+  { name: "Todos mis amigos se llaman Javier", role: "Voz principal", years: "2025–presente" },
+  { name: "Coro Nacional",                     role: "Soprano",       years: "2025–presente" },
+  { name: "Banda Pop",                         role: "Voz",           years: "2025–presente" },
+  { name: "Coro Universitario",                role: "Contralto",     years: "2022–presente" },
+  { name: "Coro Esperanza Azteca",             role: "Soprano",       years: "2015–2017"     },
+  { name: "Coro Alianza Francesa",             role: "Soprano",       years: "2026"          },
 ];
 
 /* ── SVG helpers ──────────────────────────────────────────── */
@@ -795,7 +798,7 @@ export default function SpotifyArtistPage() {
                 </div>
               </div>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.7, margin: "0 0 20px" }}>
-                Cantante, compositora y alma musical nacida para el escenario. Con una voz que va del pop al K-Pop y del reggaetón al R&amp;B, Jimena construyó su sonido entre coros universitarios y tardes de Club Penguin.
+                Cantante, compositora y alma musical nacida para el escenario. Con una voz que va del pop latino al rock y del trap al vallenato, Jimena construyó su sonido entre coros universitarios y tardes de Club Penguin.
               </p>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 }}>Proyectos musicales</div>
@@ -824,7 +827,7 @@ export default function SpotifyArtistPage() {
               >
                 <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <SpotifyLogo size={22} color="#000" />
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#000", letterSpacing: 2, textTransform: "uppercase" }}>2025</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#000", letterSpacing: 2, textTransform: "uppercase" }}>2002 – 2026</span>
                 </div>
                 <div style={{ position: "relative", height: 180, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
                   {[120, 90, 64, 44].map((s, i) => (
@@ -835,16 +838,16 @@ export default function SpotifyArtistPage() {
                 <div style={{ padding: "0 24px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
                   <div>
                     <div style={{ fontSize: 22, fontWeight: 900, color: "#1a1a1a" }}>Tu Wrapped</div>
-                    <div style={{ fontSize: 14, color: "#555", marginTop: 2 }}>2025 · El año de Jime</div>
+                    <div style={{ fontSize: 14, color: "#555", marginTop: 2 }}>2002 – 2026 · 24 años de Jime</div>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {["K-Pop", "R&B", "Latin Pop", "Reggaetón"].map(g => (
+                    {["Pop Latino", "Rock", "Trap Latino", "Vallenato"].map(g => (
                       <span key={g} style={{ fontSize: 11, fontWeight: 700, background: "rgba(26,26,26,0.12)", padding: "3px 10px", borderRadius: 12, color: "#1a1a1a" }}>{g}</span>
                     ))}
                   </div>
                   <button style={{ background: "#1a1a1a", border: "none", borderRadius: 24, padding: "12px 0", width: "100%", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "var(--font-spotify), sans-serif" }}>
                     <PlayIcon size={14} color="#fff" />
-                    Ver Wrapped 2025
+                    Ver Wrapped 2002 – 2026
                   </button>
                 </div>
               </div>

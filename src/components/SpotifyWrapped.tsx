@@ -25,27 +25,27 @@ const FAKE_PLAYS   = [312, 287, 254, 231, 198];
    DATA
 ───────────────────────────────────────────────────────────── */
 const topGenres = [
-  { name: "K-Pop",     pct: 92 },
-  { name: "R&B",       pct: 78 },
-  { name: "Latin Pop", pct: 61 },
-  { name: "Reggaetón", pct: 47 },
-  { name: "Indie",     pct: 33 },
+  { name: "Pop Latino",  pct: 89 },
+  { name: "Rock",        pct: 71 },
+  { name: "Trap Latino", pct: 58 },
+  { name: "Vallenato",   pct: 43 },
+  { name: "R&B / Funk",  pct: 36 },
 ];
 
 const topSongs = [
-  { title: "Amigos Con Derecho",       artist: "Joaquina",               plays: 2847 },
-  { title: "Cupid (Twin Ver.)",        artist: "FIFTY FIFTY",            plays: 2631 },
-  { title: "Flores",                   artist: "Miley Cyrus",            plays: 2418 },
-  { title: "Seven",                    artist: "Jung Kook",              plays: 2204 },
-  { title: "Quevedo: Bzrp Session 52", artist: "Bizarrap, Quevedo",      plays: 1987 },
+  { title: "Amigos Con Derecho",  artist: "Joaquina",    plays: 2847 },
+  { title: "How to Save a Life",  artist: "The Fray",    plays: 2631 },
+  { title: "Riri",                artist: "Young Miko",  plays: 2418 },
+  { title: "Nena Trampa",         artist: "PXNDX",       plays: 2204 },
+  { title: "Africa",              artist: "Toto",        plays: 1987 },
 ];
 
 const topAlbums = [
-  { title: "Joaquina",           artist: "Joaquina",     color: "#9B4E97", emoji: "🎤" },
-  { title: "SOS",                artist: "SZA",          color: "#3A5FA6", emoji: "🌊" },
-  { title: "Renaissance",        artist: "Beyoncé",      color: "#8B6914", emoji: "👑" },
-  { title: "Harry's House",      artist: "Harry Styles", color: "#7BA67E", emoji: "🏡" },
-  { title: "Map of the Soul: 7", artist: "BTS",          color: "#C9853A", emoji: "✨" },
+  { title: "Joaquina",               artist: "Joaquina",    color: "#9B4E97", emoji: "🎤" },
+  { title: "Para Ti Con Desprecio",  artist: "PXNDX",       color: "#E8143F", emoji: "🎸" },
+  { title: "How to Save a Life",     artist: "The Fray",    color: "#3A5FA6", emoji: "🎹" },
+  { title: "Más + Corazón Profundo", artist: "Carlos Vives",color: "#C9853A", emoji: "🪗" },
+  { title: "24K Magic",              artist: "Bruno Mars",  color: "#8B6914", emoji: "✨" },
 ];
 
 const funStats = [
@@ -58,9 +58,12 @@ const funStats = [
 ];
 
 const bands = [
-  { name: "Voz de Ángeles Coro",                  role: "Soprano",       years: "2018–2022",    color: "#7C6FCD" },
-  { name: "Todos mis amigos se llaman Javier",    role: "Voz principal", years: "2021–presente", color: "#E8143F" },
-  { name: "Coro Universitario",                   role: "Contralto",     years: "2023–presente", color: "#1DB954" },
+  { name: "Todos mis amigos se llaman Javier", role: "Voz principal", years: "2025–presente", color: "#E8143F" },
+  { name: "Coro Nacional",                     role: "Soprano",       years: "2025–presente", color: "#7C6FCD" },
+  { name: "Banda Pop",                         role: "Voz",           years: "2025–presente", color: "#1DB954" },
+  { name: "Coro Universitario",                role: "Contralto",     years: "2022–presente", color: "#FFD600" },
+  { name: "Coro Esperanza Azteca",             role: "Soprano",       years: "2015–2017",     color: "#C9853A" },
+  { name: "Coro Alianza Francesa",             role: "Soprano",       years: "2026",          color: "#3A5FA6" },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -241,7 +244,7 @@ function SlideUniverso() {
           música sin parar
         </div>
         <div style={{marginTop:32,display:"flex",gap:20,flexWrap:"wrap",animation:"fadeUp 0.6s 0.75s both"}}>
-          {[["🎵","642 artistas"],["🌍","38 géneros"],["📅","desde 2002"]].map(([ico,lbl],i)=>(
+          {[["🎵","642 artistas"],["🌍","24 géneros"],["📅","desde 2002"]].map(([ico,lbl],i)=>(
             <div key={i} style={{background:"rgba(124,111,205,0.15)",border:"1px solid rgba(124,111,205,0.3)",borderRadius:40,padding:"8px 18px",display:"flex",alignItems:"center",gap:8}}>
               <span style={{fontSize:16}}>{ico}</span>
               <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:13,fontWeight:700,color:"#ccc"}}>{lbl}</span>
@@ -831,7 +834,7 @@ function SlideJimeArtista() {
               display:"flex",alignItems:"center",
               background:"rgba(0,0,0,0.04)",
               border:"1px solid rgba(0,0,0,0.08)",
-              borderLeft:`3px solid ${["#7C6FCD","#E8143F","#1DB954"][i]}`,
+              borderLeft:`3px solid ${b.color}`,
               borderRadius:4,padding:"10px 14px",gap:12,
             }}>
               <div style={{flex:1}}>
@@ -883,7 +886,7 @@ function SlideEnEscena() {
             <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:800,letterSpacing:2,textTransform:"uppercase",color:"#fff"}}>Tu banda</span>
           </div>
           <div style={{background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",padding:"5px 14px",display:"flex",alignItems:"center"}}>
-            <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:"#888",letterSpacing:1}}>2021 – presente</span>
+            <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:"#888",letterSpacing:1}}>2025 – presente</span>
           </div>
         </div>
 
@@ -926,7 +929,7 @@ function SlideEnEscena() {
 
         {/* Info row */}
         <div style={{display:"flex",flexWrap:"wrap",gap:"clamp(6px,1.5vw,12px)",marginTop:20,animation:"fadeUp 0.5s 0.58s both"}}>
-          {[["🎤","Voz principal"],["🎸","Rock / Indie Pop"],["📅","4 años juntos"],["👥","5 integrantes"],["🎵","Covers + originales"],["🏟️","Shows en vivo"]].map(([ico,txt],i)=>(
+          {[["🎤","Voz principal"],["🎸","Pop Punk / Rock"],["📅","4 años juntos"],["👥","5 integrantes"],["🎵","Covers + originales"],["🏟️","Shows en vivo"]].map(([ico,txt],i)=>(
             <div key={i} style={{
               background:"rgba(255,255,255,0.05)",
               border:"1px solid rgba(255,255,255,0.1)",
@@ -1329,12 +1332,12 @@ function SlideFin() {
           lineHeight:0.88,
           animation:"slideInLeft 0.6s 0.3s both",
         }}>
-          2025<br/>
+          2002 – 2026<br/>
           <span style={{color:"#1DB954",fontStyle:"italic"}}>en música</span>
         </div>
         <p style={{fontFamily:"'Montserrat',sans-serif",fontSize:15,color:"#888",marginTop:20,lineHeight:1.7,animation:"fadeUp 0.5s 0.55s both"}}>
           Gracias por escuchar, crear y sentir.<br/>
-          <strong style={{color:"#fff"}}>Hasta el 2026, Jime ♪</strong>
+          <strong style={{color:"#fff"}}>24 años de música, Jime ♪</strong>
         </p>
         <Link href="/" style={{
           display:"inline-block",marginTop:32,
