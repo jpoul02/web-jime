@@ -421,17 +421,8 @@ function SlideArtistaDive() {
         width:"clamp(50%,58%,62%)",
         overflow:"hidden",
       }}>
-        {/* Reemplazá este div por: <img src="/jime-joaquina.jpg" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}}/> */}
-        <div style={{
-          width:"100%", height:"100%",
-          background:"linear-gradient(160deg, #1a0d2e 0%, #4a2060 30%, #9B4E97 60%, #E8143F 100%)",
-          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,
-        }}>
-          <div style={{fontSize:72, animation:"float 4s ease-in-out infinite"}}>🎤✨</div>
-          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:9,color:"rgba(255,255,255,0.4)",textTransform:"uppercase",letterSpacing:2,textAlign:"center",padding:"0 20px"}}>
-            Añadí foto de Jime + Joaquina aquí
-          </span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/jime-joaquina.png" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime + Joaquina"/>
         {/* Scan lines grunge */}
         <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px)",pointerEvents:"none"}}/>
         {/* Gradient fade to right */}
@@ -976,28 +967,8 @@ function SlidePhotoCantando() {
   return (
     <div className="ws" style={{background:"#000",overflow:"hidden"}}>
 
-      {/* ══════════════════════════════════════════════════════
-          FOTO FULL-BLEED
-          Para poner tu foto real, reemplazá este <div> con:
-          <img
-            src="/jime-cantando.jpg"
-            style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}}
-            alt="Jime cantando"
-          />
-      ══════════════════════════════════════════════════════ */}
-      <div style={{
-        position:"absolute",inset:0,
-        background:"linear-gradient(150deg,#0a0015 0%,#1a0830 25%,#3d1060 55%,#7C6FCD 85%,#9B4E97 100%)",
-      }}>
-        {/* Placeholder icon */}
-        <div style={{
-          position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-55%)",
-          fontSize:"clamp(80px,18vw,160px)",opacity:0.1,pointerEvents:"none",
-          animation:"pulse 4s ease-in-out infinite",
-        }}>🎤</div>
-        {/* Scan lines */}
-        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px)",pointerEvents:"none"}}/>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/jime-cantando.jpg" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime cantando"/>
 
       {/* Gradient overlay — oscurece abajo para leer el texto */}
       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%)",pointerEvents:"none"}}/>
@@ -1083,26 +1054,8 @@ function SlidePhotoMusica() {
   return (
     <div className="ws" style={{background:"#000",overflow:"hidden"}}>
 
-      {/* ══════════════════════════════════════════════════════
-          FOTO FULL-BLEED
-          Reemplazá este <div> con:
-          <img
-            src="/jime-musica-juntas.jpg"
-            style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}}
-            alt="Haciendo música juntas"
-          />
-      ══════════════════════════════════════════════════════ */}
-      <div style={{
-        position:"absolute",inset:0,
-        background:"linear-gradient(135deg,#0d0a00 0%,#1a1200 20%,#3d2e00 50%,#C9853A 85%,#E8A020 100%)",
-      }}>
-        <div style={{
-          position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-55%)",
-          fontSize:"clamp(80px,18vw,160px)",opacity:0.08,pointerEvents:"none",
-          animation:"pulse 4s ease-in-out infinite 0.5s",
-        }}>🎶</div>
-        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.1) 3px,rgba(0,0,0,0.1) 4px)",pointerEvents:"none"}}/>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/haciendo-juntos.jpg" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}} alt="Haciendo música juntas"/>
 
       {/* Overlays */}
       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.05) 100%)",pointerEvents:"none"}}/>
@@ -1133,7 +1086,7 @@ function SlidePhotoMusica() {
           animation:"fadeUp 0.4s 0.2s both",
         }}>
           <span style={{fontSize:12}}>✨</span>
-          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:"#C9853A",letterSpacing:2,textTransform:"uppercase"}}>Haciendo música juntas</span>
+          <span style={{fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,color:"#C9853A",letterSpacing:2,textTransform:"uppercase"}}>Haciendo música juntos</span>
         </div>
 
         <div style={{
