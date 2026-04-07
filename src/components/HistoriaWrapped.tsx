@@ -16,6 +16,8 @@ type Momento = {
   emoji?: string;
 };
 
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+
 /* ─── Tokens (mismos que HistoriaTimeline) ────────────────────────────── */
 const PF    = "'Playfair Display', Georgia, serif";
 const GM    = "var(--font-geist-mono), 'Courier New', monospace";
@@ -26,25 +28,6 @@ const CREAM = "#F3EBE2";
 const DARK  = "#1A1A1A";
 const MID   = "#3D3D3D";
 
-/* ─── Momentos (reemplazar con datos reales) ──────────────────────────── */
-const MOMENTS: Momento[] = [
-  {
-    num: "01.",
-    date: "FINALES DE 2022",
-    title: "El Coro",
-    desc: "Nos conocimos en el coro. No hubo un día exacto, solo el momento en que dos personas compartieron el mismo espacio sin saber lo que vendría después.",
-    type: "text",
-  },
-  {
-    num: "02.",
-    date: "2022 — 2023",
-    title: "Mismos Pasillos,\nPoco Contacto",
-    desc: "Participamos juntos, compartimos espacios, pero casi no hablamos. A veces los mejores comienzos son los que ni notás en el momento.",
-    type: "fullbleed",
-    img: "/haciendo-sin-conocernos.webp",
-  },
-  // Agregá más momentos aquí
-];
 
 /* ─── Slide renderers ─────────────────────────────────────────────────── */
 
@@ -170,13 +153,33 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
   const [prevIdx, setPrevIdx]       = useState<number | null>(null);
   const [direction, setDirection]   = useState<1 | -1>(1);
   const [transitioning, setTrans]   = useState(false);
+  const [moments, setMoments]       = useState<Momento[]>([]);
+  const [loading, setLoading]       = useState(true);
   const touchStartX                 = useRef<number | null>(null);
   const idxRef                      = useRef(0);
-  const total                       = MOMENTS.length;
+  const total                       = moments.length;
   const DUR                         = 300;
 
   useEffect(() => { idxRef.current = idx; }, [idx]);
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    fetch(`${API}/historia/slides`)
+      .then(r => r.json())
+      .then((data: Array<{ id: number; date: string; title: string; desc: string; type: string; img_url: string | null; emoji?: string | null; order: number }>) => {
+        setMoments(data.map((s, i) => ({
+          num: String(i + 1).padStart(2, "0") + ".",
+          date: s.date,
+          title: s.title,
+          desc: s.desc,
+          type: s.type as "text" | "arch" | "fullbleed",
+          img: s.img_url ?? undefined,
+          emoji: s.emoji ?? undefined,
+        })));
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   /* Bloquear scroll del body */
   useEffect(() => {
@@ -249,7 +252,7 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
         display: "flex", gap: 3, padding: "10px 12px 0",
         pointerEvents: "none",
       }}>
-        {MOMENTS.map((_, i) => (
+        {moments.map((_, i) => (
           <div key={i} style={{
             flex: 1, height: 2, borderRadius: 2,
             background: i <= idx ? TERRA : "rgba(197,190,182,0.35)",
@@ -284,13 +287,27 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
 
       {/* ── Slides con transición horizontal ── */}
       <div style={{ position: "absolute", inset: 0 }}>
+        {(loading || moments.length === 0) && (
+          <div style={{
+            position: "absolute", inset: 0, background: CREAM,
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            gap: 12, zIndex: 5,
+          }}>
+            <span style={{ fontFamily: PF, fontSize: 48, fontStyle: "italic", color: TERRA }}>
+              {loading ? "..." : "♥"}
+            </span>
+            <p style={{ fontFamily: GS, fontSize: 14, color: MUTED, margin: 0 }}>
+              {loading ? "Cargando nuestra historia..." : "No hay momentos todavía."}
+            </p>
+          </div>
+        )}
         {/* Slide saliente */}
         {prevIdx !== null && (
           <div style={{
             position: "absolute", inset: 0,
             animation: `hw-out-${direction === 1 ? "left" : "right"} ${easing}`,
           }}>
-            {renderSlide(MOMENTS[prevIdx])}
+            {renderSlide(moments[prevIdx])}
           </div>
         )}
         {/* Slide entrante */}
@@ -300,7 +317,7 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
             ? `hw-in-${direction === 1 ? "right" : "left"} ${easing}`
             : "none",
         }}>
-          {renderSlide(MOMENTS[idx])}
+          {renderSlide(moments[idx])}
         </div>
       </div>
 
