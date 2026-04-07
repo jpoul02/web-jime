@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import HistoriaWrapped from "./HistoriaWrapped";
 
 /* ─── Nav links ───────────────────────────────────────────────────────── */
 const NAV_LINKS = [
@@ -17,14 +18,6 @@ const NAV_LINKS = [
 /* ─── Images ──────────────────────────────────────────────────────────── */
 const HERO_BG =
   "https://images.unsplash.com/photo-1773845597388-f89489cb82f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1440";
-const EV1_IMG =
-  "https://images.unsplash.com/photo-1753351050724-511764d227e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600";
-const EV2_IMG =
-  "https://images.unsplash.com/photo-1772868357377-e468349c66fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600";
-const EV3_IMG =
-  "https://images.unsplash.com/photo-1764267703921-94e44d9e905b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600";
-const EV4_IMG =
-  "https://images.unsplash.com/photo-1768899818349-33f81e1555d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600";
 const GRID_IMGS = [
   "https://images.unsplash.com/photo-1763328709918-d18a45bd562f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
   "https://images.unsplash.com/photo-1766043373216-eca380b43a79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
@@ -46,66 +39,14 @@ const CREAM = "#F3EBE2";
 const DARK  = "#1A1A1A";
 const MID   = "#3D3D3D";
 
-/* ─── Timeline events ─────────────────────────────────────────────────── */
-const EVENTS = [
-  {
-    num: "01.",
-    date: "15 MAR 2020",
-    title: "El Día que\nNos Conocimos",
-    desc: "Una cafetería, dos desconocidos, y una conversación que nunca terminó. El universo conspiró para que nuestros caminos se cruzaran ese día.",
-    img: EV1_IMG,
-    side: "left" as const,
-  },
-  {
-    num: "02.",
-    date: "28 ABR 2020",
-    title: "Primera\nCita Oficial",
-    desc: "Una cena que se convirtió en un paseo bajo las estrellas. Esa noche supimos que esto era más que una simple coincidencia.",
-    img: EV2_IMG,
-    side: "right" as const,
-  },
-  {
-    num: "03.",
-    date: "12 DIC 2020",
-    title: "Primer Viaje\nJuntos",
-    desc: "Las maletas, la carretera y miles de risas. Descubrimos que viajar juntos era nuestra forma favorita de ser felices.",
-    img: EV3_IMG,
-    side: "left" as const,
-  },
-  {
-    num: "04.",
-    date: "15 MAR 2021",
-    title: "Un Año\nde Nosotros",
-    desc: "365 días de aprender a amarnos mejor. Celebramos con la promesa de que esto apenas comenzaba.",
-    img: EV4_IMG,
-    side: "right" as const,
-  },
-];
-
 /* ─── Helper ──────────────────────────────────────────────────────────── */
 // eslint-disable-next-line @next/next/no-img-element
 const Img = (p: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...p} alt={p.alt ?? ""} />;
 
-/* ─── Arched photo ────────────────────────────────────────────────────── */
-function ArchPhoto({ src, width = 200, height = 280 }: { src: string; width?: number; height?: number }) {
-  return (
-    <div
-      style={{
-        width,
-        height,
-        flexShrink: 0,
-        overflow: "hidden",
-        borderRadius: `${width / 2}px ${width / 2}px 0 0`,
-      }}
-    >
-      <Img src={src} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-    </div>
-  );
-}
-
 /* ═══════════════════════════════════════════════════════════════════════ */
 export default function HistoriaTimeline() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [wrappedOpen, setWrappedOpen] = useState(false);
 
   return (
     <div style={{ fontFamily: GS, background: CREAM, overflowX: "hidden" }}>
@@ -187,120 +128,25 @@ export default function HistoriaTimeline() {
             ser recordado. Esta es la nuestra.
           </p>
 
-          <span style={{ fontFamily: GM, fontSize: 10, letterSpacing: 3, color: TERRA }}>Scroll →</span>
+          <button
+            onClick={() => setWrappedOpen(true)}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: 0,
+              fontFamily: GM, fontSize: 10, letterSpacing: 3, color: TERRA,
+              display: "inline-flex", alignItems: "center", gap: 8,
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = "0.65")}
+            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+          >
+            ▶ MODO WRAPPED
+          </button>
         </div>
 
         {/* EST. year — bottom right */}
         <span style={{ position: "absolute", bottom: "clamp(48px, 6vw, 80px)", right: "clamp(24px, 8.3vw, 120px)", fontFamily: GM, fontSize: 10, letterSpacing: 3, color: "#666" }}>
           EST. 2020
         </span>
-      </section>
-
-      {/* ══ TIMELINE ══════════════════════════════════════════════════════ */}
-      <section style={{ background: "#FAFAF8", padding: "80px 0 100px", position: "relative" }}>
-        {/* Section label */}
-        <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: MUTED, margin: "0 0 60px clamp(24px, 6.9vw, 100px)" }}>
-          LÍNEA DEL TIEMPO
-        </p>
-
-        {/* ── Desktop timeline (md+) ─────────────────────────────────────
-            ONE center line. Each event occupies the full row width.
-            Left events fill the left half; right events fill the right half.
-            No 2-col grid — prevents the "two parallel tracks" illusion.
-        ── */}
-        <div className="hidden md:block" style={{ position: "relative" }}>
-
-          {/* THE single center line */}
-          <div style={{
-            position: "absolute",
-            left: "50%",
-            top: 0,
-            bottom: 0,
-            width: 1,
-            background: MUTED,
-            transform: "translateX(-50%)",
-            zIndex: 0,
-          }} />
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 80 }}>
-            {EVENTS.map((ev) => (
-              <div
-                key={ev.num}
-                style={{
-                  /* Full width row; content placed on the correct half */
-                  display: "flex",
-                  width: "100%",
-                  justifyContent: ev.side === "left" ? "flex-start" : "flex-end",
-                  position: "relative",
-                  zIndex: 1,
-                }}
-              >
-                {/* Dot on the center line */}
-                <div style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: 24,
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: TERRA,
-                  transform: "translate(-50%, 0)",
-                  zIndex: 2,
-                }} />
-
-                {/* Event card — takes up ~46% of the width, leaves room for center line */}
-                <div
-                  style={{
-                    width: "46%",
-                    display: "flex",
-                    flexDirection: ev.side === "left" ? "row" : "row-reverse",
-                    alignItems: "flex-start",
-                    gap: 24,
-                    paddingLeft: ev.side === "left" ? "clamp(24px, 6.9vw, 100px)" : 48,
-                    paddingRight: ev.side === "right" ? "clamp(24px, 6.9vw, 100px)" : 48,
-                  }}
-                >
-                  <ArchPhoto src={ev.img} />
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-                    <span style={{ fontFamily: PF, fontSize: 64, fontStyle: "italic", color: TERRA, lineHeight: 1 }}>{ev.num}</span>
-                    <span style={{ fontFamily: GM, fontSize: 9, letterSpacing: 3, color: MUTED }}>{ev.date}</span>
-                    <h3 style={{ fontFamily: PF, fontSize: 28, fontStyle: "italic", color: DARK, lineHeight: 1.2, margin: 0, whiteSpace: "pre-line" }}>{ev.title}</h3>
-                    <p style={{ fontFamily: GS, fontSize: 13, color: MID, lineHeight: 1.7, margin: 0, maxWidth: 280 }}>{ev.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Mobile: single column ── */}
-        {/* Wrapper sin display inline para que md:hidden pueda sobreescribir */}
-        <div className="md:hidden">
-        <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 56, position: "relative" }}>
-          {/* Single left line */}
-          <div style={{ position: "absolute", left: 44, top: 0, bottom: 0, width: 1, background: MUTED }} />
-
-          {EVENTS.map((ev) => (
-            <div key={ev.num} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-              {/* Dot on the line */}
-              <div style={{ flexShrink: 0, width: 40, display: "flex", justifyContent: "center", paddingTop: 20 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: TERRA, flexShrink: 0 }} />
-              </div>
-
-              {/* Content */}
-              <div style={{ flex: 1 }}>
-                <ArchPhoto src={ev.img} width={140} height={190} />
-                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 6 }}>
-                  <span style={{ fontFamily: PF, fontSize: 44, fontStyle: "italic", color: TERRA, lineHeight: 1 }}>{ev.num}</span>
-                  <span style={{ fontFamily: GM, fontSize: 9, letterSpacing: 3, color: MUTED }}>{ev.date}</span>
-                  <h3 style={{ fontFamily: PF, fontSize: 22, fontStyle: "italic", color: DARK, lineHeight: 1.25, margin: 0, whiteSpace: "pre-line" }}>{ev.title}</h3>
-                  <p style={{ fontFamily: GS, fontSize: 13, color: MID, lineHeight: 1.7, margin: 0 }}>{ev.desc}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        </div>{/* end md:hidden wrapper */}
       </section>
 
       {/* ══ QUOTE ═════════════════════════════════════════════════════════ */}
@@ -408,6 +254,7 @@ export default function HistoriaTimeline() {
         </div>
       </section>
 
+      {wrappedOpen && <HistoriaWrapped onClose={() => setWrappedOpen(false)} />}
     </div>
   );
 }
