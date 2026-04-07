@@ -131,15 +131,26 @@ export default function HistoriaTimeline() {
           <button
             onClick={() => setWrappedOpen(true)}
             style={{
-              background: "none", border: "none", cursor: "pointer", padding: 0,
-              fontFamily: GM, fontSize: 10, letterSpacing: 3, color: TERRA,
-              display: "inline-flex", alignItems: "center", gap: 8,
-              transition: "opacity 0.2s",
+              marginTop: 8,
+              background: TERRA,
+              border: "none",
+              borderRadius: 40,
+              padding: "clamp(12px,1.5vw,16px) clamp(24px,3vw,40px)",
+              color: "#fff",
+              fontFamily: PF,
+              fontSize: "clamp(15px,1.6vw,19px)",
+              fontStyle: "italic",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              boxShadow: "0 4px 24px rgba(212,145,110,0.45)",
+              transition: "transform 0.15s, filter 0.2s",
             }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "0.65")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.04)"; e.currentTarget.style.filter = "brightness(1.12)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)";    e.currentTarget.style.filter = "brightness(1)"; }}
           >
-            ▶ MODO WRAPPED
+            Ver nuestra historia ▶
           </button>
         </div>
 

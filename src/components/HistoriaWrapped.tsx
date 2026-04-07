@@ -186,19 +186,26 @@ function SlideFullbleed({ m }: { m: Momento }) {
   );
 }
 
+/* ─── Helper render ──────────────────────────────────────────────────── */
+function renderSlide(m: Momento) {
+  if (m.type === "text") return <SlideText m={m} />;
+  if (m.type === "arch") return <SlideArch m={m} />;
+  return <SlideFullbleed m={m} />;
+}
+
 /* ─── Componente principal ────────────────────────────────────────────── */
 export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
-  const [mounted, setMounted] = useState(false);
-  const [idx, setIdx]         = useState(0);
-  const [fading, setFading]   = useState(false);
-  const touchStartX           = useRef<number | null>(null);
-  const idxRef                = useRef(0);
-  const total                 = MOMENTS.length;
+  const [mounted, setMounted]       = useState(false);
+  const [idx, setIdx]               = useState(0);
+  const [prevIdx, setPrevIdx]       = useState<number | null>(null);
+  const [direction, setDirection]   = useState<1 | -1>(1);
+  const [transitioning, setTrans]   = useState(false);
+  const touchStartX                 = useRef<number | null>(null);
+  const idxRef                      = useRef(0);
+  const total                       = MOMENTS.length;
+  const DUR                         = 300;
 
-  /* Sync ref para evitar stale closures en el handler de teclado */
   useEffect(() => { idxRef.current = idx; }, [idx]);
-
-  /* Montar (necesario para createPortal en SSR) */
   useEffect(() => { setMounted(true); }, []);
 
   /* Bloquear scroll del body */
@@ -207,15 +214,31 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  /* Navegación con fade */
+  /* Inyectar keyframes de transición horizontal una sola vez */
+  useEffect(() => {
+    const id = "hw-kf";
+    if (!document.getElementById(id)) {
+      const s = document.createElement("style");
+      s.id = id;
+      s.textContent = `
+        @keyframes hw-in-right  { from { transform:translateX(100%);  } to { transform:translateX(0); } }
+        @keyframes hw-in-left   { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+        @keyframes hw-out-left  { from { transform:translateX(0); } to { transform:translateX(-100%);  } }
+        @keyframes hw-out-right { from { transform:translateX(0); } to { transform:translateX(100%);   } }
+      `;
+      document.head.appendChild(s);
+    }
+    return () => { document.getElementById("hw-kf")?.remove(); };
+  }, []);
+
   function navigate(dir: 1 | -1) {
     const next = idxRef.current + dir;
-    if (next < 0 || next >= total) return;
-    setFading(true);
-    setTimeout(() => {
-      setIdx(next);
-      setFading(false);
-    }, 220);
+    if (next < 0 || next >= total || transitioning) return;
+    setDirection(dir);
+    setPrevIdx(idxRef.current);
+    setTrans(true);
+    setIdx(next);
+    setTimeout(() => { setPrevIdx(null); setTrans(false); }, DUR);
   }
 
   /* Teclado */
@@ -231,10 +254,8 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
   }, []);
 
   /* Touch swipe */
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
+  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd   = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
@@ -244,19 +265,26 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
 
   if (!mounted) return null;
 
-  const m = MOMENTS[idx];
-  const progress = ((idx + 1) / total) * 100;
-  const counter  = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+  const easing = `${DUR}ms cubic-bezier(0.25,0.46,0.45,0.94) forwards`;
 
   return createPortal(
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 9999, fontFamily: GS }}
+      style={{ position: "fixed", inset: 0, zIndex: 9999, fontFamily: GS, overflow: "hidden" }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* ── Progress bar ── */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "rgba(197,190,182,0.4)", zIndex: 20, pointerEvents: "none" }}>
-        <div style={{ height: "100%", width: `${progress}%`, background: TERRA, transition: "width 0.3s ease" }} />
+      {/* ── Barras de progreso estilo Spotify (una por slide) ── */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, zIndex: 30,
+        display: "flex", gap: 3, padding: "10px 12px 0",
+        pointerEvents: "none",
+      }}>
+        {MOMENTS.map((_, i) => (
+          <div key={i} style={{
+            flex: 1, height: 2, borderRadius: 2,
+            background: i <= idx ? TERRA : "rgba(197,190,182,0.35)",
+          }} />
+        ))}
       </div>
 
       {/* ── Botón cerrar ── */}
@@ -264,12 +292,12 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
         onClick={onClose}
         aria-label="Cerrar"
         style={{
-          position: "absolute", top: 16, left: 16, zIndex: 30,
+          position: "absolute", top: 20, left: 12, zIndex: 30,
           background: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)",
           border: "1px solid rgba(197,190,182,0.4)", borderRadius: "50%",
-          width: 36, height: 36, cursor: "pointer",
+          width: 34, height: 34, cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16, color: DARK, lineHeight: 1,
+          fontSize: 14, color: DARK, lineHeight: 1,
         }}
       >
         ✕
@@ -277,82 +305,45 @@ export default function HistoriaWrapped({ onClose }: { onClose: () => void }) {
 
       {/* ── Contador ── */}
       <span style={{
-        position: "absolute", top: 20, right: 20, zIndex: 30,
+        position: "absolute", top: 24, right: 16, zIndex: 30,
         fontFamily: GM, fontSize: 9, letterSpacing: 4, color: MUTED,
+        pointerEvents: "none",
       }}>
-        {counter}
+        {String(idx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </span>
 
-      {/* ── Slide con fade ── */}
-      <div style={{
-        position: "absolute", inset: 0,
-        opacity: fading ? 0 : 1,
-        transition: "opacity 0.22s ease",
-      }}>
-        {m.type === "text"      && <SlideText      m={m} />}
-        {m.type === "arch"      && <SlideArch      m={m} />}
-        {m.type === "fullbleed" && <SlideFullbleed m={m} />}
+      {/* ── Slides con transición horizontal ── */}
+      <div style={{ position: "absolute", inset: 0 }}>
+        {/* Slide saliente */}
+        {prevIdx !== null && (
+          <div style={{
+            position: "absolute", inset: 0,
+            animation: `hw-out-${direction === 1 ? "left" : "right"} ${easing}`,
+          }}>
+            {renderSlide(MOMENTS[prevIdx])}
+          </div>
+        )}
+        {/* Slide entrante */}
+        <div style={{
+          position: "absolute", inset: 0,
+          animation: transitioning
+            ? `hw-in-${direction === 1 ? "right" : "left"} ${easing}`
+            : "none",
+        }}>
+          {renderSlide(MOMENTS[idx])}
+        </div>
       </div>
 
       {/* ── Zonas de clic (izq = anterior, der = siguiente) ── */}
-      <div style={{ position: "absolute", inset: 0, display: "flex", zIndex: 10, pointerEvents: "none" }}>
+      <div style={{ position: "absolute", inset: 0, display: "flex", zIndex: 10 }}>
         <div
-          style={{ flex: 1, height: "100%", cursor: idx > 0 ? "pointer" : "default", pointerEvents: "auto" }}
+          style={{ flex: 1, height: "100%", cursor: idx > 0 ? "pointer" : "default" }}
           onClick={() => navigate(-1)}
         />
         <div
-          style={{ flex: 1, height: "100%", cursor: idx < total - 1 ? "pointer" : "default", pointerEvents: "auto" }}
+          style={{ flex: 1, height: "100%", cursor: idx < total - 1 ? "pointer" : "default" }}
           onClick={() => navigate(1)}
         />
-      </div>
-
-      {/* ── Flechas visibles ── */}
-      {idx > 0 && (
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Anterior"
-          style={{
-            position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
-            zIndex: 20, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(4px)",
-            border: "1px solid rgba(197,190,182,0.5)", borderRadius: "50%",
-            width: 40, height: 40, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 18, color: DARK,
-          }}
-        >
-          ←
-        </button>
-      )}
-      {idx < total - 1 && (
-        <button
-          onClick={() => navigate(1)}
-          aria-label="Siguiente"
-          style={{
-            position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)",
-            zIndex: 20, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(4px)",
-            border: "1px solid rgba(197,190,182,0.5)", borderRadius: "50%",
-            width: 40, height: 40, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 18, color: DARK,
-          }}
-        >
-          →
-        </button>
-      )}
-
-      {/* ── Dots ── */}
-      <div style={{
-        position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)",
-        display: "flex", gap: 6, zIndex: 20, pointerEvents: "none",
-      }}>
-        {MOMENTS.map((_, i) => (
-          <div key={i} style={{
-            height: 6, borderRadius: 3,
-            width: i === idx ? 18 : 6,
-            background: i === idx ? TERRA : MUTED,
-            transition: "all 0.25s ease",
-          }} />
-        ))}
       </div>
     </div>,
     document.body
