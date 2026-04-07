@@ -16,8 +16,7 @@ const NAV_LINKS = [
 ];
 
 /* ─── Images ──────────────────────────────────────────────────────────── */
-const HERO_BG =
-  "https://images.unsplash.com/photo-1773845597388-f89489cb82f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1440";
+const HERO_BG = "/nuestra-historia.webp";
 const GRID_IMGS = [
   "https://images.unsplash.com/photo-1763328709918-d18a45bd562f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
   "https://images.unsplash.com/photo-1766043373216-eca380b43a79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",

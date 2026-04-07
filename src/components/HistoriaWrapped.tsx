@@ -30,50 +30,20 @@ const MID   = "#3D3D3D";
 const MOMENTS: Momento[] = [
   {
     num: "01.",
-    date: "15 MAR 2020",
-    title: "El Día que\nNos Conocimos",
-    desc: "Una cafetería, dos desconocidos, y una conversación que nunca terminó. El universo conspiró para que nuestros caminos se cruzaran ese día.",
+    date: "FINALES DE 2022",
+    title: "El Coro",
+    desc: "Nos conocimos en el coro. No hubo un día exacto, solo el momento en que dos personas compartieron el mismo espacio sin saber lo que vendría después.",
     type: "text",
   },
   {
     num: "02.",
-    date: "28 ABR 2020",
-    title: "Primera\nCita Oficial",
-    desc: "Una cena que se convirtió en un paseo bajo las estrellas. Esa noche supimos que esto era más que una simple coincidencia.",
-    type: "arch",
-    emoji: "🌟",
-  },
-  {
-    num: "03.",
-    date: "12 DIC 2020",
-    title: "Primer Viaje\nJuntos",
-    desc: "Las maletas, la carretera y miles de risas. Descubrimos que viajar juntos era nuestra forma favorita de ser felices.",
+    date: "2022 — 2023",
+    title: "Mismos Pasillos,\nPoco Contacto",
+    desc: "Participamos juntos, compartimos espacios, pero casi no hablamos. A veces los mejores comienzos son los que ni notás en el momento.",
     type: "fullbleed",
-    emoji: "✈️",
+    img: "/haciendo-sin-conocernos.webp",
   },
-  {
-    num: "04.",
-    date: "15 MAR 2021",
-    title: "Un Año\nde Nosotros",
-    desc: "365 días de aprender a amarnos mejor. Celebramos con la promesa de que esto apenas comenzaba.",
-    type: "text",
-  },
-  {
-    num: "05.",
-    date: "20 JUN 2021",
-    title: "El Verano\nMás Lindo",
-    desc: "Días largos, risas interminables y la certeza de que cada momento a tu lado vale la pena.",
-    type: "arch",
-    emoji: "☀️",
-  },
-  {
-    num: "06.",
-    date: "25 DIC 2021",
-    title: "Navidad\nJuntos",
-    desc: "La primera de muchas. Luces, regalos y la calidez de saber que ya tenía a la persona más especial.",
-    type: "fullbleed",
-    emoji: "🎄",
-  },
+  // Agregá más momentos aquí
 ];
 
 /* ─── Slide renderers ─────────────────────────────────────────────────── */
