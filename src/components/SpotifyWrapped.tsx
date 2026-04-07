@@ -292,12 +292,12 @@ function SlideMinutos() {
           letterSpacing:-3,
           animation:"slideInLeft 0.5s 0.2s both",
           textShadow:"0 0 80px rgba(124,111,205,0.4)",
-        }}>2.103.840</div>
+        }}>12.623.040</div>
         <p style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(20px,4vw,30px)",fontWeight:800,color:"#fff",marginTop:4,animation:"fadeUp 0.5s 0.4s both"}}>
           minutos de música
         </p>
         <div style={{marginTop:24,display:"flex",justifyContent:"center",gap:28,animation:"fadeUp 0.5s 0.6s both"}}>
-          {[["1.461","días"],["35.064","horas"],["2.103.840","minutos"]].map(([val,unit],i)=>(
+          {[["8.766","días"],["210.384","horas"],["12.623.040","minutos"]].map(([val,unit],i)=>(
             <div key={i} style={{textAlign:"center"}}>
               <div style={{fontFamily:"'SM','Montserrat',sans-serif",fontSize:"clamp(18px,4vw,32px)",fontWeight:900,color:i===2?"#7C6FCD":"#fff"}}>{val}</div>
               <div style={{fontFamily:"'Montserrat',sans-serif",fontSize:11,color:"#666",textTransform:"uppercase",letterSpacing:1}}>{unit}</div>

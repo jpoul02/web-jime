@@ -7,9 +7,9 @@ import { useState } from "react";
 import Snowfall from "./Snowfall";
 
 const navLinks = [
-  { label: "Sobre Mi", href: "#" },
+  { label: "Sobre Mi", href: "/sobre-mi" },
   { label: "Amigos",   href: "/amigos" },
-  { label: "Historia", href: "#" },
+  { label: "Historia", href: "/historia" },
   { label: "Juegos",   href: "#" },
   { label: "Skype",    href: "/skype" },
   { label: "Ask.fm",   href: "/ask" },
@@ -166,23 +166,25 @@ export default function ClubPenguinHome() {
             </p>
 
             {/* Botón CTA */}
-            <button
+            <Link
+              href="/sobre-mi"
               className="flex items-center justify-center w-full md:w-auto md:self-start hover:opacity-90 active:opacity-75 transition-opacity"
               style={{
                 background: "linear-gradient(to bottom, #00DDFF, #0099DD)",
                 borderRadius: 16,
                 padding: "14px 32px",
                 gap: 8,
-                border: "none",
-                cursor: "pointer",
                 boxShadow: "0 3px 8px rgba(0,0,0,0.3)",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
               }}
             >
               <Snowflake size={18} color="#FFFFFF" strokeWidth={2.5} />
               <span style={{ color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}>
                 Quieres saber sobre mi?
               </span>
-            </button>
+            </Link>
           </div>
         </div>
       </main>
