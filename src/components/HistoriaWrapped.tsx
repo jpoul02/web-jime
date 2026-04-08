@@ -140,7 +140,8 @@ function SlideFullbleed({ m }: { m: Momento }) {
 }
 
 /* ─── Helper render ──────────────────────────────────────────────────── */
-function renderSlide(m: Momento) {
+function renderSlide(m: Momento | undefined) {
+  if (!m) return null;
   if (m.type === "text") return <SlideText m={m} />;
   if (m.type === "arch") return <SlideArch m={m} />;
   return <SlideFullbleed m={m} />;
