@@ -16,13 +16,18 @@ export default function CartaOverlay() {
   const [loading, setLoading]   = useState(false);
 
   // Logo tap counter
-  const tapCount  = useRef(0);
-  const tapTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tapCount   = useRef(0);
+  const tapTimer   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fetchingRef = useRef(false);
 
   // "jime" keyboard sequence
   const keyBuffer = useRef("");
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    return () => { if (tapTimer.current) clearTimeout(tapTimer.current); };
+  }, []);
 
   // Inject Caveat font once
   useEffect(() => {
@@ -53,6 +58,8 @@ export default function CartaOverlay() {
     if (open) return;
     setOpen(true);
     if (texto !== null) return;
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
     setLoading(true);
     try {
       const r = await fetch(`${API}/carta`);
@@ -62,6 +69,7 @@ export default function CartaOverlay() {
       setTexto("");
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   }, [open, texto]);
 
