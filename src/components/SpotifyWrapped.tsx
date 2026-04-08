@@ -422,7 +422,7 @@ function SlideArtistaDive() {
         overflow:"hidden",
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/jime-joaquina.png" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime + Joaquina"/>
+        <img src="/jime-joaquina.webp" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime + Joaquina"/>
         {/* Scan lines grunge */}
         <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px)",pointerEvents:"none"}}/>
         {/* Gradient fade to right */}
@@ -971,7 +971,7 @@ function SlidePhotoCantando() {
       {/* ── FOTO lado izquierdo ── */}
       <div style={{position:"absolute",left:0,top:0,bottom:0,width:"clamp(42%,50%,55%)",overflow:"hidden"}}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/jime-cantando.jpg" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime cantando"/>
+        <img src="/jime-cantando.webp" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center top"}} alt="Jime cantando"/>
         {/* Scan lines */}
         <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px)",pointerEvents:"none"}}/>
         {/* Fade to right */}
@@ -1062,7 +1062,7 @@ function SlidePhotoMusica() {
       {/* ── FOTO lado derecho ── */}
       <div style={{position:"absolute",right:0,top:0,bottom:0,width:"clamp(42%,50%,55%)",overflow:"hidden"}}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/haciendo-juntos.jpg" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}} alt="Haciendo música juntas"/>
+        <img src="/haciendo-juntos.webp" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}} alt="Haciendo música juntas"/>
         {/* Scan lines */}
         <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.1) 3px,rgba(0,0,0,0.1) 4px)",pointerEvents:"none"}}/>
         {/* Fade to left */}

@@ -111,7 +111,7 @@ export default function SkypeDesktop() {
 
           {/* Profile */}
           <div className="flex items-center gap-3 px-4" style={{ height: 70 }}>
-            <Image src="/skype-avatar-jime.png" alt="Jime" width={44} height={44}
+            <Image src="/skype-avatar-jime.webp" alt="Jime" width={44} height={44}
               style={{ borderRadius: 22, objectFit: "cover" }} />
             <div className="flex flex-col gap-0.5">
               <span className="text-[#333333] text-sm font-semibold">Jime</span>
@@ -307,7 +307,7 @@ export default function SkypeDesktop() {
           className="flex items-center gap-2 px-3 h-8 rounded cursor-pointer hover:brightness-110 transition-all"
           style={{ background: "linear-gradient(to bottom, #5CB85C, #3D8B3D)", border: "1px solid #2D6A2D", minWidth: 80 }}
         >
-          <Image src="/jime-penguin-logo.png" alt="" width={20} height={20} className="object-contain" />
+          <Image src="/jime-penguin-logo.webp" alt="" width={20} height={20} className="object-contain" />
           <span className="text-white text-[11px] font-bold">Inicio</span>
         </button>
 

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia Wrapped — Estética</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f0f; font-family: 'Segoe UI', sans-serif; color: #fff; padding: 32px 24px 48px; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+  .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 32px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+  @media (max-width: 800px) { .cards { grid-template-columns: 1fr; } }
+
+  .card {
+    border-radius: 16px; overflow: hidden; cursor: pointer;
+    border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-4px); }
+  .card.selected { border-color: #a78bfa; }
+  .card.selected::after {
+    content: '✓ Seleccionado';
+    position: absolute; top: 12px; right: 12px;
+    background: #a78bfa; color: #fff;
+    font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Slide mockup inside each card ── */
+  .slide-mockup {
+    width: 100%; aspect-ratio: 9/16;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 28px 20px; position: relative; overflow: hidden;
+    text-align: center;
+  }
+
+  /* Option A — Dark cinematic */
+  .slide-a { background: #0a0a0a; }
+  .slide-a .chip { font-size: 9px; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 16px; }
+  .slide-a .num { font-size: 80px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, #9b4ea7, #e63e8e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .slide-a .date { font-size: 10px; letter-spacing: 5px; color: #555; margin-bottom: 20px; text-transform: uppercase; }
+  .slide-a .title { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 12px; }
+  .slide-a .desc { font-size: 11px; color: #666; line-height: 1.6; max-width: 180px; }
+  .slide-a .nav-dots { position: absolute; bottom: 20px; display: flex; gap: 5px; }
+  .slide-a .dot { width: 5px; height: 5px; border-radius: 50%; background: #333; }
+  .slide-a .dot.active { background: #9b4ea7; width: 18px; border-radius: 3px; }
+  .slide-a .progress { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #1a1a1a; }
+  .slide-a .progress-fill { height: 100%; width: 30%; background: linear-gradient(90deg, #9b4ea7, #e63e8e); }
+
+  /* Option B — Cream terracotta (Historia original) */
+  .slide-b { background: #F3EBE2; }
+  .slide-b .chip { font-size: 9px; letter-spacing: 4px; color: #C5BEB6; text-transform: uppercase; margin-bottom: 12px; font-family: 'Courier New', monospace; }
+  .slide-b .num { font-size: 72px; font-style: italic; line-height: 1; color: #D4916E; margin-bottom: 6px; font-family: Georgia, serif; }
+  .slide-b .date { font-size: 9px; letter-spacing: 5px; color: #C5BEB6; margin-bottom: 16px; text-transform: uppercase; font-family: 'Courier New', monospace; }
+  .slide-b .title { font-size: 24px; font-style: italic; font-weight: 700; color: #1A1A1A; line-height: 1.2; margin-bottom: 12px; font-family: Georgia, serif; }
+  .slide-b .desc { font-size: 11px; color: #3D3D3D; line-height: 1.7; max-width: 180px; }
+  .slide-b .divider { width: 40px; height: 1px; background: #D4916E; margin: 14px auto; }
+  .slide-b .nav-dots { position: absolute; bottom: 20px; display: flex; gap: 5px; }
+  .slide-b .dot { width: 5px; height: 5px; border-radius: 50%; background: #D4C8BC; }
+  .slide-b .dot.active { background: #D4916E; width: 18px; border-radius: 3px; }
+  .slide-b .corner { position: absolute; top: 18px; right: 18px; font-size: 8px; letter-spacing: 3px; color: #C5BEB6; font-family: 'Courier New', monospace; }
+
+  /* Option C — Dark con foto full-bleed */
+  .slide-c { background: #111; padding: 0; }
+  .slide-c .photo-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #1a0a2e 0%, #2d1458 40%, #0a0a0a 100%);
+  }
+  .slide-c .photo-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%); }
+  .slide-c .content-c { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; padding: 28px 20px; text-align: center; }
+  .slide-c .chip { font-size: 9px; letter-spacing: 4px; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 10px; }
+  .slide-c .emoji-big { font-size: 52px; margin-bottom: 14px; }
+  .slide-c .title { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 8px; text-shadow: 0 2px 20px rgba(0,0,0,0.5); }
+  .slide-c .date { font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+  .slide-c .desc { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.6; max-width: 180px; }
+  .slide-c .nav-dots { display: flex; gap: 5px; margin-top: 20px; }
+  .slide-c .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+  .slide-c .dot.active { background: #fff; width: 18px; border-radius: 3px; }
+  /* floating orbs */
+  .orb { position: absolute; border-radius: 50%; pointer-events: none; }
+  .orb1 { width: 120px; height: 120px; background: radial-gradient(circle, rgba(155,78,151,0.4), transparent 70%); top: 40px; left: -20px; }
+  .orb2 { width: 80px; height: 80px; background: radial-gradient(circle, rgba(230,62,142,0.3), transparent 70%); top: 100px; right: -10px; }
+
+  /* Card labels */
+  .card-label {
+    background: #1a1a1a; padding: 16px 20px;
+    border-top: 1px solid #2a2a2a;
+  }
+  .card-label h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .card-label p { font-size: 12px; color: #888; line-height: 1.4; }
+  .card-label.light { background: #E8DDD5; border-top: 1px solid #D4C8BC; }
+  .card-label.light h3 { color: #1A1A1A; }
+  .card-label.light p { color: #8D7B71; }
+</style>
+</head>
+<body>
+<h2>¿Qué estética para el Historia Wrapped?</h2>
+<p class="subtitle">Cada opción es un slide de pantalla completa. Clic para seleccionar.</p>
+
+<div class="cards">
+
+  <!-- Option A: Dark Wrapped -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="slide-mockup slide-a">
+      <div class="progress"><div class="progress-fill"></div></div>
+      <div class="chip">Nuestra Historia · 3 de 12</div>
+      <div class="num">03.</div>
+      <div class="date">12 DIC 2020</div>
+      <div class="title">Primer Viaje<br>Juntos</div>
+      <div class="desc">Las maletas, la carretera y miles de risas juntas.</div>
+      <div class="nav-dots">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>A — Dark Wrapped</h3>
+      <p>Oscuro, bold, gradientes morados. Estilo Spotify Wrapped. Moderno e impactante.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Cream / Historia -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="slide-mockup slide-b">
+      <div class="corner">EST. 2020</div>
+      <div class="chip">Nuestra Historia · 3 de 12</div>
+      <div class="num">03.</div>
+      <div class="date">12 DIC 2020</div>
+      <div class="title">Primer Viaje<br>Juntos</div>
+      <div class="divider"></div>
+      <div class="desc">Las maletas, la carretera y miles de risas juntas.</div>
+      <div class="nav-dots">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label light">
+      <h3>B — Cream / Historia</h3>
+      <p>Mantiene la estética actual: crema, terracota, tipografía editorial. Elegante y cálido.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Dark + foto full-bleed -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="slide-mockup slide-c">
+      <div class="photo-bg"></div>
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="photo-overlay"></div>
+      <div class="content-c">
+        <div class="chip">Nuestra Historia · 3 de 12</div>
+        <div class="emoji-big">✈️</div>
+        <div class="title">Primer Viaje<br>Juntos</div>
+        <div class="date">12 DIC 2020</div>
+        <div class="desc">Las maletas, la carretera y miles de risas juntas.</div>
+        <div class="nav-dots">
+          <div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>C — Dark + Foto / Emoji</h3>
+      <p>Oscuro con foto o emoji grande como protagonista. Más emocional y cinematográfico.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.recordChoice) window.recordChoice(el.dataset.choice, el.querySelector('h3')?.textContent || el.dataset.choice);
+}
+</script>
+</body>
+</html>

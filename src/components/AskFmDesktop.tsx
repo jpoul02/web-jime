@@ -47,7 +47,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
 
       {/* ── Header ─────────────────────────────────────────────────── */}
       <header className="w-full shrink-0 h-14 flex items-center justify-between px-4 md:px-6 bg-[#3B5998]">
-        <Image src="/ask-jime-logo.png" quality={100} alt="Ask.fm Jime" width={120} height={40} className="object-contain" />
+        <Image src="/ask-jime-logo.webp" quality={100} alt="Ask.fm Jime" width={120} height={40} className="object-contain" />
 
         {/* Nav icons — mobile: only Home, Bell, Mail; desktop: full set */}
         <nav className="flex items-center gap-4 md:gap-5">

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contenido del slide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f0f; font-family: 'Segoe UI', sans-serif; color: #fff; padding: 32px 24px 48px; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+  .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 32px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 0 auto; }
+  @media (max-width: 700px) { .cards { grid-template-columns: 1fr; } }
+
+  .card {
+    border-radius: 16px; overflow: hidden; cursor: pointer;
+    border: 2px solid #2a2a2a; transition: border-color 0.2s, transform 0.15s;
+    background: #1a1a1a;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #444; }
+  .card.selected { border-color: #D4916E; }
+  .card.selected .card-label::after {
+    content: '✓ Seleccionado';
+    display: block; margin-top: 8px;
+    font-size: 11px; font-weight: 700; color: #D4916E; letter-spacing: 0.5px;
+  }
+
+  /* ── Slide preview (portrait, cream) ── */
+  .slide {
+    background: #F3EBE2;
+    aspect-ratio: 9/16;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 18px; gap: 6px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .prog { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #D4C8BC; }
+  .prog-fill { height: 100%; width: 40%; background: #D4916E; }
+  .counter { position: absolute; top: 12px; right: 14px; font-size: 8px; letter-spacing: 3px; color: #C5BEB6; font-family: 'Courier New', monospace; }
+
+  .p-num  { font-size: 60px; font-style: italic; color: #D4916E; font-family: Georgia, serif; line-height: 1; }
+  .p-date { font-size: 8px; letter-spacing: 4px; color: #C5BEB6; font-family: 'Courier New', monospace; text-transform: uppercase; }
+  .p-line { width: 32px; height: 1px; background: #D4916E; }
+  .p-title { font-size: 20px; font-style: italic; font-weight: 700; color: #1A1A1A; font-family: Georgia, serif; line-height: 1.2; }
+  .p-desc { font-size: 10px; color: #8D7B71; line-height: 1.6; max-width: 160px; }
+  .p-emoji { font-size: 44px; line-height: 1; }
+  .p-photo { width: 100px; height: 130px; border-radius: 50px 50px 0 0; overflow: hidden; background: #D4C8BC; flex-shrink: 0; }
+  .p-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .p-photo-placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #C5BEB6;
+  }
+
+  .dots { display: flex; gap: 4px; position: absolute; bottom: 14px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: #D4C8BC; }
+  .dot.on { background: #D4916E; width: 14px; border-radius: 3px; }
+
+  .card-label { padding: 16px 18px; border-top: 1px solid #2a2a2a; }
+  .card-label h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .card-label p  { font-size: 12px; color: #888; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h2>¿Qué lleva cada momento?</h2>
+<p class="subtitle">Estética B, navegación C. ¿Cómo se estructura el contenido de cada slide?</p>
+
+<div class="cards">
+
+  <!-- A: Solo texto -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="slide">
+      <div class="prog"><div class="prog-fill"></div></div>
+      <div class="counter">03 / 12</div>
+      <div class="p-num">03.</div>
+      <div class="p-date">12 DIC 2020</div>
+      <div class="p-line"></div>
+      <div class="p-title">Primer Viaje<br>Juntos</div>
+      <div class="p-desc">Las maletas, la carretera y miles de risas juntas. Descubrimos que viajar era nuestra forma favorita de ser felices.</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>A — Solo texto</h3>
+      <p>Número, fecha, título y descripción. Minimalista, editorial. Fácil de mantener.</p>
+    </div>
+  </div>
+
+  <!-- B: Texto + emoji -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="slide">
+      <div class="prog"><div class="prog-fill"></div></div>
+      <div class="counter">03 / 12</div>
+      <div class="p-emoji">✈️</div>
+      <div class="p-num">03.</div>
+      <div class="p-date">12 DIC 2020</div>
+      <div class="p-line"></div>
+      <div class="p-title">Primer Viaje<br>Juntos</div>
+      <div class="p-desc">Las maletas, la carretera y miles de risas juntas.</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>B — Texto + emoji</h3>
+      <p>Un emoji grande por momento da personalidad sin necesitar fotos. Fácil de hardcodear.</p>
+    </div>
+  </div>
+
+  <!-- C: Texto + foto opcional -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="slide">
+      <div class="prog"><div class="prog-fill"></div></div>
+      <div class="counter">03 / 12</div>
+      <div class="p-photo">
+        <div class="p-photo-placeholder">📷</div>
+      </div>
+      <div class="p-num">03.</div>
+      <div class="p-date">12 DIC 2020</div>
+      <div class="p-line"></div>
+      <div class="p-title">Primer Viaje<br>Juntos</div>
+      <div class="p-desc">Las maletas, la carretera y miles de risas juntas.</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>C — Texto + foto (opcional)</h3>
+      <p>Foto en arco (estilo historia actual). Si no hay foto, cae al emoji. Más visual pero requiere subir imágenes.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.recordChoice) window.recordChoice(el.dataset.choice, el.querySelector('h3')?.textContent || el.dataset.choice);
+}
+</script>
+</body>
+</html>

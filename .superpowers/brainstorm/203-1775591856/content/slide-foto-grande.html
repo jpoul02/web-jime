@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide foto grande</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f0f; font-family: 'Segoe UI', sans-serif; color: #fff; padding: 32px 24px 48px; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+  .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 32px; }
+
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 0 auto 32px; }
+  @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+
+  .card {
+    border-radius: 16px; overflow: hidden;
+    border: 2px solid #333; background: #1a1a1a;
+  }
+
+  .slide {
+    aspect-ratio: 9/16;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 18px; gap: 6px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .prog { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #D4C8BC; }
+  .prog-fill { height: 100%; background: #D4916E; }
+  .counter { position: absolute; top: 12px; right: 14px; font-size: 8px; letter-spacing: 3px; color: #C5BEB6; font-family: 'Courier New', monospace; }
+
+  /* Type A — solo texto */
+  .slide-a { background: #F3EBE2; }
+  .p-num  { font-size: 56px; font-style: italic; color: #D4916E; font-family: Georgia, serif; line-height: 1; }
+  .p-date { font-size: 8px; letter-spacing: 4px; color: #C5BEB6; font-family: 'Courier New', monospace; text-transform: uppercase; }
+  .p-line { width: 32px; height: 1px; background: #D4916E; }
+  .p-title { font-size: 20px; font-style: italic; font-weight: 700; color: #1A1A1A; font-family: Georgia, serif; line-height: 1.2; }
+  .p-desc  { font-size: 10px; color: #8D7B71; line-height: 1.6; max-width: 160px; }
+
+  /* Type C — texto + foto arco */
+  .slide-c { background: #F3EBE2; }
+  .p-arch { width: 90px; height: 118px; border-radius: 45px 45px 0 0; overflow: hidden; background: #D4C8BC; flex-shrink: 0; }
+  .p-arch-inner { width: 100%; height: 100%; background: linear-gradient(160deg, #C5BEB6 0%, #8D7B71 100%); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+
+  /* Type D — foto full bleed */
+  .slide-d {
+    background: #1A1A1A; padding: 0;
+    justify-content: flex-end;
+  }
+  .d-photo-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #8D7B71 0%, #C5BEB6 40%, #D4916E 100%);
+    opacity: 0.6;
+  }
+  .d-photo-placeholder {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #3a2a20 0%, #6b4a35 50%, #8D7B71 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 56px; opacity: 0.5;
+  }
+  .d-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,26,26,0.92) 0%, rgba(26,26,26,0.4) 50%, rgba(0,0,0,0.05) 100%); }
+  .d-content { position: relative; z-index: 2; padding: 0 20px 28px; width: 100%; text-align: left; }
+  .d-num  { font-size: 48px; font-style: italic; color: #D4916E; font-family: Georgia, serif; line-height: 1; }
+  .d-date { font-size: 8px; letter-spacing: 4px; color: rgba(197,190,182,0.7); font-family: 'Courier New', monospace; text-transform: uppercase; margin-bottom: 6px; }
+  .d-title { font-size: 20px; font-style: italic; font-weight: 700; color: #fff; font-family: Georgia, serif; line-height: 1.2; margin-bottom: 8px; }
+  .d-desc  { font-size: 10px; color: rgba(197,190,182,0.8); line-height: 1.6; }
+  .d-line { width: 32px; height: 1px; background: #D4916E; margin-bottom: 10px; }
+  .d-prog-top { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.2); }
+  .d-prog-fill { height: 100%; width: 40%; background: rgba(212,145,110,0.8); }
+  .d-counter { position: absolute; top: 12px; right: 14px; font-size: 8px; letter-spacing: 3px; color: rgba(197,190,182,0.6); font-family: 'Courier New', monospace; }
+
+  .dots { display: flex; gap: 4px; position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: #D4C8BC; }
+  .dot.on { background: #D4916E; width: 14px; border-radius: 3px; }
+  .d-dots { display: flex; gap: 4px; margin-top: 12px; }
+  .d-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+  .d-dot.on { background: #D4916E; width: 14px; border-radius: 3px; }
+
+  .card-label { padding: 14px 18px; border-top: 1px solid #2a2a2a; }
+  .card-label h3 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .card-label p  { font-size: 12px; color: #888; line-height: 1.5; }
+
+  .note {
+    max-width: 960px; margin: 0 auto;
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .note h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #D4916E; }
+  .note p { font-size: 13px; color: #aaa; line-height: 1.6; }
+  .note code { background: #2a2a2a; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #D4916E; }
+</style>
+</head>
+<body>
+<h2>Tres tipos de slide — podés mezclarlos</h2>
+<p class="subtitle">Cada momento en el array define su <code style="background:#1a1a1a;padding:2px 8px;border-radius:4px;font-size:12px;color:#D4916E">type</code>. Así podés variar el ritmo visual.</p>
+
+<div class="row">
+
+  <!-- A: solo texto -->
+  <div class="card">
+    <div class="slide slide-a">
+      <div class="prog"><div class="prog-fill" style="width:25%"></div></div>
+      <div class="counter">02 / 12</div>
+      <div class="p-num">02.</div>
+      <div class="p-date">28 ABR 2020</div>
+      <div class="p-line"></div>
+      <div class="p-title">Primera<br>Cita Oficial</div>
+      <div class="p-desc">Una cena que se convirtió en un paseo bajo las estrellas.</div>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>Tipo A — Solo texto</h3>
+      <p>Fondo crema, tipografía grande. Para momentos más íntimos o que no tienen foto.</p>
+    </div>
+  </div>
+
+  <!-- C: texto + foto arco -->
+  <div class="card">
+    <div class="slide slide-c">
+      <div class="prog"><div class="prog-fill" style="width:50%"></div></div>
+      <div class="counter">04 / 12</div>
+      <div class="p-arch">
+        <div class="p-arch-inner">🏔️</div>
+      </div>
+      <div class="p-num" style="font-size:44px">04.</div>
+      <div class="p-date">15 MAR 2021</div>
+      <div class="p-line"></div>
+      <div class="p-title">Un Año<br>de Nosotras</div>
+      <div class="p-desc">365 días de aprender a amarnos mejor.</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>Tipo C — Texto + foto arco</h3>
+      <p>Foto en arco arriba (si no hay foto, muestra emoji). Mantiene la estética editorial.</p>
+    </div>
+  </div>
+
+  <!-- D: foto full bleed -->
+  <div class="card">
+    <div class="slide slide-d">
+      <div class="d-photo-placeholder">🌅</div>
+      <div class="d-overlay"></div>
+      <div class="d-prog-top"><div class="d-prog-fill"></div></div>
+      <div class="d-counter">07 / 12</div>
+      <div class="d-content">
+        <div class="d-num">07.</div>
+        <div class="d-date">20 JUN 2022</div>
+        <div class="d-line"></div>
+        <div class="d-title">El Verano<br>que Todo Cambió</div>
+        <div class="d-desc">Un atardecer que nunca vamos a olvidar.</div>
+        <div class="d-dots">
+          <div class="d-dot"></div><div class="d-dot"></div><div class="d-dot on"></div><div class="d-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <h3>Tipo D — Foto a pantalla completa</h3>
+      <p>Imagen full-bleed con texto overlay abajo. Dramático e impactante para los momentos más especiales.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <h3>¿Cómo funcionaría?</h3>
+  <p>Cada momento en el array tiene un campo <code>type: "text" | "arch" | "fullbleed"</code>. Podés mezclarlos libremente — por ejemplo: texto → arch → foto grande → texto → foto grande. Así el Wrapped tiene ritmo visual variado en lugar de ser repetitivo.</p>
+</div>
+
+</body>
+</html>

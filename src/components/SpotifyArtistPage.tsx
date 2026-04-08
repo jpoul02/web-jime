@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import SpotifyWrapped from "./SpotifyWrapped";
 
-const HERO_IMAGE = "/verified_artist.jpg";
+const HERO_IMAGE = "/verified_artist.webp";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 /* ── Palette ──────────────────────────────────────────────── */

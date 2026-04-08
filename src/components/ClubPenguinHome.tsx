@@ -33,7 +33,7 @@ export default function ClubPenguinHome() {
       >
         {/* Logo */}
         <div className="flex items-center">
-          <Image src="/jime-penguin-logo.png" alt="" width={130} height={100} quality={100} />
+          <Image src="/jime-penguin-logo.webp" alt="" width={130} height={100} quality={100} />
         </div>
 
         {/* Desktop Nav */}
@@ -87,7 +87,7 @@ export default function ClubPenguinHome() {
       <main className="relative overflow-hidden grid grid-cols-1 md:grid-cols-2 flex-1 items-center justify-center">
         {/* Fondo */}
         <Image
-          src="/cp-bg.png"
+          src="/cp-bg.webp"
           alt=""
           width={1790}
           height={2390}
@@ -100,7 +100,7 @@ export default function ClubPenguinHome() {
 
         <div className="relative z-10 flex-1 flex items-end justify-center">
           <Image
-            src="/jime-penguin.png"
+            src="/jime-penguin.webp"
             alt="Jime Penguin"
             width={1792}
             height={2390}
