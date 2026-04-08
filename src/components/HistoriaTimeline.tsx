@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HistoriaWrapped from "./HistoriaWrapped";
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
 
 /* ─── Nav links ───────────────────────────────────────────────────────── */
 const NAV_LINKS = [
@@ -16,15 +18,7 @@ const NAV_LINKS = [
 ];
 
 /* ─── Images ──────────────────────────────────────────────────────────── */
-const HERO_BG = "/nuestra-historia.webp";
-const GRID_IMGS = [
-  "https://images.unsplash.com/photo-1763328709918-d18a45bd562f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-  "https://images.unsplash.com/photo-1766043373216-eca380b43a79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-  "https://images.unsplash.com/photo-1773845596855-ede4d0499206?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-  "https://images.unsplash.com/photo-1643982061521-f00d2f4f7d1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-  "https://images.unsplash.com/photo-1758523420267-d3bb03af8087?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-  "https://images.unsplash.com/photo-1657305724733-51479a7309cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-];
+const HERO_BG = "/nuestra-historia.jpg";
 const FOOTER_IMG =
   "https://images.unsplash.com/photo-1768193515652-82a7a5dcbe6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800";
 
@@ -46,6 +40,16 @@ const Img = (p: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...p} alt={p
 export default function HistoriaTimeline() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [wrappedOpen, setWrappedOpen] = useState(false);
+  const [gridImgs, setGridImgs] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch(`${API}/historia/momentos`)
+      .then(r => r.json())
+      .then((data: Array<{ id: number; photo_url: string; order: number }>) => {
+        setGridImgs(data.map(m => m.photo_url));
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div style={{ fontFamily: GS, background: CREAM, overflowX: "hidden" }}>
@@ -175,39 +179,52 @@ export default function HistoriaTimeline() {
       </section>
 
       {/* ══ PHOTO GRID ════════════════════════════════════════════════════ */}
-      <section style={{ background: CREAM, padding: "0 clamp(24px, 6.9vw, 100px) 80px" }}>
-        <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: MUTED, margin: "0 0 24px" }}>
-          NUESTROS MOMENTOS FAVORITOS
-        </p>
+      {(() => {
+        const paddedGrid = [...gridImgs, ...Array(Math.max(0, 6 - gridImgs.length)).fill("")];
+        return (
+          <section style={{ background: CREAM, padding: "0 clamp(24px, 6.9vw, 100px) 80px" }}>
+            <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: MUTED, margin: "0 0 24px" }}>
+              NUESTROS MOMENTOS FAVORITOS
+            </p>
 
-        {/* Row 1: fill + fixed + fixed */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 16, marginBottom: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:1fr_300px_300px]">
-          {GRID_IMGS.slice(0, 3).map((src, i) => (
-            <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
-              <Img
-                src={src}
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
-                onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-              />
+            {/* Row 1: fill + fixed + fixed */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 16, marginBottom: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:1fr_300px_300px]">
+              {paddedGrid.slice(0, 3).map((src, i) => (
+                <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
+                  {src ? (
+                    <Img
+                      src={src}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
+                      onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
+                      onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #e8ddd5, #d4c8bc)" }} />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Row 2: fixed + fixed + fill */}
-        <div style={{ display: "grid", gridTemplateColumns: "auto auto 1fr", gap: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:300px_300px_1fr]">
-          {GRID_IMGS.slice(3, 6).map((src, i) => (
-            <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
-              <Img
-                src={src}
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
-                onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-              />
+            {/* Row 2: fixed + fixed + fill */}
+            <div style={{ display: "grid", gridTemplateColumns: "auto auto 1fr", gap: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:300px_300px_1fr]">
+              {paddedGrid.slice(3, 6).map((src, i) => (
+                <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
+                  {src ? (
+                    <Img
+                      src={src}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
+                      onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
+                      onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #e8ddd5, #d4c8bc)" }} />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        );
+      })()}
 
       {/* ══ FOOTER DARK ═══════════════════════════════════════════════════ */}
       <section style={{ background: DARK, position: "relative", overflow: "hidden", minHeight: 580, padding: "60px clamp(24px, 6.9vw, 100px) 60px" }}>
