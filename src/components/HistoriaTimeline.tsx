@@ -178,53 +178,41 @@ export default function HistoriaTimeline() {
         <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 4, color: TERRA, margin: 0 }}>— J &amp; J</p>
       </section>
 
-      {/* ══ PHOTO GRID ════════════════════════════════════════════════════ */}
-      {(() => {
-        const paddedGrid = [...gridImgs, ...Array(Math.max(0, 6 - gridImgs.length)).fill("")];
-        return (
-          <section style={{ background: CREAM, padding: "0 clamp(24px, 6.9vw, 100px) 80px" }}>
-            <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: MUTED, margin: "0 0 24px" }}>
-              NUESTROS MOMENTOS FAVORITOS
-            </p>
+      {/* ══ PHOTO COLLAGE ═════════════════════════════════════════════════ */}
+      {gridImgs.length > 0 && (
+        <section style={{ background: CREAM, padding: "0 clamp(24px, 6.9vw, 100px) 80px" }}>
+          <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: MUTED, margin: "0 0 24px" }}>
+            NUESTROS MOMENTOS FAVORITOS
+          </p>
 
-            {/* Row 1: fill + fixed + fixed */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 16, marginBottom: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:1fr_300px_300px]">
-              {paddedGrid.slice(0, 3).map((src, i) => (
-                <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
-                  {src ? (
-                    <Img
-                      src={src}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
-                      onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                      onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-                    />
-                  ) : (
-                    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #e8ddd5, #d4c8bc)" }} />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Row 2: fixed + fixed + fill */}
-            <div style={{ display: "grid", gridTemplateColumns: "auto auto 1fr", gap: 16 }} className="!grid-cols-1 sm:!grid-cols-2 lg:![grid-template-columns:300px_300px_1fr]">
-              {paddedGrid.slice(3, 6).map((src, i) => (
-                <div key={i} style={{ height: 250, overflow: "hidden", background: "#e0d5cc" }}>
-                  {src ? (
-                    <Img
-                      src={src}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
-                      onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                      onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-                    />
-                  ) : (
-                    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #e8ddd5, #d4c8bc)" }} />
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        );
-      })()}
+          {/* CSS columns masonry — todas las fotos, aspect ratio natural */}
+          <div style={{
+            columns: "3 280px",
+            columnGap: 12,
+          }}>
+            {gridImgs.map((src, i) => (
+              <div key={i} style={{
+                breakInside: "avoid",
+                marginBottom: 12,
+                overflow: "hidden",
+                background: "#e0d5cc",
+              }}>
+                <Img
+                  src={src}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                    transition: "transform 0.5s ease",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.03)")}
+                  onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ══ FOOTER DARK ═══════════════════════════════════════════════════ */}
       <section style={{ background: DARK, position: "relative", overflow: "hidden", minHeight: 580, padding: "60px clamp(24px, 6.9vw, 100px) 60px" }}>
