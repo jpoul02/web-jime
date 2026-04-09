@@ -240,7 +240,7 @@ export default function HistoriaTimeline() {
 
         {/* Year + heart row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "calc(100% - 480px)" }} className="md:max-w-[calc(100%-520px)] max-w-full">
-          <span style={{ fontFamily: PF, fontSize: "clamp(22px, 2.5vw, 32px)", fontStyle: "italic", color: TERRA }}>2020 — 2026</span>
+          <span style={{ fontFamily: PF, fontSize: "clamp(22px, 2.5vw, 32px)", fontStyle: "italic", color: TERRA }}>2025 — 2026</span>
           <span style={{ fontSize: 28, color: TERRA }}>♥</span>
         </div>
 
