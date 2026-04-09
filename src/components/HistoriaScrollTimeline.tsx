@@ -112,6 +112,7 @@ export default function HistoriaScrollTimeline() {
   const [loading, setLoading]       = useState(true);
   const [lightboxSrc, setLightbox]  = useState<string | null>(null);
   const [visible, setVisible]       = useState<Set<number>>(new Set());
+  const [mounted, setMounted]       = useState(false);
   const cardRefs                    = useRef<(HTMLDivElement | null)[]>([]);
 
   /* Fetch slides */
@@ -156,6 +157,21 @@ export default function HistoriaScrollTimeline() {
     return () => observer.disconnect();
   }, [slides]);
 
+  /* SSR safety */
+  useEffect(() => { setMounted(true); }, []);
+
+  /* Lightbox: scroll lock + Escape to close */
+  useEffect(() => {
+    if (!lightboxSrc) return;
+    document.body.style.overflow = "hidden";
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setLightbox(null); }
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxSrc]);
+
   if (loading) {
     return (
       <section style={{ background: CREAM, padding: "80px clamp(24px, 6.9vw, 100px)", textAlign: "center" }}>
@@ -167,126 +183,166 @@ export default function HistoriaScrollTimeline() {
   if (slides.length === 0) return null;
 
   return (
-    <section style={{ background: CREAM, padding: "clamp(60px, 8vw, 100px) clamp(24px, 6.9vw, 100px)" }}>
-      <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: LINE, margin: "0 0 60px" }}>
-        NUESTRA LÍNEA DEL TIEMPO
-      </p>
+    <>
+      <section style={{ background: CREAM, padding: "clamp(60px, 8vw, 100px) clamp(24px, 6.9vw, 100px)" }}>
+        <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 5, color: LINE, margin: "0 0 60px" }}>
+          NUESTRA LÍNEA DEL TIEMPO
+        </p>
 
-      <div style={{ position: "relative" }}>
-        {/* Vertical center line — desktop */}
-        <div
-          className="hidden md:block"
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: 0,
-            bottom: 0,
-            width: 2,
-            background: LINE,
-            transform: "translateX(-50%)",
-            zIndex: 0,
-          }}
-        />
+        <div style={{ position: "relative" }}>
+          {/* Vertical center line — desktop */}
+          <div
+            className="hidden md:block"
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              bottom: 0,
+              width: 2,
+              background: LINE,
+              transform: "translateX(-50%)",
+              zIndex: 0,
+            }}
+          />
 
-        {/* Vertical left line — mobile */}
-        <div
-          className="md:hidden"
-          style={{
-            position: "absolute",
-            left: 20,
-            top: 0,
-            bottom: 0,
-            width: 2,
-            background: LINE,
-            zIndex: 0,
-          }}
-        />
+          {/* Vertical left line — mobile */}
+          <div
+            className="md:hidden"
+            style={{
+              position: "absolute",
+              left: 20,
+              top: 0,
+              bottom: 0,
+              width: 2,
+              background: LINE,
+              zIndex: 0,
+            }}
+          />
 
-        {slides.map((slide, i) => {
-          const isLeft = i % 2 === 0;
-          const isVis  = visible.has(i);
+          {slides.map((slide, i) => {
+            const isLeft = i % 2 === 0;
+            const isVis  = visible.has(i);
 
-          return (
-            <div
-              key={slide.id}
-              ref={el => { cardRefs.current[i] = el; }}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                marginBottom: 64,
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              {/* ── Desktop: left card or spacer ── */}
+            return (
               <div
-                className="hidden md:flex"
-                style={{ flex: 1, justifyContent: "flex-end", paddingRight: 40 }}
-              >
-                {isLeft && <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={-1} />}
-              </div>
-
-              {/* ── Desktop: center dot + date ── */}
-              <div
-                className="hidden md:flex"
+                key={slide.id}
+                ref={el => { cardRefs.current[i] = el; }}
                 style={{
-                  width: 160,
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 8,
-                  paddingTop: 4,
-                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "flex-start",
+                  marginBottom: 64,
+                  position: "relative",
+                  zIndex: 1,
                 }}
               >
-                <div style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: isVis ? TERRA : LINE,
-                  border: `2px solid ${isVis ? TERRA : LINE}`,
-                  transition: "background 0.4s, border-color 0.4s",
-                  flexShrink: 0,
-                }} />
-                <span style={{
-                  fontFamily: GM,
-                  fontSize: 9,
-                  letterSpacing: 3,
-                  color: TERRA,
-                  textTransform: "uppercase" as const,
-                  textAlign: "center",
-                  lineHeight: 1.4,
-                }}>
-                  {slide.date}
-                </span>
-              </div>
+                {/* ── Desktop: left card or spacer ── */}
+                <div
+                  className="hidden md:flex"
+                  style={{ flex: 1, justifyContent: "flex-end", paddingRight: 40 }}
+                >
+                  {isLeft && <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={-1} />}
+                </div>
 
-              {/* ── Desktop: right card or spacer ── */}
-              <div
-                className="hidden md:flex"
-                style={{ flex: 1, justifyContent: "flex-start", paddingLeft: 40 }}
-              >
-                {!isLeft && <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={1} />}
-              </div>
+                {/* ── Desktop: center dot + date ── */}
+                <div
+                  className="hidden md:flex"
+                  style={{
+                    width: 160,
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                    paddingTop: 4,
+                    flexShrink: 0,
+                  }}
+                >
+                  <div style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: isVis ? TERRA : LINE,
+                    border: `2px solid ${isVis ? TERRA : LINE}`,
+                    transition: "background 0.4s, border-color 0.4s",
+                    flexShrink: 0,
+                  }} />
+                  <span style={{
+                    fontFamily: GM,
+                    fontSize: 9,
+                    letterSpacing: 3,
+                    color: TERRA,
+                    textTransform: "uppercase" as const,
+                    textAlign: "center",
+                    lineHeight: 1.4,
+                  }}>
+                    {slide.date}
+                  </span>
+                </div>
 
-              {/* ── Mobile: left dot + card ── */}
-              <div className="md:hidden" style={{ paddingLeft: 48, width: "100%" }}>
-                <div style={{
-                  position: "absolute",
-                  left: 14,
-                  top: 6,
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: isVis ? TERRA : LINE,
-                  border: `2px solid ${isVis ? TERRA : LINE}`,
-                  transition: "background 0.4s, border-color 0.4s",
-                }} />
-                <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={0} />
+                {/* ── Desktop: right card or spacer ── */}
+                <div
+                  className="hidden md:flex"
+                  style={{ flex: 1, justifyContent: "flex-start", paddingLeft: 40 }}
+                >
+                  {!isLeft && <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={1} />}
+                </div>
+
+                {/* ── Mobile: left dot + card ── */}
+                <div className="md:hidden" style={{ paddingLeft: 48, width: "100%" }}>
+                  <div style={{
+                    position: "absolute",
+                    left: 14,
+                    top: 6,
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: isVis ? TERRA : LINE,
+                    border: `2px solid ${isVis ? TERRA : LINE}`,
+                    transition: "background 0.4s, border-color 0.4s",
+                  }} />
+                  <Card slide={slide} isVis={isVis} onImg={setLightbox} dir={0} />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {mounted && lightboxSrc && createPortal(
+        <div
+          onClick={() => setLightbox(null)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 9990,
+            background: "rgba(0,0,0,0.92)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: 16,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxSrc}
+            alt=""
+            onClick={e => e.stopPropagation()}
+            style={{
+              maxWidth: "90vw",
+              maxHeight: "85svh",
+              objectFit: "contain",
+              borderRadius: 4,
+              boxShadow: "0 8px 48px rgba(0,0,0,0.6)",
+            }}
+          />
+          <button
+            onClick={() => setLightbox(null)}
+            aria-label="Cerrar"
+            style={{
+              position: "absolute", top: 20, right: 20,
+              background: "none", border: "none",
+              cursor: "pointer", fontSize: 22,
+              color: "#fff", lineHeight: 1, padding: 4,
+            }}
+          >✕</button>
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
