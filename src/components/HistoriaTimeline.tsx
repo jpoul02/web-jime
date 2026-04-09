@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import HistoriaWrapped from "./HistoriaWrapped";
+import HistoriaScrollTimeline from "./HistoriaScrollTimeline";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
 
@@ -177,6 +178,9 @@ export default function HistoriaTimeline() {
 
         <p style={{ fontFamily: GM, fontSize: 10, letterSpacing: 4, color: TERRA, margin: 0 }}>— J &amp; J</p>
       </section>
+
+      {/* ══ SCROLL TIMELINE ══════════════════════════════════════════════════ */}
+      <HistoriaScrollTimeline />
 
       {/* ══ PHOTO COLLAGE ═════════════════════════════════════════════════ */}
       {gridImgs.length > 0 && (
