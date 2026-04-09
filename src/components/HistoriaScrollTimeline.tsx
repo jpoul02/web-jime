@@ -132,6 +132,30 @@ export default function HistoriaScrollTimeline() {
       .finally(() => setLoading(false));
   }, []);
 
+  /* IntersectionObserver — animate cards on scroll */
+  useEffect(() => {
+    if (slides.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = cardRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (idx !== -1) {
+              setVisible(prev => new Set(prev).add(idx));
+              observer.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    cardRefs.current.forEach(el => { if (el) observer.observe(el); });
+
+    return () => observer.disconnect();
+  }, [slides]);
+
   if (loading) {
     return (
       <section style={{ background: CREAM, padding: "80px clamp(24px, 6.9vw, 100px)", textAlign: "center" }}>
