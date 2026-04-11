@@ -185,7 +185,7 @@ export default function SkypeDesktop() {
           {/* Mobile contacts strip */}
           <div
             className="md:hidden w-full flex-shrink-0 flex items-center gap-4 px-4 py-3 overflow-x-auto"
-            style={{ scrollbarWidth: "none", background: "linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.4))", backdropFilter: "blur(8px)" }}
+            style={{ scrollbarWidth: "none", background: "linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.4))", backdropFilter: "blur(8px)", position: "relative", zIndex: 9999 }}
           >
             {contacts.length === 0 && !loading && (
               <span className="text-white/50 text-sm px-2">Sin videos todavía 🐧</span>
