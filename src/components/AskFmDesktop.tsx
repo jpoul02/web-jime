@@ -125,6 +125,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
           { href: "/amigos",    label: "Amigos"   },
           { href: "/historia",  label: "Historia" },
           { href: "/skype",     label: "Skype"    },
+          { href: "/ask",       label: "Ask.fm"   },
           { href: "/musica",    label: "Música"   },
         ].map(({ href, label }) => (
           <Link

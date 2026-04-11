@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import MobileNav from "./MobileNav";
 
 /* ── Images ──────────────────────────────────────────────────────────────── */
 const HERO_IMG =
@@ -348,7 +347,6 @@ export default function JimeBiography() {
         </div>
       </section>
 
-      <MobileNav />
     </div>
   );
 }

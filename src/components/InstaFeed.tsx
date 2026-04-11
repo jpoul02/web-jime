@@ -1,18 +1,20 @@
 "use client";
 
 import type { InstaPost } from "@/types/feed";
-import { Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, Video, Users } from "lucide-react";
+import { BookOpen, Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, User, Video, Users } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstaLogo from "./InstaLogo";
 import InstaPostCard from "./InstaPost";
 
 const MOBILE_NAV = [
-  { href: "/",       label: "Inicio",  icon: <Home     size={16} color="#262626" /> },
-  { href: "/amigos", label: "Amigos",  icon: <Users    size={16} color="#262626" /> },
-  { href: "/skype",  label: "Skype",   icon: <Video    size={16} color="#262626" /> },
-  { href: "/ask",    label: "Ask.fm",  icon: <HelpCircle size={16} color="#262626" /> },
-  { href: "/musica", label: "Música",  icon: <Music    size={16} color="#262626" /> },
+  { href: "/",          label: "Inicio",   icon: <Home       size={16} color="#262626" /> },
+  { href: "/sobre-mi",  label: "Sobre Mi", icon: <User       size={16} color="#262626" /> },
+  { href: "/amigos",    label: "Amigos",   icon: <Users      size={16} color="#262626" /> },
+  { href: "/historia",  label: "Historia", icon: <BookOpen   size={16} color="#262626" /> },
+  { href: "/skype",     label: "Skype",    icon: <Video      size={16} color="#262626" /> },
+  { href: "/ask",       label: "Ask.fm",   icon: <HelpCircle size={16} color="#262626" /> },
+  { href: "/musica",    label: "Música",   icon: <Music      size={16} color="#262626" /> },
 ];
 
 const LIMIT = 10;
