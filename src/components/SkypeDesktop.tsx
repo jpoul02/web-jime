@@ -72,10 +72,18 @@ export default function SkypeDesktop() {
   const [selected, setSelected] = useState<VideoPostal | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     fetch(`${API}/postales/videos`)
@@ -218,7 +226,7 @@ export default function SkypeDesktop() {
           <div className="relative flex-1 overflow-hidden">
             {selected ? (
               <>
-                {/* Blurred background — always rendered, visible only for portrait */}
+                {/* Blurred background — portrait always, landscape on mobile too */}
                 <video
                   key={`bg-${selected.id}`}
                   ref={bgVideoRef}
@@ -230,7 +238,7 @@ export default function SkypeDesktop() {
                     objectFit: "cover",
                     filter: "blur(24px) brightness(0.45) saturate(1.4)",
                     transform: "scale(1.08)",
-                    opacity: isPortrait ? 1 : 0,
+                    opacity: (isPortrait || (isMobile && !isPortrait)) ? 1 : 0,
                     transition: "opacity 0.3s",
                     pointerEvents: "none",
                   }}
@@ -247,7 +255,7 @@ export default function SkypeDesktop() {
                   style={{
                     position: "absolute", inset: 0,
                     width: "100%", height: "100%",
-                    objectFit: isPortrait ? "contain" : "cover",
+                    objectFit: (isPortrait || isMobile) ? "contain" : "cover",
                     transition: "object-fit 0s",
                   }}
                 >

@@ -1249,7 +1249,7 @@ function SlideAward() {
 /* ─────────────────────────────────────────────────────────────
    SLIDE 13 — FIN  (dark · ending)
 ───────────────────────────────────────────────────────────── */
-function SlideFin() {
+function SlideFin({ onClose }: { onClose?: () => void }) {
   return (
     <div className="ws" style={{background:"#0D0D0D"}}>
       {/* Checkerboard halftone fade */}
@@ -1301,17 +1301,31 @@ function SlideFin() {
           Gracias por escuchar, crear y sentir.<br/>
           <strong style={{color:"#fff"}}>24 años de música, Jime ♪</strong>
         </p>
-        <Link href="/" style={{
-          display:"inline-block",marginTop:32,
-          background:"#1DB954",borderRadius:40,
-          color:"#fff",fontFamily:"'Montserrat',sans-serif",
-          fontWeight:700,fontSize:13,padding:"13px 34px",
-          textDecoration:"none",letterSpacing:1,
-          boxShadow:"0 4px 20px rgba(29,185,84,0.4)",
-          animation:"fadeUp 0.5s 0.75s both",
-        }}>
-          Volver al inicio
-        </Link>
+        {onClose ? (
+          <button onClick={onClose} style={{
+            display:"inline-block",marginTop:32,
+            background:"#1DB954",borderRadius:40,
+            color:"#fff",fontFamily:"'Montserrat',sans-serif",
+            fontWeight:700,fontSize:13,padding:"13px 34px",
+            border:"none",cursor:"pointer",letterSpacing:1,
+            boxShadow:"0 4px 20px rgba(29,185,84,0.4)",
+            animation:"fadeUp 0.5s 0.75s both",
+          }}>
+            Volver a Spotify
+          </button>
+        ) : (
+          <Link href="/" style={{
+            display:"inline-block",marginTop:32,
+            background:"#1DB954",borderRadius:40,
+            color:"#fff",fontFamily:"'Montserrat',sans-serif",
+            fontWeight:700,fontSize:13,padding:"13px 34px",
+            textDecoration:"none",letterSpacing:1,
+            boxShadow:"0 4px 20px rgba(29,185,84,0.4)",
+            animation:"fadeUp 0.5s 0.75s both",
+          }}>
+            Volver al inicio
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -1633,7 +1647,7 @@ export default function SpotifyWrapped({ onClose }: { onClose?: () => void } = {
 
       {/* ── Active slide ─────────────────────────────────────────── */}
       <div key={slideKey} className={slideAnim} style={{ position:"absolute", inset:0 }}>
-        {current < TOTAL_SLIDES - 1 ? slides[current] : <SlideFin key="fin"/>}
+        {current < TOTAL_SLIDES - 1 ? slides[current] : <SlideFin key="fin" onClose={onClose}/>}
       </div>
 
       {/* ── Click navigation zones ───────────────────────────────── */}
