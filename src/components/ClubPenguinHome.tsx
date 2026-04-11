@@ -161,7 +161,7 @@ export default function ClubPenguinHome() {
                 whiteSpace: "pre-line",
               }}
             >
-              {`Bienvenido a mi igloo! Soy una pingüina que ama la moda, los puffles y pasar el rato con amigos en la isla. Si me buscas, probablemente estoy en la Disco o armando outfits en mi igloo.\n\nMarketing Lead & creative penguin since 2002.`}
+              {`Bienvenido a mi igloo! Soy Jime, una pingüina que vive entre outfits, canciones y el escenario. Si no estoy armando looks en mi igloo, estoy ensayando algo o en el teatro de la isla.\n\nMarketing Lead, actriz amateur y fashionista de tiempo completo desde 2002.`}
             </p>
 
             {/* Botón CTA */}
