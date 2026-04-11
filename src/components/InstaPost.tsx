@@ -100,11 +100,13 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
   const [idx, setIdx] = useState(0);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   // Dynamic aspect ratio — set once the first image loads
   const [aspectRatio, setAspectRatio] = useState<string>("1 / 1");
   const ratioDetermined = useRef(false);
 
   function handleFirstImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    setImgLoaded(true);
     if (ratioDetermined.current) return;
     const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
     if (!w || !h) return;
@@ -193,7 +195,13 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
         <BirthdayCard postId={post.id} name={post.name} />
       ) : (
         <div
-          style={{ position: "relative", width: "100%", aspectRatio, overflow: "hidden", background: "#000", touchAction: "pan-y", transition: "aspect-ratio 0.2s" }}
+          style={{
+            position: "relative", width: "100%", aspectRatio, overflow: "hidden",
+            background: "linear-gradient(90deg, #F0F0F0 25%, #E8E8E8 50%, #F0F0F0 75%)",
+            backgroundSize: "200% 100%",
+            animation: imgLoaded ? "none" : "shimmer 1.4s linear infinite",
+            touchAction: "pan-y", transition: "aspect-ratio 0.25s ease",
+          }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -220,7 +228,11 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                     alt={`Foto ${i + 1} de ${post.name}`}
                     fill
                     unoptimized
-                    style={{ objectFit: "contain" }}
+                    style={{
+                      objectFit: "cover",
+                      opacity: i === 0 ? (imgLoaded ? 1 : 0) : 1,
+                      transition: "opacity 0.3s ease",
+                    }}
                     priority={i === 0}
                     onLoad={i === 0 ? handleFirstImageLoad : undefined}
                   />
