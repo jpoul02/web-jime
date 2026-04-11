@@ -133,7 +133,7 @@ export default function HistoriaTimeline() {
           </p>
 
           <button
-            onClick={() => setWrappedOpen(true)}
+            onClick={() => document.getElementById("timeline")?.scrollIntoView({ behavior: "smooth" })}
             style={{
               marginTop: 8,
               background: TERRA,
@@ -180,7 +180,7 @@ export default function HistoriaTimeline() {
       </section>
 
       {/* ══ SCROLL TIMELINE ══════════════════════════════════════════════════ */}
-      <HistoriaScrollTimeline />
+      <div id="timeline"><HistoriaScrollTimeline /></div>
 
       {/* ══ PHOTO COLLAGE ═════════════════════════════════════════════════ */}
       {gridImgs.length > 0 && (
