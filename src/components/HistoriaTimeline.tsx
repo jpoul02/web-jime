@@ -20,8 +20,7 @@ const NAV_LINKS = [
 
 /* ─── Images ──────────────────────────────────────────────────────────── */
 const HERO_BG = "/nuestra-historia.jpg";
-const FOOTER_IMG =
-  "https://images.unsplash.com/photo-1768193515652-82a7a5dcbe6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800";
+const FOOTER_IMG = "/footer-histoira.jpg";
 
 /* ─── Tokens ──────────────────────────────────────────────────────────── */
 const PF   = "'Playfair Display', Georgia, serif";
