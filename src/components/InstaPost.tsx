@@ -101,6 +101,16 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  // Per-photo aspect ratios for carousel — each slot updates when its image loads
+  const [photoRatios, setPhotoRatios] = useState<number[]>(() => post.photos.map(() => 1));
+
+  function handlePhotoLoad(e: React.SyntheticEvent<HTMLImageElement>, i: number) {
+    if (i === 0) setImgLoaded(true);
+    const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
+    if (!w || !h) return;
+    const ratio = Math.max(0.5, Math.min(2.5, w / h));
+    setPhotoRatios(prev => { const next = [...prev]; next[i] = ratio; return next; });
+  }
 
   // Touch swipe state
   const touchStartX = useRef<number | null>(null);
@@ -204,12 +214,14 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
           />
         </div>
       ) : (
-        /* ── Multi-photo carousel — fixed 4:5 ratio, object-cover ── */
+        /* ── Multi-photo carousel — ratio per slide, transitions on swipe ── */
         <div
           style={{
-            position: "relative", width: "100%", aspectRatio: "4/5",
+            position: "relative", width: "100%",
+            aspectRatio: String(photoRatios[idx]),
             overflow: "hidden", background: "#F0F0F0",
             touchAction: "pan-y",
+            transition: "aspect-ratio 0.3s ease",
           }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
@@ -239,6 +251,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                     unoptimized
                     style={{ objectFit: "cover" }}
                     priority={i === 0}
+                    onLoad={(e) => handlePhotoLoad(e, i)}
                   />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
