@@ -807,17 +807,8 @@ export default function SpotifyArtistPage() {
           <div style={{ display: "flex", gap: 32, flexDirection: isMobile ? "column" : "row", flexWrap: "wrap" }}>
             {/* Bio */}
             <div style={{ flex: "1 1 420px", minWidth: isMobile ? "unset" : 320 }}>
-              <div style={{ display: "flex", gap: 24, marginBottom: 24, flexWrap: "wrap" }}>
-                <div style={{ width: isMobile ? 120 : 200, height: isMobile ? 120 : 200, flexShrink: 0, borderRadius: 8, background: "linear-gradient(135deg,#1A3A5C,#833AB4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isMobile ? 48 : 72, boxShadow: "0 16px 40px rgba(0,0,0,0.5)" }}>🐧</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div style={{ fontSize: isMobile ? 22 : 28, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}>Jimena<br/>Sings</div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#2A2A2A", borderRadius: 20, padding: "6px 14px", alignSelf: "flex-start" }}>
-                    <span style={{ fontSize: 13, color: MUT, fontWeight: 600 }}>🌍 Ríos de Mundo</span>
-                  </div>
-                </div>
-              </div>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.7, margin: "0 0 20px" }}>
-                Cantante, compositora y alma musical nacida para el escenario. Con una voz que va del pop latino al rock y del trap al vallenato, Jimena construyó su sonido entre coros universitarios y tardes de Club Penguin.
+                Cantante y alma musical nacida para el escenario. Con una voz que va del pop latino al rock y del trap al vallenato, Jimena construyó su sonido entre coros universitarios y tardes de Club Penguin.
               </p>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: MUT, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 }}>Proyectos musicales</div>
