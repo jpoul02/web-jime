@@ -5,6 +5,13 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video, Music } from "lucide-react";
 
+interface AnswerMedia {
+  id: number;
+  media_url: string;
+  media_type: "image" | "video";
+  order: number;
+}
+
 interface AnswerCard {
   id: number;
   question_text: string;
@@ -12,6 +19,7 @@ interface AnswerCard {
   name: string;
   profile_photo_url: string | null;
   created_at: string;
+  media: AnswerMedia[];
 }
 
 interface Stats {
@@ -155,6 +163,33 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
                 <div className="flex flex-col flex-1 gap-1">
                   <span className="text-[#3B5998] text-[13px] font-bold">{card.name}</span>
                   <span className="text-[#333333] text-sm leading-relaxed">{card.answer_text}</span>
+                  {card.media?.length > 0 && (
+                    <div className={`mt-2 flex gap-1.5 flex-wrap`}>
+                      {card.media.map((m) =>
+                        m.media_type === "video" ? (
+                          <video
+                            key={m.id}
+                            src={m.media_url}
+                            controls
+                            className="rounded-lg max-w-full border border-[#E4E6EA]"
+                            style={{ maxHeight: 240 }}
+                          />
+                        ) : (
+                          <img
+                            key={m.id}
+                            src={m.media_url}
+                            alt=""
+                            className="rounded-lg object-cover border border-[#E4E6EA]"
+                            style={{
+                              width: card.media.length === 1 ? "100%" : "calc(50% - 3px)",
+                              maxHeight: 240,
+                              objectFit: "cover",
+                            }}
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
