@@ -106,7 +106,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
 
         <div className="hidden md:flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#6B8CC7]" />
-          <span className="text-white text-[13px] font-semibold">jimepenguin</span>
+          <span className="text-white text-[13px] font-semibold">xidoo</span>
         </div>
       </header>
 
@@ -260,7 +260,7 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
             <div className="w-20 h-20 rounded-full bg-[#4A76A8] flex items-center justify-center overflow-hidden">
               <User size={40} color="#FFFFFF" />
             </div>
-            <span className="text-[#333333] text-lg font-bold">jimepenguin</span>
+            <span className="text-[#333333] text-lg font-bold">xidoo</span>
             <span className="text-[#777777] text-[13px] text-center">
               Pingüino gamer, fan de Club Penguin y la nostalgia 2000s
             </span>
