@@ -101,20 +101,6 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-  // Dynamic aspect ratio — set once the first image loads
-  const [aspectRatio, setAspectRatio] = useState<string>("1 / 1");
-  const ratioDetermined = useRef(false);
-
-  function handleFirstImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    setImgLoaded(true);
-    if (ratioDetermined.current) return;
-    const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
-    if (!w || !h) return;
-    ratioDetermined.current = true;
-    // Clamp between Instagram's portrait (4:5) and landscape (1.91:1) limits
-    const ratio = Math.max(0.8, Math.min(1.91, w / h));
-    setAspectRatio(`${ratio}`);
-  }
 
   // Touch swipe state
   const touchStartX = useRef<number | null>(null);
@@ -193,14 +179,37 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
       {/* ── Carousel or Birthday card ── */}
       {post.photos.length === 0 ? (
         <BirthdayCard postId={post.id} name={post.name} />
+      ) : !multi ? (
+        /* ── Single photo — natural dimensions via CSS, no JS needed ── */
+        <div style={{
+          overflow: "hidden", lineHeight: 0,
+          background: "linear-gradient(90deg,#F0F0F0 25%,#E8E8E8 50%,#F0F0F0 75%)",
+          backgroundSize: "200% 100%",
+          animation: imgLoaded ? "none" : "shimmer 1.4s linear infinite",
+        }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.photos[0].photo_url}
+            alt={`Foto de ${post.name}`}
+            style={{
+              width: "100%",
+              height: "auto",
+              maxHeight: 600,
+              objectFit: "cover",
+              display: "block",
+              opacity: imgLoaded ? 1 : 0,
+              transition: "opacity 0.3s ease",
+            }}
+            onLoad={() => setImgLoaded(true)}
+          />
+        </div>
       ) : (
+        /* ── Multi-photo carousel — fixed 4:5 ratio, object-cover ── */
         <div
           style={{
-            position: "relative", width: "100%", aspectRatio, overflow: "hidden",
-            background: "linear-gradient(90deg, #F0F0F0 25%, #E8E8E8 50%, #F0F0F0 75%)",
-            backgroundSize: "200% 100%",
-            animation: imgLoaded ? "none" : "shimmer 1.4s linear infinite",
-            touchAction: "pan-y", transition: "aspect-ratio 0.25s ease",
+            position: "relative", width: "100%", aspectRatio: "4/5",
+            overflow: "hidden", background: "#F0F0F0",
+            touchAction: "pan-y",
           }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
@@ -228,13 +237,8 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                     alt={`Foto ${i + 1} de ${post.name}`}
                     fill
                     unoptimized
-                    style={{
-                      objectFit: "cover",
-                      opacity: i === 0 ? (imgLoaded ? 1 : 0) : 1,
-                      transition: "opacity 0.3s ease",
-                    }}
+                    style={{ objectFit: "cover" }}
                     priority={i === 0}
-                    onLoad={i === 0 ? handleFirstImageLoad : undefined}
                   />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
