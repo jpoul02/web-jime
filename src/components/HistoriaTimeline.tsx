@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import HistoriaWrapped from "./HistoriaWrapped";
 import HistoriaScrollTimeline from "./HistoriaScrollTimeline";
+import MobileNav from "./MobileNav";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
 
@@ -274,6 +275,7 @@ export default function HistoriaTimeline() {
       </section>
 
       {wrappedOpen && <HistoriaWrapped onClose={() => setWrappedOpen(false)} />}
+      <MobileNav />
     </div>
   );
 }

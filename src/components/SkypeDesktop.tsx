@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import {
-  Search, Home, Grid3x3, Plus, Monitor,
+  Search, Grid3x3, Plus, Monitor,
   ChevronDown, Mic, Video, MessageSquare, PhoneOff,
   Maximize2, Ellipsis, Users, HelpCircle, Clock,
-  Music, Instagram, User,
+  Music, Instagram, User, MicOff, VideoOff,
 } from "lucide-react";
+import MobileNav from "./MobileNav";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
 
@@ -71,6 +72,8 @@ export default function SkypeDesktop() {
   const [selected, setSelected] = useState<VideoPostal | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [micOn, setMicOn] = useState(true);
+  const [camOn, setCamOn] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -127,7 +130,7 @@ export default function SkypeDesktop() {
 
           {/* Nav Icons */}
           <div className="flex items-center justify-around h-11 bg-[#FAFAFA] border-t border-b border-[#EEEEEE]">
-            {[Home, Grid3x3, Plus, Monitor].map((Icon, i) => (
+            {[MessageSquare, Grid3x3, Plus, Monitor].map((Icon, i) => (
               <Icon key={i} size={20} color="#666666" />
             ))}
           </div>
@@ -172,24 +175,38 @@ export default function SkypeDesktop() {
         <div className="relative flex-1 overflow-hidden bg-[#1A1A1A] flex flex-col">
 
           {/* Mobile contacts strip */}
-          <div className="md:hidden w-full overflow-x-auto flex-shrink-0 bg-black/60 flex items-center gap-3 px-3 py-2"
-            style={{ scrollbarWidth: "none" }}>
+          <div
+            className="md:hidden w-full flex-shrink-0 flex items-center gap-4 px-4 py-3 overflow-x-auto"
+            style={{ scrollbarWidth: "none", background: "linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.4))", backdropFilter: "blur(8px)" }}
+          >
             {contacts.length === 0 && !loading && (
-              <span className="text-white/50 text-xs px-2">Sin videos todavía</span>
+              <span className="text-white/50 text-sm px-2">Sin videos todavía 🐧</span>
             )}
+            {loading && <span className="text-white/40 text-sm px-2">Cargando...</span>}
             {contacts.map((c) => {
               const isSelected = selected?.id === c.id;
               return (
                 <button
                   key={c.id}
                   onClick={() => setSelected(c)}
-                  className="flex flex-col items-center gap-1 shrink-0 border-none bg-transparent cursor-pointer"
-                  style={{ opacity: isSelected ? 1 : 0.6 }}
+                  className="flex flex-col items-center gap-1.5 shrink-0 border-none bg-transparent cursor-pointer"
                 >
-                  <div style={{ borderRadius: "50%", border: isSelected ? "2px solid #00AFF0" : "2px solid transparent" }}>
-                    <Avatar postal={c} size={32} />
+                  <div style={{
+                    borderRadius: "50%",
+                    padding: 2,
+                    background: isSelected ? "linear-gradient(135deg,#00AFF0,#0078D4)" : "transparent",
+                    border: isSelected ? "none" : "2px solid rgba(255,255,255,0.2)",
+                  }}>
+                    <div style={{ borderRadius: "50%", overflow: "hidden", border: "2px solid #1A1A1A" }}>
+                      <Avatar postal={c} size={44} />
+                    </div>
                   </div>
-                  <span style={{ color: "#fff", fontSize: 9, whiteSpace: "nowrap", maxWidth: 48, overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{
+                    color: isSelected ? "#00AFF0" : "rgba(255,255,255,0.7)",
+                    fontSize: 10, fontWeight: isSelected ? 700 : 400,
+                    whiteSpace: "nowrap", maxWidth: 56,
+                    overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
                     {c.name}
                   </span>
                 </button>
@@ -261,6 +278,37 @@ export default function SkypeDesktop() {
               </div>
             )}
 
+            {/* Call Controls — mobile floating */}
+            {selected && (
+              <div className="md:hidden absolute left-0 right-0 flex justify-center"
+                style={{ bottom: 76 }}>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 16,
+                  background: "rgba(0,0,0,0.72)", borderRadius: 40,
+                  padding: "10px 24px", backdropFilter: "blur(12px)",
+                }}>
+                  <button
+                    onClick={() => setMicOn(v => !v)}
+                    style={{ width: 48, height: 48, borderRadius: 24, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: micOn ? "#333" : "#E81123" }}
+                  >
+                    {micOn ? <Mic size={20} color="#fff" /> : <MicOff size={20} color="#fff" />}
+                  </button>
+                  <button
+                    onClick={() => setCamOn(v => !v)}
+                    style={{ width: 48, height: 48, borderRadius: 24, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: camOn ? "#333" : "#E81123" }}
+                  >
+                    {camOn ? <Video size={20} color="#fff" /> : <VideoOff size={20} color="#fff" />}
+                  </button>
+                  <button
+                    onClick={() => router.push("/")}
+                    style={{ width: 56, height: 48, borderRadius: 24, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "#E81123" }}
+                  >
+                    <PhoneOff size={22} color="#fff" />
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Call Controls — desktop only */}
             <div className="hidden md:flex absolute items-center justify-center"
               style={{ left: "50%", transform: "translateX(-50%)", bottom: 72, background: "rgba(0,0,0,0.67)", borderRadius: 30, padding: "0 16px", height: 60, gap: 20 }}>
@@ -276,25 +324,7 @@ export default function SkypeDesktop() {
       </div>
 
       {/* ── Mobile bottom nav ───────────────────────────────────────── */}
-      <nav
-        className="md:hidden w-full shrink-0 flex items-stretch"
-        style={{ height: 56, background: "#0B1D42", borderTop: "1px solid #1a3a6e" }}
-      >
-        {[
-          { href: "/",       label: "Inicio",  icon: <Home      size={20} color="#FFFFFF" /> },
-          { href: "/amigos", label: "Amigos",  icon: <Users     size={20} color="#FFFFFF" /> },
-          { href: "/ask",    label: "Ask.fm",  icon: <HelpCircle size={20} color="#FFFFFF" /> },
-          { href: "/musica", label: "Música",  icon: <Music     size={20} color="#FFFFFF" /> },
-        ].map(({ href, label, icon }) => (
-          <Link key={href} href={href}
-            className="flex-1 flex flex-col items-center justify-center gap-[3px]"
-            style={{ textDecoration: "none", opacity: 0.7 }}
-          >
-            {icon}
-            <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: 0.3 }}>{label}</span>
-          </Link>
-        ))}
-      </nav>
+      <MobileNav />
 
       {/* ── Windows Taskbar — desktop only ──────────────────────────── */}
       <footer

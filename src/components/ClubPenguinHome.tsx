@@ -10,7 +10,6 @@ const navLinks = [
   { label: "Sobre Mi", href: "/sobre-mi" },
   { label: "Amigos",   href: "/amigos" },
   { label: "Historia", href: "/historia" },
-  { label: "Juegos",   href: "#" },
   { label: "Skype",    href: "/skype" },
   { label: "Ask.fm",   href: "/ask" },
   { label: "Música 🎵", href: "/musica" },
