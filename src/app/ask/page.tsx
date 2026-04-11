@@ -6,9 +6,11 @@ export const metadata = {
   title: "Jimena — Ask.fm",
 };
 
+const INITIAL_LIMIT = 20;
+
 export default async function AskPage() {
   const [answersRes, statsRes] = await Promise.all([
-    fetch(`${API}/postales/answers-feed?skip=0&limit=500`, { cache: "no-store" }).catch(() => null),
+    fetch(`${API}/postales/answers-feed?skip=0&limit=${INITIAL_LIMIT}`, { cache: "no-store" }).catch(() => null),
     fetch(`${API}/postales/stats`, { cache: "no-store" }).catch(() => null),
   ]);
 

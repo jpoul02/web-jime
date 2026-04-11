@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Home, Bell, Mail, Search, MessageCircle, Heart, Share2, User, Users, BookOpen, Gamepad2, Video, Music } from "lucide-react";
 
 interface AnswerMedia {
@@ -27,14 +27,7 @@ interface Stats {
   total_answers: number;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const LIMIT = 20;
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -46,9 +39,43 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function AskFmDesktop({ initialAnswers, initialStats }: { initialAnswers: AnswerCard[]; initialStats: Stats | null }) {
-  // Shuffle once on mount — all answers arrive in one request so no pagination duplicates
-  const answers = useMemo(() => shuffle(initialAnswers), [initialAnswers]);
+  const [answers, setAnswers] = useState<AnswerCard[]>(initialAnswers);
   const [stats] = useState<Stats | null>(initialStats);
+  const [skip, setSkip] = useState(initialAnswers.length);
+  const [hasMore, setHasMore] = useState(initialAnswers.length === LIMIT);
+  const [loading, setLoading] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/answers?skip=${skip}&limit=${LIMIT}`);
+      if (!res.ok) { setHasMore(false); return; }
+      const data: { answers: AnswerCard[] } = await res.json();
+      const newAnswers = data.answers;
+      if (newAnswers.length < LIMIT) setHasMore(false);
+      if (newAnswers.length > 0) {
+        setAnswers((prev) => [...prev, ...newAnswers]);
+        setSkip((prev) => prev + newAnswers.length);
+      }
+    } catch {
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, skip]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EAEDF2] font-[family-name:var(--font-geist-sans)]">
@@ -208,7 +235,16 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
             </div>
           ))}
 
-          {answers.length > 0 && (
+          {/* Sentinel for infinite scroll */}
+          <div ref={sentinelRef} style={{ height: 1 }} />
+
+          {loading && (
+            <div className="text-center py-6 text-[#999999] text-sm">
+              Cargando más...
+            </div>
+          )}
+
+          {!hasMore && answers.length > 0 && (
             <div className="text-center py-8 text-[#999999] text-sm">
               Ya leíste todas las respuestas ✨
             </div>
