@@ -9,7 +9,6 @@ import InstaPostCard from "./InstaPost";
 
 const MOBILE_NAV = [
   { href: "/",          label: "Inicio",   icon: <Home       size={16} color="#262626" /> },
-  { href: "/sobre-mi",  label: "Sobre Mi", icon: <User       size={16} color="#262626" /> },
   { href: "/amigos",    label: "Amigos",   icon: <Users      size={16} color="#262626" /> },
   { href: "/historia",  label: "Historia", icon: <BookOpen   size={16} color="#262626" /> },
   { href: "/skype",     label: "Skype",    icon: <Video      size={16} color="#262626" /> },

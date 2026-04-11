@@ -10,7 +10,6 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.
 /* ─── Nav links ───────────────────────────────────────────────────────── */
 const NAV_LINKS = [
   { label: "Inicio",   href: "/" },
-  { label: "Sobre Mi", href: "/sobre-mi" },
   { label: "Amigos",   href: "/amigos" },
   { label: "Historia", href: "/historia" },
   { label: "Skype",    href: "/skype" },

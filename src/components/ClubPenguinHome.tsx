@@ -7,7 +7,6 @@ import { useState } from "react";
 import Snowfall from "./Snowfall";
 
 const navLinks = [
-  { label: "Sobre Mi", href: "/sobre-mi" },
   { label: "Amigos",   href: "/amigos" },
   { label: "Historia", href: "/historia" },
   { label: "Skype",    href: "/skype" },
@@ -161,12 +160,12 @@ export default function ClubPenguinHome() {
                 whiteSpace: "pre-line",
               }}
             >
-              {`Bienvenido a mi igloo! Soy Jime, una pingüina que vive entre outfits, canciones y el escenario. Si no estoy armando looks en mi igloo, estoy ensayando algo o en el teatro de la isla.\n\nMarketing Lead, actriz amateur y fashionista de tiempo completo desde 2002.`}
+              {`Bienvenido a mi igloo! Soy Jime, una pingüina que vive entre outfits, canciones y el escenario. Si no estoy armando looks en mi igloo, estoy ensayando algo o en el teatro de la isla.\n\nMarketing Lead, actriz amateur y fashionista de tiempo completo desde 2002. Mi novio me hizo esta página — y sí, incluye nuestra historia entera.`}
             </p>
 
             {/* Botón CTA */}
             <Link
-              href="/sobre-mi"
+              href="/historia"
               className="flex items-center justify-center w-full md:w-auto md:self-start hover:opacity-90 active:opacity-75 transition-opacity"
               style={{
                 background: "linear-gradient(to bottom, #00DDFF, #0099DD)",
@@ -181,7 +180,7 @@ export default function ClubPenguinHome() {
             >
               <Snowflake size={18} color="#FFFFFF" strokeWidth={2.5} />
               <span style={{ color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}>
-                Quieres saber sobre mi?
+                Ver nuestra historia
               </span>
             </Link>
           </div>

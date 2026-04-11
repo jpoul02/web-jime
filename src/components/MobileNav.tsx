@@ -6,7 +6,6 @@ import { BookOpen, HelpCircle, Home, Music, User, Users, Video } from "lucide-re
 
 const NAV = [
   { href: "/",          label: "Inicio",   Icon: Home       },
-  { href: "/sobre-mi",  label: "Sobre Mi", Icon: User       },
   { href: "/amigos",    label: "Amigos",   Icon: Users      },
   { href: "/historia",  label: "Historia", Icon: BookOpen   },
   { href: "/skype",     label: "Skype",    Icon: Video      },

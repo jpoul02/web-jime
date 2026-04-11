@@ -87,7 +87,6 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
         {/* Nav icons — mobile: only Home, Bell, Mail; desktop: full set */}
         <nav className="flex items-center gap-4 md:gap-5">
           <Link href="/"          title="Inicio"   className="opacity-80 hover:opacity-100 transition-opacity"><Home     size={20} color="#FFFFFF" /></Link>
-          <Link href="/sobre-mi"  title="Sobre Mi" className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><User     size={20} color="#FFFFFF" /></Link>
           <Link href="/amigos"    title="Amigos"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Users    size={20} color="#FFFFFF" /></Link>
           <Link href="/historia"  title="Historia" className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><BookOpen size={20} color="#FFFFFF" /></Link>
           <Link href="#"          title="Juegos"   className="opacity-80 hover:opacity-100 transition-opacity hidden md:inline-flex"><Gamepad2 size={20} color="#FFFFFF" /></Link>
@@ -121,7 +120,6 @@ export default function AskFmDesktop({ initialAnswers, initialStats }: { initial
       >
         {[
           { href: "/",          label: "Inicio"   },
-          { href: "/sobre-mi",  label: "Sobre Mi" },
           { href: "/amigos",    label: "Amigos"   },
           { href: "/historia",  label: "Historia" },
           { href: "/skype",     label: "Skype"    },
