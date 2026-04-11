@@ -910,7 +910,7 @@ function SlideEnEscena() {
           maxWidth:680,
           animation:"fadeUp 0.5s 0.42s both",
         }}>
-          Empezamos a tocar casi sin querer, juntándonos los viernes para
+          Empezamos a tocar casi sin querer, juntándonos entre semana para
           pasar el rato y terminar haciendo música en el ccu.
           Lo que arrancó como una joda entre amigos se convirtió en algo
           real: escenarios, gente cantando con nosotros, canciones que son
@@ -1032,12 +1032,12 @@ function SlidePhotoCantando() {
           Hay algo que pasa cuando Jime toma el micrófono: la sala cambia.
           No importa si es un show enorme o una juntada de veinte personas —
           su voz tiene esa rara capacidad de hacer que todos dejen de hablar
-          y simplemente escuchen. Años de corales, ensayos y canciones propias
-          forjaron algo que no se aprende: presencia.
+          y simplemente escuchen. Años de corales y ensayos forjaron algo
+          que no se aprende: presencia.
         </p>
 
         <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:18,animation:"fadeUp 0.5s 0.62s both"}}>
-          {["Soprano","Voz en vivo","Coros","Shows","Canciones propias"].map((t,i)=>(
+          {["Soprano","Voz en vivo","Coros","Shows"].map((t,i)=>(
             <span key={i} style={{
               fontFamily:"'Montserrat',sans-serif",fontSize:10,fontWeight:700,
               color:"rgba(255,255,255,0.5)",
@@ -1322,30 +1322,48 @@ function SlideFin() {
 ───────────────────────────────────────────────────────────── */
 function WrappedPlayer({ audio_url, isPaused }: { audio_url: string; isPaused: boolean }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const startedRef = useRef(false);
+  const readyRef = useRef(false);
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
-    startedRef.current = false;
+    readyRef.current = false;
     a.src = audio_url;
     a.load();
   }, [audio_url]);
 
   useEffect(() => {
     const a = audioRef.current;
-    if (!a || !startedRef.current) return;
-    if (isPaused) a.pause();
-    else a.play().catch(() => {});
+    if (!a) return;
+    if (isPaused) {
+      a.pause();
+    } else if (readyRef.current) {
+      a.play().catch(() => {});
+    }
   }, [isPaused]);
+
+  // Resume after tab switch: browser pauses audio when tab hidden
+  useEffect(() => {
+    function onVisibility() {
+      const a = audioRef.current;
+      if (!a || !readyRef.current) return;
+      if (!document.hidden && !isPausedRef.current && a.paused) {
+        a.play().catch(() => {});
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   function handleMetadata() {
     const a = audioRef.current;
     if (!a || !a.duration) return;
     a.currentTime = Math.random() * a.duration;
-    if (!isPaused) {
+    readyRef.current = true;
+    if (!isPausedRef.current) {
       a.play().catch(() => {});
-      startedRef.current = true;
     }
   }
 
@@ -1355,7 +1373,7 @@ function WrappedPlayer({ audio_url, isPaused }: { audio_url: string; isPaused: b
 /* ─────────────────────────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────────────────────────── */
-export default function SpotifyWrapped() {
+export default function SpotifyWrapped({ onClose }: { onClose?: () => void } = {}) {
   const [current, setCurrent]     = useState(0);
   const [direction, setDirection] = useState<"next"|"prev">("next");
   const [slideKey, setSlideKey]   = useState(0);
@@ -1595,13 +1613,23 @@ export default function SpotifyWrapped() {
       </div>
 
       {/* ── Close ────────────────────────────────────────────────── */}
-      <Link href="/" style={{
-        position:"absolute", top:18, right:14, zIndex:200,
-        color:"#fff", textDecoration:"none",
-        width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center",
-        background:"rgba(0,0,0,0.5)", borderRadius:"50%",
-        fontSize:14, fontWeight:700,
-      }}>✕</Link>
+      {onClose ? (
+        <button onClick={onClose} style={{
+          position:"absolute", top:18, right:14, zIndex:200,
+          color:"#fff", background:"rgba(0,0,0,0.5)", border:"none",
+          borderRadius:"50%", width:28, height:28,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          fontSize:14, fontWeight:700, cursor:"pointer",
+        }}>✕</button>
+      ) : (
+        <Link href="/" style={{
+          position:"absolute", top:18, right:14, zIndex:200,
+          color:"#fff", textDecoration:"none",
+          width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center",
+          background:"rgba(0,0,0,0.5)", borderRadius:"50%",
+          fontSize:14, fontWeight:700,
+        }}>✕</Link>
+      )}
 
       {/* ── Active slide ─────────────────────────────────────────── */}
       <div key={slideKey} className={slideAnim} style={{ position:"absolute", inset:0 }}>

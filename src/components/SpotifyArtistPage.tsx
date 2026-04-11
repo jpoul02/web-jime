@@ -507,7 +507,7 @@ export default function SpotifyArtistPage() {
   if (showWrapped) {
     return (
       <div style={{ position: "fixed", inset: 0, zIndex: 9999 }}>
-        <SpotifyWrapped />
+        <SpotifyWrapped onClose={() => setShowWrapped(false)} />
         <button
           onClick={() => setShowWrapped(false)}
           style={{
