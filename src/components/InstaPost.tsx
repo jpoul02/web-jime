@@ -100,6 +100,19 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
   const [idx, setIdx] = useState(0);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  // Dynamic aspect ratio — set once the first image loads
+  const [aspectRatio, setAspectRatio] = useState<string>("1 / 1");
+  const ratioDetermined = useRef(false);
+
+  function handleFirstImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    if (ratioDetermined.current) return;
+    const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
+    if (!w || !h) return;
+    ratioDetermined.current = true;
+    // Clamp between Instagram's portrait (4:5) and landscape (1.91:1) limits
+    const ratio = Math.max(0.8, Math.min(1.91, w / h));
+    setAspectRatio(`${ratio}`);
+  }
 
   // Touch swipe state
   const touchStartX = useRef<number | null>(null);
@@ -180,7 +193,7 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
         <BirthdayCard postId={post.id} name={post.name} />
       ) : (
         <div
-          style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", overflow: "hidden", background: "#EFEFEF", touchAction: "pan-y" }}
+          style={{ position: "relative", width: "100%", aspectRatio, overflow: "hidden", background: "#000", touchAction: "pan-y", transition: "aspect-ratio 0.2s" }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -207,8 +220,9 @@ export default function InstaPostCard({ post }: { post: InstaPost }) {
                     alt={`Foto ${i + 1} de ${post.name}`}
                     fill
                     unoptimized
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: "contain" }}
                     priority={i === 0}
+                    onLoad={i === 0 ? handleFirstImageLoad : undefined}
                   />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", color: "#8E8E8E", fontSize: 14 }}>
