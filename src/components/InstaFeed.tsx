@@ -1,7 +1,7 @@
 "use client";
 
 import type { InstaPost } from "@/types/feed";
-import { BookOpen, Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, User, Video, Users } from "lucide-react";
+import { BookOpen, Compass, Heart, Home, PlusSquare, Send, Music, HelpCircle, Video, Users } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InstaLogo from "./InstaLogo";

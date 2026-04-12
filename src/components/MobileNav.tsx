@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, HelpCircle, Home, Music, User, Users, Video } from "lucide-react";
+import { BookOpen, HelpCircle, Home, Music, Users, Video } from "lucide-react";
 
 const NAV = [
   { href: "/",          label: "Inicio",   Icon: Home       },
