@@ -16,7 +16,7 @@ type Momento = {
   emoji?: string;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-jime.up.railway.app";
 
 /* ─── Tokens (mismos que HistoriaTimeline) ────────────────────────────── */
 const PF    = "'Playfair Display', Georgia, serif";

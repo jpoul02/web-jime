@@ -15,7 +15,7 @@ function normalizeMediaUrl(rawUrl: string | null | undefined, apiBase: string): 
 async function getInitialFeed(): Promise<InstaPost[]> {
   const api =
     process.env.NEXT_PUBLIC_API_URL ??
-    "https://api-web-jime-production.up.railway.app";
+    "https://api-web-jime-jime.up.railway.app";
 
   try {
     const res = await fetch(`${api}/postales/feed?skip=0&limit=10`, {

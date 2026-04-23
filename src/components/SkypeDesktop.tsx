@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import MobileNav from "./MobileNav";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-jime.up.railway.app";
 
 interface VideoPostal {
   id: number;

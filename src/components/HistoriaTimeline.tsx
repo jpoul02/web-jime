@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import HistoriaWrapped from "./HistoriaWrapped";
 import HistoriaScrollTimeline from "./HistoriaScrollTimeline";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-jime.up.railway.app";
 
 /* ─── Nav links ───────────────────────────────────────────────────────── */
 const NAV_LINKS = [

@@ -3,7 +3,7 @@ import type { InstaPost } from "@/types/feed";
 
 const API =
   process.env.NEXT_PUBLIC_API_URL ??
-  "https://api-web-jime-production.up.railway.app";
+  "https://api-web-jime-jime.up.railway.app";
 
 function normalizeMediaUrl(rawUrl: string | null | undefined): string | null {
   if (!rawUrl) return null;

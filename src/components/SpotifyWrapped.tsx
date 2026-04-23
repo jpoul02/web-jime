@@ -12,7 +12,7 @@ const TOTAL_SLIDES = 16;
 /* ─────────────────────────────────────────────────────────────
    API
 ───────────────────────────────────────────────────────────── */
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-production.up.railway.app";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api-web-jime-jime.up.railway.app";
 
 interface WrappedSong  { id: number; title: string; cover_url: string | null; audio_url: string | null; }
 interface WrappedAlbum { id: number; title: string; cover_url: string | null; year: number | null; }
